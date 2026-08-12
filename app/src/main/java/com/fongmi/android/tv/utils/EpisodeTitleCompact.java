@@ -74,7 +74,7 @@ public final class EpisodeTitleCompact {
     private static final Pattern TECH_SUFFIX = Pattern.compile("(?i)^[\\s._\\-\\[\\]()（）【】]+(?:4K|8K|2160P|1080P|720P|HDR|HDR10|DV|DOLBY|HEVC|H265|H\\.265|H264|H\\.264|AV1|AAC|FLAC|WEB-DL|WEBRIP|BLURAY|BD|HD|国语|国配|粤语|中字|中英双字|简中|繁中|内嵌字幕|无字)(?:[\\s._\\-\\[\\]()（）【】]+(?:4K|8K|2160P|1080P|720P|HDR|HDR10|DV|DOLBY|HEVC|H265|H\\.265|H264|H\\.264|AV1|AAC|FLAC|WEB-DL|WEBRIP|BLURAY|BD|HD|国语|国配|粤语|中字|中英双字|简中|繁中|内嵌字幕|无字))*[\\s._\\-\\[\\]()（）【】]*$");
     private static final Pattern FILE_EDGE_SEPARATORS = Pattern.compile("^[\\s._\\-·|/\\\\:：,，;；]+|[\\s._\\-·|/\\\\:：,，;；]+$");
     private static final Pattern EDGE_SEPARATORS = Pattern.compile("^[\\s._\\-·|/\\\\:：,，;；\\[\\]()（）【】《》]+|[\\s._\\-·|/\\\\:：,，;；\\[\\]()（）【】《》]+$");
-    private static final int MAX_COMPACT_LENGTH = 14;
+    private static final int MAX_COMPACT_LENGTH = 140;
 
     private EpisodeTitleCompact() {
     }
@@ -310,10 +310,8 @@ public final class EpisodeTitleCompact {
     }
 
     private static String preferEpisodeToken(String token, String compact) {
-        if (compact.length() > MAX_COMPACT_LENGTH) {
-        return compact.substring(0, MAX_COMPACT_LENGTH) + "..";
-        }
-        return compact;
+        if (compact.length() <= MAX_COMPACT_LENGTH) return compact;
+        return isEmpty(token) ? compact : token;
     }
 
     private static String findCollectionDisplay(String text) {
