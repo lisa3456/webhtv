@@ -310,8 +310,10 @@ public final class EpisodeTitleCompact {
     }
 
     private static String preferEpisodeToken(String token, String compact) {
-        if (compact.length() <= MAX_COMPACT_LENGTH) return compact;
-        return isEmpty(token) ? compact : token;
+        if (compact.length() > MAX_COMPACT_LENGTH) {
+        return compact.substring(0, MAX_COMPACT_LENGTH) + "..";
+    }
+    return compact;
     }
 
     private static String findCollectionDisplay(String text) {
