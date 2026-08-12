@@ -312,8 +312,8 @@ public final class EpisodeTitleCompact {
     private static String preferEpisodeToken(String token, String compact) {
         if (compact.length() > MAX_COMPACT_LENGTH) {
         return compact.substring(0, MAX_COMPACT_LENGTH) + "..";
-    }
-    return compact;
+        }
+        return compact;
     }
 
     private static String findCollectionDisplay(String text) {
