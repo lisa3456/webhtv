@@ -709,6 +709,19 @@
                             android:layout_height="0dp"
                             android:layout_weight="1" />
 
+                        <!-- 新增：展开/收起按钮 -->
+                        <TextView
+                            android:id="@+id/episodeExpandBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="展开"
+                            android:textColor="@color/white"
+                            android:background="@drawable/shape_button" />
+                        
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/more"
                             android:layout_width="wrap_content"
