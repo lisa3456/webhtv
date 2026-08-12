@@ -231,6 +231,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private boolean mAudioStageVisible;
     private boolean mAudioLightEffectAnimated;
     private boolean mKaraokeResultShown;
+    private boolean isEpisodeExpanded = false;
     private int mKaraokeResultAction;
     private KaraokeResult mPendingKaraokeResult;
     private AlertDialog mKaraokeResultDialog;
@@ -814,8 +815,29 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
         mBinding.control.action.getRoot().setOnTouchListener(this::onActionTouch);
         mBinding.swipeLayout.setOnRefreshListener(this::onSwipeRefresh);
+        mBinding.episodeExpandBtn.setOnClickListener(v -> toggleEpisodeExpand());
     }
 
+    private void toggleEpisodeExpand() {
+        isEpisodeExpanded = !isEpisodeExpanded;
+        if (isEpisodeExpanded) {
+            // 展开
+            int screenHeight = ResUtil.getScreenHeight(this);
+            int[] root = new int[2];
+            int[] episode = new int[2];
+            mBinding.getRoot().getLocationOnScreen(root);
+            mBinding.episode.getLocationOnScreen(episode);
+            int available = root[1] + screenHeight - mEpisodeBottomInset - ResUtil.dp2px(8) - episode[1];
+            mBinding.episode.setMaxHeight(available);
+            mBinding.episodeExpandBtn.setText("收起");
+        } else {
+            // 收起
+            mBinding.episode.setMaxHeight(ResUtil.dp2px(280));
+            mBinding.episodeExpandBtn.setText("展开");
+        }
+        mBinding.episode.requestLayout();
+    }
+    
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
         int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
         Insets nav = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
