@@ -825,9 +825,13 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             return;
         }
         syncSelectedEpisode(flag);
-        EpisodeGridDialog.create()
+    
+        List<Flag> flags = new ArrayList<>();
+        flags.add(flag);
+    
+        EpisodeListDialog.create()
             .reverse(mHistory != null && mHistory.isRevSort())
-            .episodes(flag.getEpisodes())
+            .flags(flags)
             .show(this);
     }
     
