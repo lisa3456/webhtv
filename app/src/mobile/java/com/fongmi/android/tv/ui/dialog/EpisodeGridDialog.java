@@ -59,8 +59,7 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
-
-    // ===== 添加 onStart =====
+    
     @Override
     public void onStart() {
         super.onStart();
@@ -68,10 +67,12 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
             View sheet = getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (sheet != null) {
                 BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
-                behavior.setFitToContents(false);
-                behavior.setSkipCollapsed(true);
+                behavior.setFitToContents(true);
+                behavior.setSkipCollapsed(false);
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 behavior.setHideable(false);
+                // 关键：设置展开偏移，不让它推挤顶部内容
+                behavior.setExpandedOffset(ResUtil.dp2px(80));
             }
             if (getDialog().getWindow() != null) {
                 getDialog().getWindow().setBackgroundDrawable(
