@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,6 +91,10 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         // 手动绑定视图
         binding = DialogEpisodeGridBinding.bind(view);
         
+        // 初始化视图
+        initView();
+        initEvent();
+        
         return dialog;
     }
 
@@ -139,25 +142,20 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         
         // 计算并设置最大高度 - 不超过屏幕的 70%，避免遮挡系统栏
         int screenHeight = ResUtil.getScreenHeight(requireContext());
-        int maxHeight = (int) (screenHeight * 0.7f);
-        
-        // 加上状态栏高度作为额外保护
         int statusBarHeight = getStatusBarHeight();
-        int maxHeightWithPadding = Math.min(maxHeight, screenHeight - statusBarHeight - ResUtil.dp2px(20));
+        int maxHeight = Math.min(
+            (int) (screenHeight * 0.7f), 
+            screenHeight - statusBarHeight - ResUtil.dp2px(20)
+        );
         
-        // 设置 BottomSheet 的固定高度
+        // 通过 LayoutParams 设置高度
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
         if (params != null) {
-            params.height = Math.min(maxHeightWithPadding, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.height = maxHeight;
             sheet.setLayoutParams(params);
         }
         
-        // 设置最大高度（防止内容过多时超出）
-        sheet.setMaxHeight(maxHeightWithPadding);
         sheet.requestLayout();
-        
-        // 设置背景圆角等样式（可选）
-        sheet.setBackgroundColor(Color.TRANSPARENT);
     }
 
     private int getStatusBarHeight() {
@@ -171,13 +169,13 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
 
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        // 这个方法在 onCreateDialog 中已经处理了，这里返回 null 但不会被执行
+        // 这个方法在 onCreateDialog 中已经处理了
         return null;
     }
 
     @Override
     protected void initView() {
-        // 在 onCreateDialog 中已经初始化了，这里空实现避免重复
+        if (binding == null) return;
         setSpanCount();
         setTitles();
         setPager();
@@ -188,7 +186,10 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         if (binding == null) return;
         binding.column.setOnClickListener(this::onColumnToggle);
         getChildFragmentManager().setFragmentResultListener("result", this, (requestKey, bundle) -> {
-            ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(bundle.getParcelable("episode"));
+            Episode episode = bundle.getParcelable("episode");
+            if (episode != null) {
+                ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(episode);
+            }
             dismiss();
         });
     }
