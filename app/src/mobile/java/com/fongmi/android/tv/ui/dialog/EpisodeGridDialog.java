@@ -1,19 +1,11 @@
 package com.fongmi.android.tv.ui.dialog;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
@@ -27,8 +19,6 @@ import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.fragment.EpisodeFragment;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,115 +57,13 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         show(activity.getSupportFragmentManager(), null);
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // 创建 BottomSheetDialog
-        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), getTheme()) {
-            @Override
-            public void onStart() {
-                super.onStart();
-                // 获取 BottomSheet 并配置
-                configureBottomSheet(this);
-            }
-        };
-        
-        // 配置窗口属性
-        configureWindow(dialog);
-        
-        // 设置内容视图
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View view = inflater.inflate(R.layout.dialog_episode_grid, null);
-        dialog.setContentView(view);
-        
-        // 手动绑定视图
-        binding = DialogEpisodeGridBinding.bind(view);
-        
-        // 初始化视图
-        initView();
-        initEvent();
-        
-        return dialog;
-    }
-
-    private void configureWindow(Dialog dialog) {
-        if (dialog == null || dialog.getWindow() == null) return;
-        Window window = dialog.getWindow();
-        
-        // 设置透明背景
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        
-        // 清除全屏标志 - 关键：不覆盖系统栏
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        
-        // 允许内容避开系统栏
-        WindowCompat.setDecorFitsSystemWindows(window, true);
-        
-        // 设置软键盘模式，不调整窗口大小
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        
-        // 设置窗口布局参数
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setGravity(Gravity.BOTTOM);
-    }
-
-    private void configureBottomSheet(BottomSheetDialog dialog) {
-        if (dialog == null) return;
-        
-        // 获取 BottomSheet 的根视图
-        View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (sheet == null) return;
-        
-        // 获取 BottomSheetBehavior
-        BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(sheet);
-        if (behavior == null) return;
-        
-        // 禁用拖动
-        behavior.setDraggable(false);
-        
-        // 不自动适应内容，手动控制高度
-        behavior.setFitToContents(false);
-        
-        // 设置为展开状态
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        
-        // 计算并设置最大高度 - 不超过屏幕的 70%，避免遮挡系统栏
-        int screenHeight = ResUtil.getScreenHeight(requireContext());
-        int statusBarHeight = getStatusBarHeight();
-        int maxHeight = Math.min(
-            (int) (screenHeight * 0.7f), 
-            screenHeight - statusBarHeight - ResUtil.dp2px(20)
-        );
-        
-        // 通过 LayoutParams 设置高度
-        ViewGroup.LayoutParams params = sheet.getLayoutParams();
-        if (params != null) {
-            params.height = maxHeight;
-            sheet.setLayoutParams(params);
-        }
-        
-        sheet.requestLayout();
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        // 这个方法在 onCreateDialog 中已经处理了
-        return null;
+        return binding = DialogEpisodeGridBinding.inflate(inflater, container, false);
     }
 
     @Override
     protected void initView() {
-        if (binding == null) return;
         setSpanCount();
         setTitles();
         setPager();
@@ -183,13 +71,9 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
 
     @Override
     protected void initEvent() {
-        if (binding == null) return;
         binding.column.setOnClickListener(this::onColumnToggle);
         getChildFragmentManager().setFragmentResultListener("result", this, (requestKey, bundle) -> {
-            Episode episode = bundle.getParcelable("episode");
-            if (episode != null) {
-                ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(episode);
-            }
+            ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(bundle.getParcelable("episode"));
             dismiss();
         });
     }
@@ -202,7 +86,6 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
     }
 
     private void setSpanCount() {
-        if (episodes == null || episodes.isEmpty()) return;
         int avg = (int) Math.ceil(episodes.stream().mapToInt(e -> e.getName().length()).average().orElse(0));
         int max = episodes.stream().mapToInt(e -> e.getDesc().concat(e.getName()).length()).max().orElse(0);
         boolean longTitle = avg >= 8 || max >= 12;
@@ -211,28 +94,17 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         else if (avg >= 2) spanCount = 4;
         else spanCount = 5;
         itemCount = episodes.size() <= 60 ? 20 : spanCount * (ResUtil.isLand(requireActivity()) ? 5 : 10);
-        if (binding != null) {
-            binding.column.setVisibility(longTitle ? View.VISIBLE : View.GONE);
-            binding.column.setImageResource(spanCount == 1 ? R.drawable.ic_site_double_column : R.drawable.ic_site_single_column);
-        }
+        binding.column.setVisibility(longTitle ? View.VISIBLE : View.GONE);
+        binding.column.setImageResource(spanCount == 1 ? R.drawable.ic_site_double_column : R.drawable.ic_site_single_column);
     }
 
     private void setTitles() {
-        if (titles == null || episodes == null) return;
         titles.clear();
-        if (reverse) {
-            for (int i = episodes.size(); i > 0; i -= itemCount) {
-                titles.add(i + " - " + Math.max(i - itemCount + 1, 1));
-            }
-        } else {
-            for (int i = 0; i < episodes.size(); i += itemCount) {
-                titles.add((i + 1) + " - " + Math.min(i + itemCount, episodes.size()));
-            }
-        }
+        if (reverse) for (int i = episodes.size(); i > 0; i -= itemCount) titles.add(i + " - " + Math.max(i - itemCount + 1, 1));
+        else for (int i = 0; i < episodes.size(); i += itemCount) titles.add((i + 1) + " - " + Math.min(i + itemCount, episodes.size()));
     }
 
     private void setPager() {
-        if (binding == null || titles == null || titles.isEmpty()) return;
         binding.tabs.removeAllTabs();
         binding.pager.setAdapter(new PageAdapter(this));
         new TabLayoutMediator(binding.tabs, binding.pager, (tab, position) -> tab.setText(titles.get(position))).attach();
@@ -240,13 +112,9 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
     }
 
     private void setCurrentPage() {
-        if (episodes == null || binding == null) return;
         for (int i = 0; i < episodes.size(); i++) {
             if (episodes.get(i).isSelected()) {
-                int page = i / itemCount;
-                if (page < titles.size()) {
-                    binding.pager.setCurrentItem(page);
-                }
+                binding.pager.setCurrentItem(i / itemCount);
                 break;
             }
         }
@@ -261,23 +129,12 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            int start = position * itemCount;
-            int end = Math.min(start + itemCount, episodes.size());
-            if (start >= episodes.size()) {
-                return EpisodeFragment.newInstance(spanCount, new ArrayList<>());
-            }
-            return EpisodeFragment.newInstance(spanCount, episodes.subList(start, end));
+            return EpisodeFragment.newInstance(spanCount, episodes.subList(position * itemCount, Math.min(position * itemCount + itemCount, episodes.size())));
         }
 
         @Override
         public int getItemCount() {
-            return titles == null ? 0 : titles.size();
+            return titles.size();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }
