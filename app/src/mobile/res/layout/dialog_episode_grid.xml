@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#1A1A1A"  <!-- 添加：弹窗背景色 -->
     android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -19,8 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/detail_episode"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:textColor="#FFFFFF"  <!-- 改成白色 -->
+            android:textSize="18sp"  <!-- 稍微大一点 -->
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/column"
@@ -30,27 +32,30 @@
             android:padding="8dp"
             android:scaleType="center"
             android:src="@drawable/ic_site_single_column"
-            app:tint="?attr/colorOnSurface" />
+            android:tint="#FFFFFF" />  <!-- 改成白色 -->
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="36dp"  <!-- 稍微高一点 -->
         android:background="@color/transparent"
         app:tabContentStart="20dp"
         app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabIndicatorColor="#FF6B6B"  <!-- 改成红色指示条 -->
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorHeight="3dp"  <!-- 加粗 -->
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="?attr/colorPrimary"
-        app:tabTextColor="?attr/colorOnSurfaceVariant" />
+        app:tabSelectedTextColor="#FFFFFF"  <!-- 选中白色 -->
+        app:tabTextColor="#80FFFFFF" />  <!-- 未选中半透明白 -->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="350dp"  <!-- 修改：固定高度 -->
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="16dp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
