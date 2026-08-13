@@ -87,12 +87,10 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DialogEpisodeListBinding.inflate(inflater, container, false);
         FrameLayout overlay = new FrameLayout(requireContext());
-        overlay.setBackgroundColor(0x88000000);  // 半透明黑色背景
+        overlay.setBackgroundColor(Color.TRANSPARENT);
         overlay.setOnClickListener(view -> dismiss());
         binding.getRoot().setClickable(true);
-        // 弹窗靠右上角显示，不占满全屏
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.END | Gravity.TOP);
-        params.topMargin = ResUtil.dp2px(120);  // 留出状态栏空间
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(getWidth(), ViewGroup.LayoutParams.MATCH_PARENT, Gravity.END);
         overlay.addView(binding.getRoot(), params);
         return overlay;
     }
@@ -112,13 +110,13 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
         if (dialog == null || dialog.getWindow() == null) return;
         Window window = dialog.getWindow();
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        // 不清除 FLAG_DIM_BEHIND，保留背景变暗效果
-        window.setDimAmount(0.4f);  // 背景变暗程度
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setDimAmount(0f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        WindowCompat.setDecorFitsSystemWindows(window, true);
-        // 不强制全屏，不隐藏系统栏
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        Util.hideSystemUI(window);
     }
 
     private void initView() {
