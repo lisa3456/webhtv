@@ -75,23 +75,18 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
             @Override
             public void onStart() {
                 super.onStart();
-                // 获取 BottomSheet 并配置
                 configureBottomSheet(this);
             }
         };
         
-        // 配置窗口属性
         configureWindow(dialog);
         
-        // 手动 inflate 视图
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View view = inflater.inflate(R.layout.dialog_episode_grid, null);
         dialog.setContentView(view);
         
-        // 绑定视图
         binding = DialogEpisodeGridBinding.bind(view);
         
-        // 初始化
         initView();
         initEvent();
         
@@ -108,7 +103,6 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         WindowCompat.setDecorFitsSystemWindows(window, true);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         
-        // 关键修改：设置窗口在底部
         window.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
@@ -116,30 +110,19 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
     private void configureBottomSheet(BottomSheetDialog dialog) {
         if (dialog == null) return;
         
-        // 获取 BottomSheet 的根视图
         View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (sheet == null) return;
         
-        // 获取 BottomSheetBehavior
         BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(sheet);
         if (behavior == null) return;
         
-        // 设置为折叠状态（底部显示）
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        
-        // 禁用拖动
         behavior.setDraggable(false);
-        
-        // 允许内容自适应高度
         behavior.setFitToContents(true);
-        
-        // 设置 peek 高度为 0，让 BottomSheet 完全展开但只占内容高度
         behavior.setPeekHeight(0);
-        
-        // 设置为不可隐藏（不能滑动关闭）
         behavior.setHideable(false);
         
-        // 计算最大高度 - 不超过屏幕的 70%
+        // 计算最大高度
         int screenHeight = ResUtil.getScreenHeight(requireContext());
         int statusBarHeight = getStatusBarHeight();
         int maxHeight = Math.min(
@@ -147,16 +130,12 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
             screenHeight - statusBarHeight - ResUtil.dp2px(20)
         );
         
-        // 设置 BottomSheet 的布局参数
+        // 通过 LayoutParams 设置高度
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
         if (params != null) {
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            // 直接设置最大高度为计算值
+            params.height = Math.min(maxHeight, ViewGroup.LayoutParams.WRAP_CONTENT);
             sheet.setLayoutParams(params);
-        }
-        
-        // 设置最大高度
-        if (sheet instanceof ViewGroup) {
-            sheet.setMaxHeight(maxHeight);
         }
         
         sheet.requestLayout();
