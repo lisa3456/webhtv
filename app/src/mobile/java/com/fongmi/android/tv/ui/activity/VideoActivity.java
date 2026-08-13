@@ -820,8 +820,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void toggleEpisodeExpand() {
         isEpisodeExpanded = !isEpisodeExpanded;
+        ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
         if (isEpisodeExpanded) {
-            // 展开：直接设置 CustomRecyclerView 的 maxHeight 属性
             int screenHeight = ResUtil.getScreenHeight(this);
             int[] root = new int[2];
             int[] episode = new int[2];
@@ -829,25 +829,18 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             mBinding.episode.getLocationOnScreen(episode);
             int available = root[1] + screenHeight - mEpisodeBottomInset - ResUtil.dp2px(8) - episode[1];
             
-            // 使用 setMaxHeight 方法（如果有）
+            // 同时设置 maxHeight 和 layoutParams.height
             mBinding.episode.setMaxHeight(available);
-            // 或者直接修改布局参数
-            ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
             params.height = available;
-            mBinding.episode.setLayoutParams(params);
-            
             mBinding.episodeExpandBtn.setText("收起");
         } else {
-            // 收起
             mBinding.episode.setMaxHeight(ResUtil.dp2px(280));
-            // 或者恢复默认
-            ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mBinding.episode.setLayoutParams(params);
-            
             mBinding.episodeExpandBtn.setText("展开");
         }
+        mBinding.episode.setLayoutParams(params);
         mBinding.episode.requestLayout();
+        mBinding.episode.invalidate();
     }
     
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
