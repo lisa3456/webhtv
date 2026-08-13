@@ -67,19 +67,118 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         show(activity.getSupportFragmentManager(), null);
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        // 创建 BottomSheetDialog
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), getTheme()) {
+            @Override
+            public void onStart() {
+                super.onStart();
+                // 获取 BottomSheet 并配置
+                configureBottomSheet(this);
+            }
+        };
+        
+        // 配置窗口属性
+        configureWindow(dialog);
+        
+        // 手动 inflate 视图
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View view = inflater.inflate(R.layout.dialog_episode_grid, null);
+        dialog.setContentView(view);
+        
+        // 绑定视图
+        binding = DialogEpisodeGridBinding.bind(view);
+        
+        // 初始化
+        initView();
+        initEvent();
+        
+        return dialog;
+    }
+
+    private void configureWindow(Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        Window window = dialog.getWindow();
+        
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        WindowCompat.setDecorFitsSystemWindows(window, true);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        
+        // 关键修改：设置窗口在底部
+        window.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+    }
+
+    private void configureBottomSheet(BottomSheetDialog dialog) {
+        if (dialog == null) return;
+        
+        // 获取 BottomSheet 的根视图
+        View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (sheet == null) return;
+        
+        // 获取 BottomSheetBehavior
+        BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(sheet);
+        if (behavior == null) return;
+        
+        // 设置为折叠状态（底部显示）
+        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        
+        // 禁用拖动
+        behavior.setDraggable(false);
+        
+        // 允许内容自适应高度
+        behavior.setFitToContents(true);
+        
+        // 设置 peek 高度为 0，让 BottomSheet 完全展开但只占内容高度
+        behavior.setPeekHeight(0);
+        
+        // 设置为不可隐藏（不能滑动关闭）
+        behavior.setHideable(false);
+        
+        // 计算最大高度 - 不超过屏幕的 70%
+        int screenHeight = ResUtil.getScreenHeight(requireContext());
+        int statusBarHeight = getStatusBarHeight();
+        int maxHeight = Math.min(
+            (int) (screenHeight * 0.7f), 
+            screenHeight - statusBarHeight - ResUtil.dp2px(20)
+        );
+        
+        // 设置 BottomSheet 的布局参数
+        ViewGroup.LayoutParams params = sheet.getLayoutParams();
+        if (params != null) {
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            sheet.setLayoutParams(params);
+        }
+        
+        // 设置最大高度
+        if (sheet instanceof ViewGroup) {
+            sheet.setMaxHeight(maxHeight);
+        }
+        
+        sheet.requestLayout();
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        return binding = DialogEpisodeGridBinding.inflate(inflater, container, false);
+        return null;
     }
 
     @Override
     protected void initView() {
-        // 配置窗口属性
-        configureDialogWindow();
-        
-        // 配置 BottomSheet
-        configureBottomSheet();
-        
+        if (binding == null) return;
         setSpanCount();
         setTitles();
         setPager();
@@ -96,73 +195,6 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
             }
             dismiss();
         });
-    }
-
-    private void configureDialogWindow() {
-        Dialog dialog = getDialog();
-        if (dialog == null || dialog.getWindow() == null) return;
-        Window window = dialog.getWindow();
-        
-        // 设置透明背景
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        
-        // 清除全屏标志 - 关键：不覆盖系统栏
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        
-        // 允许内容避开系统栏
-        WindowCompat.setDecorFitsSystemWindows(window, true);
-        
-        // 设置软键盘模式，不调整窗口大小
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-    }
-
-    private void configureBottomSheet() {
-        Dialog dialog = getDialog();
-        if (dialog == null) return;
-        
-        // 获取 BottomSheet 的根视图
-        View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (sheet == null) return;
-        
-        // 获取 BottomSheetBehavior
-        BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(sheet);
-        if (behavior == null) return;
-        
-        // 禁用拖动
-        behavior.setDraggable(false);
-        
-        // 不自动适应内容，手动控制高度
-        behavior.setFitToContents(false);
-        
-        // 设置为展开状态
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        
-        // 计算并设置最大高度 - 不超过屏幕的 70%，避免遮挡系统栏
-        int screenHeight = ResUtil.getScreenHeight(requireContext());
-        int statusBarHeight = getStatusBarHeight();
-        int maxHeight = Math.min(
-            (int) (screenHeight * 0.7f), 
-            screenHeight - statusBarHeight - ResUtil.dp2px(20)
-        );
-        
-        // 通过 LayoutParams 设置高度
-        ViewGroup.LayoutParams params = sheet.getLayoutParams();
-        if (params != null) {
-            params.height = maxHeight;
-            sheet.setLayoutParams(params);
-        }
-        
-        sheet.requestLayout();
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private void onColumnToggle(View view) {
