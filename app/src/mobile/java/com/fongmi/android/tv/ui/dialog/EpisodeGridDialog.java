@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
-import com.fongmi.android.tv.databinding.DialogEpisodeGridBinding;
+import com.fongmi.android.tv.databinding.DialogEpisodeListBinding;
 import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.adapter.EpisodeGroupAdapter;
@@ -32,14 +32,13 @@ import com.fongmi.android.tv.ui.base.ViewType;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.EpisodeTitleCompact;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.fongmi.android.tv.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAdapter.OnClickListener, EpisodeGroupAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
 
-    private DialogEpisodeGridBinding binding;
+    private DialogEpisodeListBinding binding;
     private EpisodeGroupAdapter groupAdapter;
     private EpisodeAdapter episodeAdapter;
     private SpaceItemDecoration episodeDecoration;
@@ -63,7 +62,9 @@ public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAd
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) {
+            if (f instanceof EpisodeGridDialog) return;
+        }
         show(activity.getSupportFragmentManager(), null);
     }
 
@@ -85,7 +86,7 @@ public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DialogEpisodeGridBinding.inflate(inflater, container, false);
+        binding = DialogEpisodeListBinding.inflate(inflater, container, false);
         FrameLayout overlay = new FrameLayout(requireContext());
         overlay.setBackgroundColor(Color.TRANSPARENT);
         overlay.setOnClickListener(view -> dismiss());
@@ -190,7 +191,9 @@ public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAd
     }
 
     private int getSelectedEpisodePosition(List<Episode> episodes) {
-        for (int i = 0; i < episodes.size(); i++) if (episodes.get(i).isSelected()) return i;
+        for (int i = 0; i < episodes.size(); i++) {
+            if (episodes.get(i).isSelected()) return i;
+        }
         return 0;
     }
 
@@ -240,8 +243,11 @@ public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAd
 
     private void scrollEpisodeToPosition(int position) {
         RecyclerView.LayoutManager manager = binding.episode.getLayoutManager();
-        if (manager instanceof GridLayoutManager) ((GridLayoutManager) manager).scrollToPositionWithOffset(position, 0);
-        else binding.episode.scrollToPosition(position);
+        if (manager instanceof GridLayoutManager) {
+            ((GridLayoutManager) manager).scrollToPositionWithOffset(position, 0);
+        } else {
+            binding.episode.scrollToPosition(position);
+        }
     }
 
     @Override
