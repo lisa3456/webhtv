@@ -825,9 +825,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
             return;
         }
         syncSelectedEpisode(flag);
+        List<Flag> flagList = new ArrayList<>();
+        flagList.add(flag);
         EpisodeGridDialog.create()
             .reverse(mHistory != null && mHistory.isRevSort())
-            .episodes(flag.getEpisodes())
+            .flags(flagList)
             .show(this);
     }
     
@@ -1636,7 +1638,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         Flag flag = getFlag();
         if (flag == null) return;
         syncSelectedEpisode(flag);
-        EpisodeGridDialog.create().reverse(mHistory.isRevSort()).episodes(flag.getEpisodes()).show(this);
+        List<Flag> flagList = new ArrayList<>();
+        flagList.add(flag);
+        EpisodeGridDialog.create()
+            .reverse(mHistory.isRevSort())
+            .flags(flagList)
+            .show(this);
     }
 
     private void onActor() {
