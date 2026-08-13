@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fongmi.android.tv.bean.Episode;
 import com.fongmi.android.tv.bean.Flag;
-import com.fongmi.android.tv.databinding.DialogEpisodeListBinding;
+import com.fongmi.android.tv.databinding.DialogEpisodeGridBinding;
 import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.adapter.EpisodeGroupAdapter;
@@ -37,9 +37,9 @@ import com.fongmi.android.tv.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAdapter.OnClickListener, EpisodeGroupAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
+public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAdapter.OnClickListener, EpisodeGroupAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
 
-    private DialogEpisodeListBinding binding;
+    private DialogEpisodeGridBinding binding;
     private EpisodeGroupAdapter groupAdapter;
     private EpisodeAdapter episodeAdapter;
     private SpaceItemDecoration episodeDecoration;
@@ -48,22 +48,22 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
     private int episodeSpanCount = 4;
     private boolean reverse;
 
-    public static EpisodeListDialog create() {
-        return new EpisodeListDialog();
+    public static EpisodeGridDialog create() {
+        return new EpisodeGridDialog();
     }
 
-    public EpisodeListDialog flags(List<Flag> flags) {
+    public EpisodeGridDialog flags(List<Flag> flags) {
         this.flags = flags;
         return this;
     }
 
-    public EpisodeListDialog reverse(boolean reverse) {
+    public EpisodeGridDialog reverse(boolean reverse) {
         this.reverse = reverse;
         return this;
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeListDialog) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
 
@@ -85,7 +85,7 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DialogEpisodeListBinding.inflate(inflater, container, false);
+        binding = DialogEpisodeGridBinding.inflate(inflater, container, false);
         FrameLayout overlay = new FrameLayout(requireContext());
         overlay.setBackgroundColor(Color.TRANSPARENT);
         overlay.setOnClickListener(view -> dismiss());
@@ -111,11 +111,14 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
         Window window = dialog.getWindow();
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        // 不添加全屏标志，避免遮挡系统菜单栏
         // window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.setDimAmount(0f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        // 让内容避开系统栏
         WindowCompat.setDecorFitsSystemWindows(window, true);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        // 不隐藏系统UI，保留系统菜单栏
         // Util.hideSystemUI(window);
     }
 
@@ -247,4 +250,3 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
         dismiss();
     }
 }
-
