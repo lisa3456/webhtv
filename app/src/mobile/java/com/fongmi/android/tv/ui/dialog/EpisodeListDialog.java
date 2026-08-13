@@ -111,12 +111,12 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
         Window window = dialog.getWindow();
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        // window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.setDimAmount(0f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        WindowCompat.setDecorFitsSystemWindows(window, true);
+        WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        // Util.hideSystemUI(window);
+        Util.hideSystemUI(window);
     }
 
     private void initView() {
