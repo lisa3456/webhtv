@@ -41,31 +41,6 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         return new EpisodeGridDialog();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            int maxHeight = (int) (ResUtil.getScreenHeight(requireActivity()) * 0.85);
-            binding.pager.post(() -> {
-                int measuredHeight = binding.pager.getMeasuredHeight();
-                ViewGroup.LayoutParams params = binding.pager.getLayoutParams();
-                if (measuredHeight > maxHeight) {
-                    params.height = maxHeight;
-                } else {
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                }
-                binding.pager.setLayoutParams(params);
-            });
-            getDialog().getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            getDialog().getWindow().setBackgroundDrawable(
-                new android.graphics.drawable.ColorDrawable(0xFF2A2A2A)
-            );
-        }
-    }
-    
     public EpisodeGridDialog reverse(boolean reverse) {
         this.reverse = reverse;
         return this;
