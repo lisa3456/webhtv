@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.dialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,8 @@ import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.fragment.EpisodeFragment;
 import com.fongmi.android.tv.utils.ResUtil;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -56,13 +59,13 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
         show(activity.getSupportFragmentManager(), null);
     }
-    
-    @NonNull
+
+    // ===== 添加 onStart =====
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        dialog.setOnShowListener(d -> {
-            FrameLayout sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            View sheet = getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (sheet != null) {
                 BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
                 behavior.setFitToContents(false);
@@ -70,8 +73,12 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 behavior.setHideable(false);
             }
-        });
-        return dialog;
+            if (getDialog().getWindow() != null) {
+                getDialog().getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(0xFF3D3D3D)
+                );
+            }
+        }
     }
 
     @Override
