@@ -815,26 +815,20 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
         mBinding.control.action.getRoot().setOnTouchListener(this::onActionTouch);
         mBinding.swipeLayout.setOnRefreshListener(this::onSwipeRefresh);
-        mBinding.episodeExpandBtn.setOnClickListener(v -> toggleEpisodeExpand());
+        mBinding.episodeExpandBtn.setOnClickListener(v -> showEpisodePopup());
     }
 
-    private void toggleEpisodeExpand() {
-        isEpisodeExpanded = !isEpisodeExpanded;
-        ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
-        if (isEpisodeExpanded) {
-            // 直接设置一个很大的值（屏幕高度的 70%）
-            int screenHeight = ResUtil.getScreenHeight(this);
-            int maxHeight = (int) (screenHeight * 0.7);
-            params.height = maxHeight;
-            mBinding.episode.setMaxHeight(maxHeight);
-            mBinding.episodeExpandBtn.setText("收起");
-        } else {
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mBinding.episode.setMaxHeight(ResUtil.dp2px(280));
-            mBinding.episodeExpandBtn.setText("展开");
+    private void showEpisodePopup() {
+        Flag flag = getFlag();
+        if (flag == null) {
+            Notify.show("暂无选集");
+            return;
         }
-        mBinding.episode.setLayoutParams(params);
-        mBinding.episode.requestLayout();
+        syncSelectedEpisode(flag);
+        EpisodeGridDialog.create()
+            .reverse(mHistory != null && mHistory.isRevSort())
+            .episodes(flag.getEpisodes())
+            .show(this);
     }
     
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
