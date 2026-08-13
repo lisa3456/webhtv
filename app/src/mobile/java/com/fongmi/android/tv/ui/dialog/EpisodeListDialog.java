@@ -114,7 +114,7 @@ public class EpisodeListDialog extends AppCompatDialogFragment implements FlagAd
         // window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.setDimAmount(0f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        WindowCompat.setDecorFitsSystemWindows(window, true);
+        WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         // Util.hideSystemUI(window);
     }
