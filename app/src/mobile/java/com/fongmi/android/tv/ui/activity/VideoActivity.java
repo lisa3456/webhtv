@@ -822,25 +822,19 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         isEpisodeExpanded = !isEpisodeExpanded;
         ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
         if (isEpisodeExpanded) {
+            // 直接设置一个很大的值（屏幕高度的 70%）
             int screenHeight = ResUtil.getScreenHeight(this);
-            int[] root = new int[2];
-            int[] episode = new int[2];
-            mBinding.getRoot().getLocationOnScreen(root);
-            mBinding.episode.getLocationOnScreen(episode);
-            int available = root[1] + screenHeight - mEpisodeBottomInset - ResUtil.dp2px(8) - episode[1];
-            
-            // 同时设置 maxHeight 和 layoutParams.height
-            mBinding.episode.setMaxHeight(available);
-            params.height = available;
+            int maxHeight = (int) (screenHeight * 0.7);
+            params.height = maxHeight;
+            mBinding.episode.setMaxHeight(maxHeight);
             mBinding.episodeExpandBtn.setText("收起");
         } else {
-            mBinding.episode.setMaxHeight(ResUtil.dp2px(280));
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            mBinding.episode.setMaxHeight(ResUtil.dp2px(280));
             mBinding.episodeExpandBtn.setText("展开");
         }
         mBinding.episode.setLayoutParams(params);
         mBinding.episode.requestLayout();
-        mBinding.episode.invalidate();
     }
     
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
