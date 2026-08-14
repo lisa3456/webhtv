@@ -555,7 +555,7 @@
                             style="@style/Video.ContextText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/detail_content"
+                            android:text="简介："
                             android:textColor="@color/white_70"
                             android:textSize="14sp" />
 
