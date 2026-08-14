@@ -68,9 +68,9 @@
     
     <!-- 新增：紧凑版操作按钮样式，只影响 actionRow -->
     <style name="VideoActionButtonCompact" parent="Video.ContextText">
-        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">28dp</item>
-        <item name="android:layout_weight">0</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:drawablePadding">0dp</item>
         <item name="android:gravity">center</item>
@@ -81,7 +81,7 @@
         <item name="android:shadowDy">2</item>
         <item name="android:shadowRadius">4</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">0sp</item>
     </style>
 
     <style name="AudioActionButton" parent="Video.ContextText">
