@@ -4203,7 +4203,14 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void checkFlag(Vod item) {
         boolean empty = item.getFlags().isEmpty();
-        mBinding.flag.setVisibility(empty ? View.GONE : View.VISIBLE);
+        int flagCount = item.getFlags().size();
+        if (flagCount >= 2) {
+            mBinding.flagTitleLayout.setVisibility(View.VISIBLE);
+            mBinding.flag.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.flagTitleLayout.setVisibility(View.GONE);
+            mBinding.flag.setVisibility(View.GONE);
+        }
         boolean preservePlayback = mRestoringConfigurationPlayback && service() != null && !player().isEmpty();
         if (empty) {
             if (!preservePlayback) startFlow();
