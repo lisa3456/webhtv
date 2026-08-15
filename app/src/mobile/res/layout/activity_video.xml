@@ -720,7 +720,8 @@
                             android:paddingEnd="12dp"
                             android:text="展开"
                             android:textColor="@color/white"
-                            android:background="?attr/selectableItemBackgroundBorderless" />
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:visibility="gone" />
                         
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/more"
