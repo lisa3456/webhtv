@@ -464,7 +464,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/name"
                             style="@style/Video.ContextText"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0"
                             android:ellipsize="end"
@@ -499,8 +499,7 @@
                         android:singleLine="true"
                         android:textColor="@color/white_80"
                         android:textSize="14sp"
-                        tools:text="站源：泥巴"
-                        android:visibility="gone" />
+                        tools:text="站源：泥巴" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/other"
