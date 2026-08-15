@@ -466,28 +466,28 @@
                             style="@style/Video.ContextText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0"
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:textColor="@color/white"
                             android:textSize="19sp"
                             tools:text="慶餘年第二季" />
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/remark"
-                            style="@style/Video.ContextText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:ellipsize="end"
-                            android:maxWidth="112dp"
-                            android:singleLine="true"
-                            android:textColor="@color/white_80"
-                            android:textSize="14sp"
-                            tools:text="更新至第30集" />
-
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/remark"
+                        style="@style/Video.ContextText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+                        android:singleLine="true"
+                        android:textColor="@color/white_80"
+                        android:textSize="14sp"
+                        tools:text="更新至第30集" />
+                    
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/site"
                         style="@style/Video.ContextText"
@@ -499,7 +499,8 @@
                         android:singleLine="true"
                         android:textColor="@color/white_80"
                         android:textSize="14sp"
-                        tools:text="站源：泥巴" />
+                        tools:text="站源：泥巴"
+                        android:visibility="gone" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/other"
