@@ -1349,7 +1349,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.prev.setVisibility(size < 2 ? View.GONE : View.VISIBLE);
         mBinding.reverse.setVisibility(size < 2 ? View.GONE : View.VISIBLE);
         if (mBinding.episodeExpandBtn != null) {
-            mBinding.episodeExpandBtn.setVisibility(size >= 4 ? View.VISIBLE : View.GONE);
+            if (size >= 4) {
+                mBinding.episodeExpandBtn.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.episodeExpandBtn.setVisibility(View.GONE);
+            }
         }
         mBinding.episode.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.more.setVisibility(View.GONE);
