@@ -125,7 +125,7 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
     // ========== 重写透明和稳定覆盖方法 ==========
     @Override
     protected boolean transparent() {
-        return false;  // ← 改为 false，让背景遮罩显示
+        return true;
     }
 
     @Override
@@ -139,13 +139,15 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         if (dialog == null) return;
         View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (sheet == null) return;
-        
-        // 不设置透明背景，使用默认背景
+
+        // 设置透明背景（和 QuickSearchDialog 一样）
+        sheet.setBackgroundColor(ResUtil.getColor(R.color.transparent));
+
         int height = getPanelHeight();
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
         params.height = height;
         sheet.setLayoutParams(params);
-        
+
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
         behavior.setPeekHeight(height);
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -173,8 +175,8 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         Window window = dialog.getWindow();
         // 清除全屏标志，防止推界面
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // 保留适当的遮罩
-        window.setDimAmount(0.6f);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.setDimAmount(0f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         WindowCompat.setDecorFitsSystemWindows(window, true);
     }
