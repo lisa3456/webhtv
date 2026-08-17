@@ -65,29 +65,6 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">12sp</item>
     </style>
-    
-    <!-- 新增：紧凑版操作按钮样式，只影响 actionRow -->
-    <style name="VideoActionButtonCompact" parent="Video.ContextText">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">28dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-        <item name="android:drawablePadding">0dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:shadowColor">@color/black_90</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">0</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">0sp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:maxHeight">28dp</item>
-        <item name="android:lineSpacingExtra">0dp</item>
-        <item name="android:lineSpacingMultiplier">0</item>
-        <item name="android:includeFontPadding">false</item>
-    </style>
 
     <style name="AudioActionButton" parent="Video.ContextText">
         <item name="android:layout_width">0dp</item>
