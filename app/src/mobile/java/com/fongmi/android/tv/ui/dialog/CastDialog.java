@@ -1,16 +1,20 @@
 package com.fongmi.android.tv.ui.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
@@ -30,10 +34,13 @@ import com.fongmi.android.tv.ui.activity.ScanActivity;
 import com.fongmi.android.tv.ui.adapter.DeviceAdapter;
 import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 import com.fongmi.android.tv.utils.Notify;
+import com.fongmi.android.tv.utils.ResUtil;
 import com.fongmi.android.tv.utils.ScanTask;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Path;
 import com.github.catvod.utils.Util;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.io.IOException;
 
@@ -114,6 +121,78 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         binding.refresh.setOnClickListener(v -> onRefresh());
     }
 
+    // ========== 新增：重写透明和稳定覆盖方法 ==========
+    @Override
+    protected boolean transparent() {
+        return true;
+    }
+
+    @Override
+    protected boolean stableOverlay() {
+        return true;
+    }
+
+    // ========== 新增：重写设置 Behavior ==========
+    @Override
+    protected void setBehavior(BottomSheetDialog dialog) {
+        if (dialog == null) return;
+        // 获取 BottomSheet 的根视图
+        View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (sheet == null) return;
+        
+        // 设置透明背景
+        sheet.setBackgroundColor(ResUtil.getColor(R.color.transparent));
+        
+        // 设置高度
+        int height = getPanelHeight();
+        ViewGroup.LayoutParams params = sheet.getLayoutParams();
+        params.height = height;
+        sheet.setLayoutParams(params);
+        
+        // 设置 Behavior
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
+        behavior.setPeekHeight(height);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        behavior.setSkipCollapsed(true);
+        behavior.setDraggable(false);
+    }
+
+    // ========== 新增：配置窗口 ==========
+    @Override
+    @NonNull
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        configureWindow(dialog);
+        return dialog;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        configureWindow(getDialog());
+    }
+
+    private void configureWindow(Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        Window window = dialog.getWindow();
+        // 清除全屏标志，防止推界面
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND | WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setDimAmount(0f);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        // 让内容避开系统栏
+        WindowCompat.setDecorFitsSystemWindows(window, true);
+    }
+
+    // ========== 新增：计算弹窗高度 ==========
+    private int getPanelHeight() {
+        int screen = ResUtil.getScreenHeight(requireContext());
+        if (ResUtil.isLand(requireContext())) {
+            return Math.max(ResUtil.dp2px(260), Math.min(ResUtil.dp2px(430), Math.round(screen * 0.78f)));
+        }
+        return Math.max(ResUtil.dp2px(360), Math.min(ResUtil.dp2px(560), Math.round(screen * 0.58f)));
+    }
+
+    // ========== 原有方法 ==========
     private void setRecyclerView() {
         binding.recycler.setHasFixedSize(false);
         binding.recycler.setAdapter(adapter = new DeviceAdapter(this));
