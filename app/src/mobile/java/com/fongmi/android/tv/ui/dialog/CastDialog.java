@@ -122,10 +122,10 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         binding.refresh.setOnClickListener(v -> onRefresh());
     }
 
-    // ========== 新增：重写透明和稳定覆盖方法 ==========
+    // ========== 重写透明和稳定覆盖方法 ==========
     @Override
     protected boolean transparent() {
-        return true;
+        return false;  // ← 改为 false，让背景遮罩显示
     }
 
     @Override
@@ -133,24 +133,19 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         return true;
     }
 
-    // ========== 新增：重写设置 Behavior ==========
+    // ========== 重写设置 Behavior ==========
     @Override
     protected void setBehavior(BottomSheetDialog dialog) {
         if (dialog == null) return;
-        // 获取 BottomSheet 的根视图
         View sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (sheet == null) return;
         
-        // 设置透明背景
-        sheet.setBackgroundColor(ResUtil.getColor(R.color.transparent));
-        
-        // 设置高度
+        // 不设置透明背景，使用默认背景
         int height = getPanelHeight();
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
         params.height = height;
         sheet.setLayoutParams(params);
         
-        // 设置 Behavior
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(sheet);
         behavior.setPeekHeight(height);
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -158,7 +153,7 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         behavior.setDraggable(false);
     }
 
-    // ========== 新增：配置窗口 ==========
+    // ========== 配置窗口 ==========
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -177,14 +172,14 @@ public class CastDialog extends BaseBottomSheetDialog implements DeviceAdapter.O
         if (dialog == null || dialog.getWindow() == null) return;
         Window window = dialog.getWindow();
         // 清除全屏标志，防止推界面
-        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND | WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.setDimAmount(0f);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // 保留适当的遮罩
+        window.setDimAmount(0.6f);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        // 让内容避开系统栏
         WindowCompat.setDecorFitsSystemWindows(window, true);
     }
 
-    // ========== 新增：计算弹窗高度 ==========
+    // ========== 计算弹窗高度 ==========
     private int getPanelHeight() {
         int screen = ResUtil.getScreenHeight(requireContext());
         if (ResUtil.isLand(requireContext())) {
