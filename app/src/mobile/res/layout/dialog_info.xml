@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:autoLink="all"
             android:linksClickable="false"
-            android:textColor="@color/white"
+            android:textColor="#64B5F6"
             android:textSize="14sp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
