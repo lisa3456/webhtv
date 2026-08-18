@@ -4027,7 +4027,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.cast.setVisibility(View.GONE);
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        mBinding.control.back.setVisibility(View.GONE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
