@@ -21,7 +21,8 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
-            android:src="@drawable/ic_control_back" />
+            android:src="@drawable/ic_control_back"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
@@ -40,7 +41,7 @@
                 android:ellipsize="marquee"
                 android:singleLine="true"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:visibility="invisible"
                 tools:text="慶餘年第一季：第一集" />
 
