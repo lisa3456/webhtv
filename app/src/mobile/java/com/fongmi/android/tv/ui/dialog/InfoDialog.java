@@ -1,11 +1,7 @@
 package com.fongmi.android.tv.ui.dialog;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
@@ -61,14 +57,6 @@ public class InfoDialog extends BaseAlertDialog {
     public void onStart() {
         super.onStart();
         setWidth(ResUtil.isLand(requireContext()) ? 0.62f : 0.92f);
-        // ========== 新增：设置窗口透明度和背景 ==========
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            Window window = getDialog().getWindow();
-            // 设置背景透明（让 shape 的透明效果显示出来）
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            // 保留适当的遮罩
-            window.setDimAmount(0.6f);
-        }
     }
 
     @Override
