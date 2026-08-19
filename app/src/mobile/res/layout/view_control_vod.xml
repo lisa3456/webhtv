@@ -17,8 +17,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
             android:src="@drawable/ic_control_back"
@@ -65,32 +65,32 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/cast"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_cast" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/info"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_info" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/keep"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_keep_off" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/osdDiagnostics"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/player_osd"
                 android:scaleType="center"
@@ -100,8 +100,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/setting"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_setting" />
@@ -213,7 +213,8 @@
                 android:id="@+id/fullscreen"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_fullscreen" />
