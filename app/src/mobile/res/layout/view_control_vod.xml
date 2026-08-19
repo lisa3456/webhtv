@@ -198,8 +198,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="#FF0000"
+            android:layout_marginBottom="0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
@@ -225,7 +224,8 @@
             android:id="@+id/action"
             layout="@layout/view_control_vod_action"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </RelativeLayout>
