@@ -586,7 +586,7 @@
                         android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/shortDisplay"
+                            android:id="@+id/refreshAction"
                             android:layout_width="0dp"
                             android:layout_height="28dp"
                             android:layout_weight="1"
