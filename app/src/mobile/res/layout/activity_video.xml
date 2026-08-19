@@ -616,8 +616,7 @@
                             android:src="@drawable/ic_control_info"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="4dp"
-                            android:scaleType="center"
-                            android:contentDescription="@string/control_info" />
+                            android:scaleType="center" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/settingAction"
