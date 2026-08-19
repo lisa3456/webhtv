@@ -180,7 +180,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:paddingTop="10dp"
+        android:paddingTop="30dp"
         android:paddingBottom="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
