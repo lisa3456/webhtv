@@ -180,7 +180,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:paddingBottom="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/parse"
@@ -198,7 +198,6 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
