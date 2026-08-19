@@ -609,15 +609,15 @@
                             android:contentDescription="@string/play_search" />
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/castAction"
+                            android:id="@+id/info"
                             android:layout_width="0dp"
                             android:layout_height="28dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_control_cast_shadow"
+                            android:src="@drawable/ic_control_info"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="4dp"
                             android:scaleType="center"
-                            android:contentDescription="@string/play_cast" />
+                            android:contentDescription="@string/control_info" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/settingAction"
