@@ -75,6 +75,7 @@
                 android:id="@+id/info"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginEnd="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_info" />
@@ -83,6 +84,7 @@
                 android:id="@+id/keep"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginEnd="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_keep_off" />
@@ -213,8 +215,8 @@
                 android:id="@+id/fullscreen"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_fullscreen" />
