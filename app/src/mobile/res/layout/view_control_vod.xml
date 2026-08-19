@@ -180,7 +180,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:paddingBottom="0dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/parse"
