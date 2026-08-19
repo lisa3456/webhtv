@@ -749,7 +749,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     protected void initEvent() {
         mBinding.name.setOnClickListener(view -> onName());
         mBinding.more.setOnClickListener(view -> onMore());
-        mBinding.refreshAction.setOnClickListener(view -> onRefresh());
+        mBinding.shortDisplay.setOnClickListener(view -> onRefresh());
         mBinding.keepAction.setOnClickListener(view -> onKeep());
         mBinding.infoAction.setOnClickListener(view -> onInfo());
         mBinding.settingAction.setOnClickListener(view -> onSetting());
