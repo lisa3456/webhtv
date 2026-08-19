@@ -636,7 +636,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         }, 12f);
         setVideoView();
         setViewModel();
-        setShortDisplay();
+        // setShortDisplay();
         if (shouldUseImmersiveAudio()) {
             setAudioStageVisible(true);
             mBinding.progressLayout.showContent();
