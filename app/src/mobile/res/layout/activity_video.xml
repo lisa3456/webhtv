@@ -617,8 +617,6 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:padding="4dp"
                             android:scaleType="center"
-                            android:clickable="true"
-                            android:focusable="true"
                             android:contentDescription="信息" />
 
                         <androidx.appcompat.widget.AppCompatImageView
