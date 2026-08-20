@@ -380,7 +380,7 @@ public class DanmakuSetting {
                 .setFixedDurationMs(getFixedDurationMs())
                 .setTimeOffsetMs(getTimeOffsetMs())
                 .setMaxOnScreen(getMaxOnScreen())
-                .setScrollAreaRatio(getScrollAreaRatio())
+                .setScrollAreaRatio(1.0f)
                 .setScrollGapRatio(getScrollGapRatio())
                 .setLineSpacing(getLineSpacing())
                 .setMaxScrollLines(getDisplayLines())
