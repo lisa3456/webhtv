@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:autoLink="all"
             android:linksClickable="false"
-            android:textColorLink="@color/white_90"
+            android:textColorLink="#64B5F6"
             android:textColor="@color/white_90"
             android:textSize="14sp" />
 
