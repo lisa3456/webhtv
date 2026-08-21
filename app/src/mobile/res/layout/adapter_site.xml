@@ -24,8 +24,8 @@
         android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:background="@drawable/shape_site_button"
-        app:strokeColor="#66FFFFFF"
+        app:backgroundTint="#4A4A4A"
+        app:strokeColor="#FFFFFF"
         app:strokeWidth="1dp"
         tools:text="泥巴" />
 
