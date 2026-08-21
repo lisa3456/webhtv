@@ -70,9 +70,6 @@ public class InfoDialog extends BaseAlertDialog {
         if (getDialog() == null || getDialog().getWindow() == null) return;
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
-        boolean land = ResUtil.isLand(requireContext());
-        int width = Math.min(Math.round(ResUtil.getScreenWidth(requireContext()) * (land ? 0.5f : 0.92f)), ResUtil.dp2px(620));
-        params.width = Math.max(width, ResUtil.dp2px(320));
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER;
         // 关键：设置透明背景，让布局背景显示出来
@@ -80,7 +77,7 @@ public class InfoDialog extends BaseAlertDialog {
         window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(params);
-        window.setLayout(params.width, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
     }
 
     @Override
