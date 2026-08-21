@@ -61,7 +61,6 @@ public class InfoDialog extends BaseAlertDialog {
     @Override
     public void onStart() {
         super.onStart();
-        setWidth(ResUtil.isLand(requireContext()) ? 0.62f : 0.92f);
         configureWindow();  // ← 添加这行
     }
 
@@ -70,6 +69,10 @@ public class InfoDialog extends BaseAlertDialog {
         if (getDialog() == null || getDialog().getWindow() == null) return;
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
+        boolean land = ResUtil.isLand(requireContext());
+        float ratio = land ? 0.62f : 0.92f;  // 改这个值控制宽度
+        int width = Math.round(ResUtil.getScreenWidth(requireContext()) * ratio);
+        params.width = width;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER;
         // 关键：设置透明背景，让布局背景显示出来
