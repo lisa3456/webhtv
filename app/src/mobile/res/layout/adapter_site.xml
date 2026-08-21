@@ -24,8 +24,8 @@
         android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:backgroundTint="#666666"
-        app:strokeColor="66FFFFFF"
+        app:backgroundTint="#E62F315E"
+        app:strokeColor="#66FFFFFF"
         app:strokeWidth="1dp"
         tools:text="泥巴" />
 
