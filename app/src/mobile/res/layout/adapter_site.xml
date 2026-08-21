@@ -25,6 +25,8 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         android:background="@drawable/shape_site_button"
+        app:strokeColor="#66FFFFFF"
+        app:strokeWidth="1dp"
         tools:text="泥巴" />
 
     <androidx.appcompat.widget.AppCompatImageView
