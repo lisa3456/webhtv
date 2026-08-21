@@ -77,7 +77,6 @@ public class InfoDialog extends BaseAlertDialog {
         window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(params);
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
