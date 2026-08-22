@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/transparent"
     android:keepScreenOn="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+    
 
     <FrameLayout
         android:id="@+id/video"
