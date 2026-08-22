@@ -143,7 +143,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private int groupBasePaddingBottom;
     private int channelBasePaddingBottom;
     private int epgBasePaddingBottom;
-    private ViewGroup.LayoutParams mFrameParams;
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, LiveActivity.class).putExtra("empty", LiveConfig.isEmpty()));
@@ -244,7 +243,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         setupWindowInsets();
         updateControlInsets();
         updateLiveMenuInsets();
-        mFrameParams = mBinding.video.getLayoutParams();
         mObserveEpg = this::setEpg;
         mObserveUrl = this::start;
         mHides = new ArrayList<>();
@@ -346,13 +344,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
             updateLiveListBottomInset(insets);
-            // 新增：设置状态栏高度
-            if (mBinding.statusBar != null) {
-                int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
-                ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
-                lp.height = top;
-                mBinding.statusBar.setLayoutParams(lp);
-            }
             return insets;
         });
         ViewCompat.requestApplyInsets(mBinding.getRoot());
@@ -613,12 +604,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
-        // 恢复原始布局参数
-        mBinding.video.setLayoutParams(mFrameParams);
-        mBinding.recycler.setVisibility(View.VISIBLE);
-        mBinding.navigation.setVisibility(View.VISIBLE);
-        mBinding.getRoot().requestLayout();
-        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
