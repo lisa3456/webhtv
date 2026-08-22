@@ -344,6 +344,13 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
             updateLiveListBottomInset(insets);
+            // 新增：设置状态栏高度
+            if (mBinding.statusBar != null) {
+                int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
+                lp.height = top;
+                mBinding.statusBar.setLayoutParams(lp);
+            }
             return insets;
         });
         ViewCompat.requestApplyInsets(mBinding.getRoot());
