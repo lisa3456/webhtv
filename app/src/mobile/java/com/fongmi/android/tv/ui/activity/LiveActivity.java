@@ -1620,8 +1620,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         updateSystemUI();
         if (rotate) {
             // 全屏
-            if (fullscreen && !rotate) setPadding(mBinding.control.getRoot());
-            else noPadding(mBinding.control.getRoot());
+            noPadding(mBinding.control.getRoot());
             // 隐藏列表和导航
             mBinding.recycler.setVisibility(View.GONE);
             mBinding.navigation.setVisibility(View.GONE);
@@ -1637,8 +1636,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             }
         } else {
             // 退出全屏
-            if (fullscreen && !rotate) setPadding(mBinding.control.getRoot());
-            else noPadding(mBinding.control.getRoot());
+            noPadding(mBinding.control.getRoot());
             // 恢复显示列表和导航
             mBinding.recycler.setVisibility(View.VISIBLE);
             mBinding.navigation.setVisibility(View.VISIBLE);
