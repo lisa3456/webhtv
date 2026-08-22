@@ -143,6 +143,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private int groupBasePaddingBottom;
     private int channelBasePaddingBottom;
     private int epgBasePaddingBottom;
+    private ViewGroup.LayoutParams mFrameParams;
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, LiveActivity.class).putExtra("empty", LiveConfig.isEmpty()));
@@ -243,6 +244,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         setupWindowInsets();
         updateControlInsets();
         updateLiveMenuInsets();
+        mFrameParams = mBinding.video.getLayoutParams();
         mObserveEpg = this::setEpg;
         mObserveUrl = this::start;
         mHides = new ArrayList<>();
@@ -611,6 +613,12 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
+        // 恢复原始布局参数
+        mBinding.video.setLayoutParams(mFrameParams);
+        mBinding.recycler.setVisibility(View.VISIBLE);
+        mBinding.navigation.setVisibility(View.VISIBLE);
+        mBinding.getRoot().requestLayout();
+        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
@@ -1617,36 +1625,14 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
 
     public void setRotate(boolean rotate) {
         this.rotate = rotate;
+        Log.i(ORIENTATION_TAG, "rotate state=" + rotate + " " + orientationState());
         updateSystemUI();
         if (rotate) {
-            // 全屏
+            noPadding(mBinding.recycler);
             noPadding(mBinding.control.getRoot());
-            // 隐藏列表和导航
-            mBinding.recycler.setVisibility(View.GONE);
-            mBinding.navigation.setVisibility(View.GONE);
-            // video 撑满
-            ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
-            vp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            mBinding.video.setLayoutParams(vp);
-            // statusBar 高度为 0
-            if (mBinding.statusBar != null) {
-                ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
-                lp.height = 0;
-                mBinding.statusBar.setLayoutParams(lp);
-            }
         } else {
-            // 退出全屏
-            noPadding(mBinding.control.getRoot());
-            // 恢复显示列表和导航
-            mBinding.recycler.setVisibility(View.VISIBLE);
-            mBinding.navigation.setVisibility(View.VISIBLE);
-            // video 恢复固定高度
-            ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
-            vp.height = ResUtil.dp2px(220);
-            mBinding.video.setLayoutParams(vp);
-            // 强制刷新布局
-            mBinding.getRoot().requestLayout();
-            ViewCompat.requestApplyInsets(mBinding.getRoot());
+            updateLiveMenuInsets();
+            updateControlInsets();
         }
         updateVideoHeight(videoSize);
         applyLiveResizeMode(LiveSetting.getScale());
