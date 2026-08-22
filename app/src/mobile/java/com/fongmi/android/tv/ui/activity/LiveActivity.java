@@ -350,6 +350,11 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
                 ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
                 lp.height = top;
                 mBinding.statusBar.setLayoutParams(lp);
+                if (mBinding.video != null) {
+                    ViewGroup.MarginLayoutParams vp = (ViewGroup.MarginLayoutParams) mBinding.video.getLayoutParams();
+                    vp.topMargin = top;
+                    mBinding.video.setLayoutParams(vp);
+                }
             }
             return insets;
         });
