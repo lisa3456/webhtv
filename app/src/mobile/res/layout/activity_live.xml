@@ -58,11 +58,13 @@
 
     </FrameLayout>
 
+    <!-- 直播列表 -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="14"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/video"
+        android:layout_above="@+id/navigation"
         android:background="@drawable/shape_live_embedded_list"
         android:orientation="vertical"
         tools:visibility="visible">
@@ -219,15 +221,17 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <!-- 底部导航 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/transparent"
         app:elevation="0dp"
         app:itemIconTint="@color/selector_nav"
         app:itemTextColor="@color/selector_nav"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_nav" />
-        
+
 </RelativeLayout>
