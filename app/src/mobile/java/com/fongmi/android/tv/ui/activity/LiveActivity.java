@@ -881,7 +881,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.action.getRoot().setVisibility(embedded ? View.GONE : View.VISIBLE);
-        mBinding.control.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        mBinding.control.back.setVisibility(View.GONE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
@@ -1080,9 +1080,9 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.widget.namePip.setText(mChannel.getShow());
         mBinding.widget.number.setText(mChannel.getNumber());
         mBinding.widget.numberPip.setText(mChannel.getNumber());
-        mBinding.widget.line.setVisibility(mChannel.getLineVisible());
+        mBinding.widget.line.setVisibility(View.VISIBLE);
+        mBinding.control.action.line.setVisibility(View.VISIBLE);
         mBinding.control.action.line.setText(mBinding.widget.line.getText());
-        mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
     }
 
     private void setLiveHeader() {
