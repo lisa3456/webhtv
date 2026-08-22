@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    android:keepScreenOn="true"
-    android:orientation="vertical">
+    android:keepScreenOn="true">
 
-    <!-- 新增：状态栏占位 -->
+    <!-- 状态栏占位 -->
     <View
         android:id="@+id/statusBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black" />
-    
+
+    <!-- 视频播放器 -->
     <FrameLayout
         android:id="@+id/video"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_below="@+id/statusBar"
-        android:layout_weight="9"
+        android:layout_above="@+id/recycler"
         android:background="@color/black"
         android:clickable="true"
         android:focusable="true">
@@ -59,15 +59,18 @@
 
     </FrameLayout>
 
+    <!-- 直播列表 -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="14"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/video"
         android:background="@drawable/shape_live_embedded_list"
         android:orientation="vertical"
         tools:visibility="visible">
 
+        <!-- 当前播放 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/liveCurrent"
             android:layout_width="match_parent"
@@ -167,6 +170,7 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <!-- 频道列表 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -220,14 +224,17 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <!-- 底部导航 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/transparent"
         app:elevation="0dp"
         app:itemIconTint="@color/selector_nav"
         app:itemTextColor="@color/selector_nav"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_nav" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>
