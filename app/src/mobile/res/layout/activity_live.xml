@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
     android:keepScreenOn="true"
-    android:orientation="vertical"
     android:fitsSystemWindows="true">
-    
 
+    <!-- 视频播放器 -->
     <FrameLayout
         android:id="@+id/video"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
+        android:layout_height="220dp"
+        android:layout_alignParentTop="true"
         android:background="@color/black"
         android:clickable="true"
         android:focusable="true">
@@ -53,11 +52,21 @@
 
     </FrameLayout>
 
+    <!-- video 阴影 -->
+    <View
+        android:id="@+id/videoShadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/video"
+        android:background="@drawable/shadow" />
+
+    <!-- 直播列表 -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="14"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/videoShadow"
+        android:layout_above="@+id/navigation"
         android:background="@drawable/shape_live_embedded_list"
         android:orientation="vertical"
         tools:visibility="visible">
@@ -211,17 +220,16 @@
                 tools:listitem="@layout/adapter_epg_data" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
+        
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <!-- 底部导航 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/transparent"
-        app:elevation="0dp"
-        app:itemIconTint="@color/selector_nav"
-        app:itemTextColor="@color/selector_nav"
-        app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_nav" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>
