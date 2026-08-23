@@ -1081,10 +1081,9 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.widget.namePip.setText(mChannel.getShow());
         mBinding.widget.number.setText(mChannel.getNumber());
         mBinding.widget.numberPip.setText(mChannel.getNumber());
-        TextView lineIndependent = findViewById(R.id.line_independent);
-        if (lineIndependent != null) {
-            lineIndependent.setText(mChannel.getLine());
-            lineIndependent.setVisibility(View.VISIBLE);
+        if (mBinding.control.lineIndependent != null) {
+            mBinding.control.lineIndependent.setText(mChannel.getLine());
+            mBinding.control.lineIndependent.setVisibility(View.VISIBLE);
         };
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
         mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
