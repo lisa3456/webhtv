@@ -148,8 +148,7 @@
 
             <!-- line 按钮 -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/line"
-                style="@style/Control"
+                android:id="@+id/line_independent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
