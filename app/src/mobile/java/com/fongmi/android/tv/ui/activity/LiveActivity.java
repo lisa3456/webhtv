@@ -1087,8 +1087,8 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
         mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
         mBinding.control.action.line.setText(mBinding.widget.line.getText());
+        }
     }
-
     private void setLiveHeader() {
         if (mBinding.liveTitle == null || mChannel == null) return;
         mBinding.liveTitle.setText(mChannel.getShow());
