@@ -616,10 +616,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
         vp.height = ResUtil.dp2px(220);
         mBinding.video.setLayoutParams(vp);
-        // 恢复列表和导航
+        // 强制刷新 UI，让 updateEmbeddedUiMode 恢复显示
+        updateSystemUI();
+        // 确保列表显示
         mBinding.recycler.setVisibility(View.VISIBLE);
-        mBinding.navigation.setVisibility(View.VISIBLE);
-        // 强制刷新
         mBinding.getRoot().requestLayout();
         ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
@@ -1882,7 +1882,12 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void updateEmbeddedUiMode() {
         boolean embedded = isEmbeddedLiveUi();
         setLiveMenuOverlay(!embedded);
-        mBinding.navigation.setVisibility(View.GONE);
+        // 根据 embedded 状态控制 navigation 显示
+        if (embedded) {
+            mBinding.navigation.setVisibility(View.VISIBLE);  // 竖屏显示导航
+    } else {
+            mBinding.navigation.setVisibility(View.GONE);     // 全屏隐藏导航
+        }
         if (embeddedUiMode != null && embeddedUiMode && !embedded) {
             hideControl();
             hideUI();
