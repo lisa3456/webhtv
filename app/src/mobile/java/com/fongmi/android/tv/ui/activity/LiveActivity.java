@@ -612,6 +612,16 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
+        // 退出全屏：恢复 video 高度
+        ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
+        vp.height = ResUtil.dp2px(220);
+        mBinding.video.setLayoutParams(vp);
+        // 恢复列表和导航
+        mBinding.recycler.setVisibility(View.VISIBLE);
+        mBinding.navigation.setVisibility(View.VISIBLE);
+        // 强制刷新
+        mBinding.getRoot().requestLayout();
+        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
