@@ -612,10 +612,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
-        // 恢复 video 高度
-        ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
-        vp.height = ResUtil.dp2px(220);
-        mBinding.video.setLayoutParams(vp);
     }
 
     private int getLaunchOrient() {
