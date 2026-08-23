@@ -879,7 +879,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.cast.setVisibility(View.GONE);
         mBinding.control.right.rotate.setVisibility(isLock() || isPadLiveFullscreenMode() ? View.GONE : View.VISIBLE);
-        mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        mBinding.control.center.setVisibility(View.GONE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.action.getRoot().setVisibility(embedded ? View.GONE : View.VISIBLE);
         mBinding.control.back.setVisibility(View.GONE);
