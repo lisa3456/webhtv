@@ -274,6 +274,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.back.setOnClickListener(view -> onBack());
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
+        mBinding.control.lineIndependent.setOnClickListener(v -> onLine());
         mBinding.control.play.setOnClickListener(view -> checkPlay());
         mBinding.control.next.setOnClickListener(view -> nextChannel());
         mBinding.control.prev.setOnClickListener(view -> prevChannel());
@@ -1080,9 +1081,11 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.widget.namePip.setText(mChannel.getShow());
         mBinding.widget.number.setText(mChannel.getNumber());
         mBinding.widget.numberPip.setText(mChannel.getNumber());
-        mBinding.widget.info.setVisibility(View.VISIBLE);
-        mBinding.widget.line.setVisibility(View.VISIBLE);
-        mBinding.control.action.line.setVisibility(View.VISIBLE);
+        if (mBinding.control.lineIndependent != null) {
+            mBinding.control.lineIndependent.setText(mChannel.getLine());
+            mBinding.control.lineIndependent.setVisibility(mChannel.getLineVisible() ? View.VISIBLE : View.GONE);
+        mBinding.widget.line.setVisibility(mChannel.getLineVisible());
+        mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
         mBinding.control.action.line.setText(mBinding.widget.line.getText());
     }
 
