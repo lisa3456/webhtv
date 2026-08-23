@@ -263,7 +263,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             }
         }, 12f);
         setVideoView();
-        // setNavigation();
+        setNavigation();
         setViewModel();
         applyPadLiveMode();
     }
@@ -365,6 +365,20 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.action.change.setSelected(LiveSetting.isChange());
         applyLiveListStyle();
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
+    }
+
+    private void setNavigation() {
+        mBinding.navigation.getMenu().findItem(R.id.vod).setVisible(true);
+        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(true);
+        mBinding.navigation.getMenu().findItem(R.id.setting).setVisible(true);
+        mBinding.navigation.setSelectedItemId(R.id.live);
+        mBinding.navigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.live) return true;
+            int position = item.getItemId() == R.id.setting ? 1 : 0;
+            startActivity(new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(HomeActivity.EXTRA_NAV_POSITION, position));
+            finish();
+            return true;
+        });
     }
 
     private void setDecode() {
@@ -602,23 +616,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
         vp.height = ResUtil.dp2px(220);
         mBinding.video.setLayoutParams(vp);
-        // 强制设置 recycler 高度
-        ViewGroup.LayoutParams rp = mBinding.recycler.getLayoutParams();
-        rp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        mBinding.recycler.setLayoutParams(rp);
-        // 恢复列表
-        mBinding.recycler.setVisibility(View.VISIBLE);
-        // 刷新适配器
-        if (mGroupAdapter != null) {
-            mGroupAdapter.notifyDataSetChanged();
-        }
-        if (mChannelAdapter != null) {
-            mChannelAdapter.notifyDataSetChanged();
-        }
-        // 重新设置位置
-        setPosition();
-        mBinding.getRoot().requestLayout();
-        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
@@ -1879,7 +1876,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void updateEmbeddedUiMode() {
         boolean embedded = isEmbeddedLiveUi();
         setLiveMenuOverlay(!embedded);
-        // mBinding.navigation.setVisibility(View.GONE);
+        mBinding.navigation.setVisibility(View.GONE);
         if (embeddedUiMode != null && embeddedUiMode && !embedded) {
             hideControl();
             hideUI();
