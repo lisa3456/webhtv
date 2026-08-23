@@ -602,8 +602,21 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
         vp.height = ResUtil.dp2px(220);
         mBinding.video.setLayoutParams(vp);
+        // 强制设置 recycler 高度
+        ViewGroup.LayoutParams rp = mBinding.recycler.getLayoutParams();
+        rp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        mBinding.recycler.setLayoutParams(rp);
         // 恢复列表
         mBinding.recycler.setVisibility(View.VISIBLE);
+        // 刷新适配器
+        if (mGroupAdapter != null) {
+            mGroupAdapter.notifyDataSetChanged();
+        }
+        if (mChannelAdapter != null) {
+            mChannelAdapter.notifyDataSetChanged();
+        }
+        // 重新设置位置
+        setPosition();
         mBinding.getRoot().requestLayout();
         ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
