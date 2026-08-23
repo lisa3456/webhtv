@@ -367,20 +367,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.video.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> mPiP.update(this, view));
     }
 
-    private void setNavigation() {
-        mBinding.navigation.getMenu().findItem(R.id.vod).setVisible(true);
-        mBinding.navigation.getMenu().findItem(R.id.live).setVisible(true);
-        mBinding.navigation.getMenu().findItem(R.id.setting).setVisible(true);
-        mBinding.navigation.setSelectedItemId(R.id.live);
-        mBinding.navigation.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.live) return true;
-            int position = item.getItemId() == R.id.setting ? 1 : 0;
-            startActivity(new Intent(this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(HomeActivity.EXTRA_NAV_POSITION, position));
-            finish();
-            return true;
-        });
-    }
-
     private void setDecode() {
         mBinding.control.action.decode.setText(player().getDecodeText());
     }
@@ -1880,7 +1866,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void updateEmbeddedUiMode() {
         boolean embedded = isEmbeddedLiveUi();
         setLiveMenuOverlay(!embedded);
-        mBinding.navigation.setVisibility(View.GONE);
+        // mBinding.navigation.setVisibility(View.GONE);
         if (embeddedUiMode != null && embeddedUiMode && !embedded) {
             hideControl();
             hideUI();
