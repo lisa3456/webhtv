@@ -612,16 +612,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
-        // 直接设置 video 高度为 220dp
-        ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
-        vp.height = ResUtil.dp2px(220);
-        mBinding.video.setLayoutParams(vp);
-        // 恢复列表和导航
-        mBinding.recycler.setVisibility(View.VISIBLE);
-        mBinding.navigation.setVisibility(View.VISIBLE);
-        // 强制刷新
-        mBinding.getRoot().requestLayout();
-        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
@@ -1882,12 +1872,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void updateEmbeddedUiMode() {
         boolean embedded = isEmbeddedLiveUi();
         setLiveMenuOverlay(!embedded);
-        // 根据 embedded 状态控制 navigation 显示
-        if (embedded) {
-            mBinding.navigation.setVisibility(View.VISIBLE);  // 竖屏显示导航
-    } else {
-            mBinding.navigation.setVisibility(View.GONE);     // 全屏隐藏导航
-        }
+        mBinding.navigation.setVisibility(View.GONE);
         if (embeddedUiMode != null && embeddedUiMode && !embedded) {
             hideControl();
             hideUI();
