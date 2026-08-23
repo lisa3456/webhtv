@@ -263,7 +263,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             }
         }, 12f);
         setVideoView();
-        setNavigation();
+        // setNavigation();
         setViewModel();
         applyPadLiveMode();
     }
