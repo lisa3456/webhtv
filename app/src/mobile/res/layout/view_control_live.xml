@@ -148,6 +148,11 @@
                 android:layout_weight="1"
                 android:visibility="gone" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+            
             <!-- line 按钮 -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/line_independent"
@@ -155,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:visibility="visible"
                 tools:text="线路 1" />
 
