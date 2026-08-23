@@ -87,7 +87,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/prev"
@@ -144,7 +145,8 @@
                 android:id="@+id/seek"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:visibility="gone" />
 
             <!-- line 按钮 -->
             <com.google.android.material.textview.MaterialTextView
