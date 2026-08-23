@@ -154,6 +154,7 @@
                 android:layout_marginStart="8dp"
                 android:textColor="@color/white"
                 android:textSize="14sp"
+                android:visibility="visible"
                 tools:text="线路 1" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
