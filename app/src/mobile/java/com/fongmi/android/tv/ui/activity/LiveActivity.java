@@ -898,12 +898,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void showInfo() {
-        //mBinding.widget.infoPip.setVisibility(isInPictureInPictureMode() ? View.VISIBLE : View.GONE);
-        //mBinding.widget.info.setVisibility(isInPictureInPictureMode() ? View.GONE : View.VISIBLE);
-        //setR3Callback();
-        //hideControl();
-        //setInfo();
-        return;
+        // 更新数据
+        setInfo();
+        // 强制隐藏信息栏
+        mBinding.widget.info.setVisibility(View.GONE);
     }
 
     private void hideInfo() {
