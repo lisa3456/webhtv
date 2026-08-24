@@ -4023,7 +4023,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.osdDiagnostics.setAlpha(mOsd != null && mOsd.isDiagnosticsVisible() ? 1f : 0.72f);
         mBinding.control.parse.setVisibility(isFullscreen() && isUseParse() ? View.VISIBLE : View.GONE);
         mBinding.control.action.getRoot().setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
-        mBinding.control.right.lock.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
+        mBinding.control.right.lock.setVisibility(View.GONE);
+        mBinding.control.right.back.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.info.setVisibility(View.GONE);
         mBinding.control.cast.setVisibility(View.VISIBLE);
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
