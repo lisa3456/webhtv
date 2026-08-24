@@ -151,6 +151,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private boolean isEmpty() {
         return getIntent().getBooleanExtra("empty", true);
     }
+    
+    private boolean isFullscreen() {
+        return !isEmbeddedLiveUi();
+    }
 
     private Group getKeep() {
         return mGroupAdapter.get(0);
@@ -884,7 +888,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.action.getRoot().setVisibility(embedded ? View.GONE : View.VISIBLE);
         mBinding.control.back.setVisibility(View.GONE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.top.title.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
+        mBinding.control.top.findViewById(R.id.title).setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
         setR1Callback();
