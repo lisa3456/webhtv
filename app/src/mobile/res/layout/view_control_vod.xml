@@ -43,7 +43,7 @@
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:visibility="invisible"
+                android:visibility="visible"
                 tools:text="慶餘年第一季：第一集" />
 
             <com.google.android.material.textview.MaterialTextView
