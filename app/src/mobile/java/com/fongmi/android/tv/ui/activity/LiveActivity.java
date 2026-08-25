@@ -310,8 +310,9 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             mBinding.liveSetting.setOnTouchListener(this::onLiveSettingTouch);
         }
         if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine());
-        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(v -> onLine());
-        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(v -> onLine());
+        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(view -> onLiveProgram());
+        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(view -> onLiveProgram());
+        mBinding.liveLineSwitch.setOnClickListener(v -> onLine());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
     }
 
@@ -1089,6 +1090,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             mBinding.control.lineIndependent.setText(mChannel.getLine());
             mBinding.control.lineIndependent.setVisibility(View.VISIBLE);
         };
+        if (mBinding.liveLineSwitch != null) {
+            mBinding.liveLineSwitch.setText(mChannel.getLine());
+            mBinding.liveLineSwitch.setVisibility(View.VISIBLE);
+        };
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
         mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
         mBinding.control.action.line.setText(mBinding.widget.line.getText());
@@ -1109,7 +1114,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (epg == null || epg.getList().isEmpty()) {
             mBinding.liveProgram.setText(empty);
             mBinding.liveProgramNext.setText(empty);
-            mBinding.liveProgramNext.setVisibility(View.VISIBLE);
+            mBinding.liveProgramNext.setVisibility(View.GONE);
             return;
         }
         int selected = epg.getSelected();
@@ -1117,7 +1122,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         EpgData next = selected + 1 < epg.getList().size() ? epg.getList().get(selected + 1) : null;
         mBinding.liveProgram.setText(getProgramText(current, empty));
         mBinding.liveProgramNext.setText(getProgramText(next, empty));
-        mBinding.liveProgramNext.setVisibility(View.VISIBLE);
+        mBinding.liveProgramNext.setVisibility(View.GONE);
     }
 
     private void onLiveProgram() {
