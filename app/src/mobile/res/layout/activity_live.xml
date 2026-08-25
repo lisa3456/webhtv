@@ -71,7 +71,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/liveCurrent"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="46dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
@@ -83,8 +83,8 @@
             android:paddingEnd="10dp">
 
             <FrameLayout
-                android:layout_width="58dp"
-                android:layout_height="58dp"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
                 android:layout_marginEnd="14dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white_80"
-                    android:textSize="13sp"
+                    android:textSize="15sp"
                     tools:text="线路 1" />
                 
                 <com.google.android.material.textview.MaterialTextView
