@@ -122,6 +122,15 @@
                     tools:text="CCTV3" />
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/liveLineSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/white_80"
+                    android:textSize="13sp"
+                    tools:text="线路 1" />
+                
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/liveProgram"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,7 +139,8 @@
                     android:maxLines="1"
                     android:text="@string/live_no_epg"
                     android:textColor="@color/white_80"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:visibility="gone" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/liveProgramNext"
@@ -141,7 +151,8 @@
                     android:maxLines="1"
                     android:text="@string/live_no_epg"
                     android:textColor="@color/white_70"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:visibility="gone" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.AppCompatImageView
