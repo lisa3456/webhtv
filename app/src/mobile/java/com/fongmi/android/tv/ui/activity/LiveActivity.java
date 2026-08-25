@@ -279,7 +279,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
         mBinding.control.lineIndependent.setOnClickListener(v -> onLine());
-        mBinding.lineIndependent.setOnClickListener(v -> onLine());
         mBinding.control.play.setOnClickListener(view -> checkPlay());
         mBinding.control.next.setOnClickListener(view -> nextChannel());
         mBinding.control.prev.setOnClickListener(view -> prevChannel());
@@ -310,9 +309,9 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             mBinding.liveSetting.setOnClickListener(view -> onLiveSetting());
             mBinding.liveSetting.setOnTouchListener(this::onLiveSettingTouch);
         }
-        if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine());
-        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(v -> onLine());
-        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(v -> onLine());
+        if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine);
+        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(view -> onLiveProgram());
+        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(view -> onLiveProgram());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
     }
 
@@ -1089,10 +1088,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mBinding.control.lineIndependent != null) {
             mBinding.control.lineIndependent.setText(mChannel.getLine());
             mBinding.control.lineIndependent.setVisibility(View.VISIBLE);
-        };
-        if (mBinding.lineIndependent != null) {
-            mBinding.lineIndependent.setText(mChannel.getLine());
-            mBinding.lineIndependent.setVisibility(View.VISIBLE);
         };
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
         mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
