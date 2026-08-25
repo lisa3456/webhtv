@@ -310,8 +310,8 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             mBinding.liveSetting.setOnTouchListener(this::onLiveSettingTouch);
         }
         if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine);
-        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(view -> onLiveProgram());
-        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(view -> onLiveProgram());
+        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(v -> onLine);
+        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(v -> onLine());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
     }
 
