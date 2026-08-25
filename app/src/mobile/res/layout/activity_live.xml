@@ -71,10 +71,10 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/liveCurrent"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="64dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/shape_live"
             android:gravity="center_vertical"
