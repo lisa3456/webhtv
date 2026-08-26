@@ -64,6 +64,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <android.widget.TextClock
+                android:id="@+id/system_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:format12Hour="HH:mm"
+                android:format24Hour="HH:mm" />
+            
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/cast"
                 android:layout_width="32dp"
