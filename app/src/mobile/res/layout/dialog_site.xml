@@ -33,11 +33,11 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:singleLine="true"
-            android:textColor="@color/white"
+            android:textColor="@color/white_70"
             android:textColorHint="@color/white_50"
             android:textSize="14sp"
             app:drawableStartCompat="@drawable/ic_site_search"
-            app:drawableTint="@color/white" />
+            app:drawableTint="@color/white_70" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/block"
@@ -48,7 +48,7 @@
             android:padding="0dp"
             android:scaleType="center"
             android:src="@drawable/ic_site_hidden"
-            app:tint="@color/white" />
+            app:tint="@color/white_70" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/search"
@@ -59,7 +59,7 @@
             android:padding="0dp"
             android:scaleType="center"
             android:src="@drawable/ic_site_single_column"
-            app:tint="@color/white" />
+            app:tint="@color/white_70" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
