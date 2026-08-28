@@ -617,18 +617,23 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
-        // 1. 恢复 video 高度和 weight
-        LinearLayoutCompat.LayoutParams vp = (LinearLayoutCompat.LayoutParams) mBinding.video.getLayoutParams();
-        vp.height = 0;
+        // 重新创建 video 的 LayoutParams
+        LinearLayoutCompat.LayoutParams vp = new LinearLayoutCompat.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, 0
+        );
         vp.weight = 9;
         mBinding.video.setLayoutParams(vp);
-        // 2. 恢复 recycler 高度和 weight
-        LinearLayoutCompat.LayoutParams rp = (LinearLayoutCompat.LayoutParams) mBinding.recycler.getLayoutParams();
-        rp.height = 0;
+        // 重新创建 recycler 的 LayoutParams
+        LinearLayoutCompat.LayoutParams rp = new LinearLayoutCompat.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, 0
+        );
         rp.weight = 14;
         mBinding.recycler.setLayoutParams(rp);
-        // 5. 强制刷新
+        // 恢复列表可见性
+        mBinding.recycler.setVisibility(View.VISIBLE);
+        // 强制刷新
         mBinding.getRoot().requestLayout();
+        ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
 
     private int getLaunchOrient() {
