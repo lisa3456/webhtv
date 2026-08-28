@@ -244,15 +244,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         super.initView(savedInstanceState);
         mKeyDown = CustomKeyDown.create(this, mBinding.exo);
         captureLiveListBasePadding();
-        // 直接在这里设置状态栏 padding
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
-            updateLiveListBottomInset(insets);
-            // 获取状态栏高度并设置给根布局
-            int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
-            mBinding.getRoot().setPadding(0, top, 0, 0);
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(mBinding.getRoot());
         setupWindowInsets();
         updateControlInsets();
         updateLiveMenuInsets();
@@ -359,6 +350,13 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
             updateLiveListBottomInset(insets);
+            // 新增：设置状态栏高度
+            if (mBinding.statusBar != null) {
+                int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
+                lp.height = top;
+                mBinding.statusBar.setLayoutParams(lp);
+            }
             return insets;
         });
         ViewCompat.requestApplyInsets(mBinding.getRoot());
@@ -605,9 +603,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         updateEmbeddedUiMode();
         Util.hideSystemUI(this);
         requestOrientation("enter-fullscreen", getFullscreenOrient());
-        // 全屏时 padding 设为 0
-        mBinding.getRoot().setPadding(0, 0, 0, 0);
-        mBinding.recycler.setVisibility(View.GONE);
     }
 
     private void enterFullscreenLiveOnPad() {
@@ -622,9 +617,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideInfo();
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
-        // 退出全屏时恢复 padding
-        ViewCompat.requestApplyInsets(mBinding.getRoot());
-        mBinding.recycler.setVisibility(View.VISIBLE);
     }
 
     private int getLaunchOrient() {
