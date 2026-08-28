@@ -359,6 +359,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
             updateLiveListBottomInset(insets);
+            return insets;
         });
         ViewCompat.requestApplyInsets(mBinding.getRoot());
     }
