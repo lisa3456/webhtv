@@ -6199,7 +6199,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         } else if (player().isPlaying()) {
             onPaused();
         } else {
-            exitFullscreen();
+            hideControl();
             onPlay();
         }
     }
