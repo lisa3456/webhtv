@@ -628,25 +628,34 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         hideControl();
         requestOrientation("exit-fullscreen", getEmbeddedOrient());
         
-        // 重新创建 video 的 LayoutParams
         try {
-            LinearLayoutCompat.LayoutParams vp = new LinearLayoutCompat.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0
-            );
-            vp.weight = 9;
-            mBinding.video.setLayoutParams(vp);
+            // 直接修改 video 的 LayoutParams，不重新创建
+            ViewGroup.LayoutParams vp = mBinding.video.getLayoutParams();
+            if (vp instanceof LinearLayoutCompat.LayoutParams) {
+                LinearLayoutCompat.LayoutParams lp = (LinearLayoutCompat.LayoutParams) vp;
+                lp.height = 0;
+                lp.weight = 9;
+                mBinding.video.setLayoutParams(lp);
+            } else {
+                // 如果类型不对，什么都不做，保持原样
+                Log.w("LiveActivity", "video LayoutParams is not LinearLayoutCompat.LayoutParams");
+            }
         } catch (Exception e) {
             Log.e("LiveActivity", "set video params error: " + e.getMessage());
         }
         
-        // 重新创建 recycler 的 LayoutParams
         try {
-            LinearLayoutCompat.LayoutParams rp = new LinearLayoutCompat.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0
-            );
-            rp.weight = 14;
-            mBinding.recycler.setLayoutParams(rp);
-            mBinding.recycler.setVisibility(View.VISIBLE);
+            // 直接修改 recycler 的 LayoutParams
+            ViewGroup.LayoutParams rp = mBinding.recycler.getLayoutParams();
+            if (rp instanceof LinearLayoutCompat.LayoutParams) {
+                LinearLayoutCompat.LayoutParams lp = (LinearLayoutCompat.LayoutParams) rp;
+                lp.height = 0;
+                lp.weight = 14;
+                mBinding.recycler.setLayoutParams(lp);
+                mBinding.recycler.setVisibility(View.VISIBLE);
+            } else {
+                Log.w("LiveActivity", "recycler LayoutParams is not LinearLayoutCompat.LayoutParams");
+            }
         } catch (Exception e) {
             Log.e("LiveActivity", "set recycler params error: " + e.getMessage());
         }
