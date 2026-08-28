@@ -1773,9 +1773,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             showControl();
             return;
         }
-        if (isVisible(mBinding.recycler)) hideUI();
-        if (isVisible(mBinding.control.getRoot())) hideControl();
-        else showControl();
+        onRotate();
     }
 
     @Override
