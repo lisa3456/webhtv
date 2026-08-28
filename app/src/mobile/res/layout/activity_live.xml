@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:orientation="vertical">
 
     <!-- 状态栏占位 -->
     <View
@@ -13,12 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black" />
-
+        
     <!-- 视频播放器 -->
     <FrameLayout
         android:id="@+id/video"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="0dp"
+        android:layout_weight="9"
         android:layout_below="@+id/statusBar"
         android:background="@color/black"
         android:clickable="true"
@@ -62,7 +64,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="14"
         android:layout_below="@+id/video"
         android:background="@drawable/shape_live_embedded_list"
         android:orientation="vertical"
@@ -198,7 +201,7 @@
                 android:src="@drawable/ic_control_setting_shadow" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
+        
         <!-- 频道列表 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -252,18 +255,16 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-    
+
     <!-- 底部导航 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/transparent"
         app:elevation="0dp"
         app:itemIconTint="@color/selector_nav"
         app:itemTextColor="@color/selector_nav"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_nav" />
-
-</RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
