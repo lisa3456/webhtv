@@ -1943,9 +1943,20 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mBinding.getRoot() instanceof LinearLayoutCompat root) {
             LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
             params.weight = 14;
-            root.addView(mBinding.recycler, Math.min(1, root.getChildCount()), params);
-        } else if (mBinding.getRoot() instanceof FrameLayout root) {
-            root.addView(mBinding.recycler, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
+            // 找到 navigation 的索引，插入到它前面
+            int insertIndex = root.getChildCount();
+            for (int i = 0; i < root.getChildCount(); i++) {
+                View child = root.getChildAt(i);
+                if (child.getId() == R.id.navigation) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+            // 如果没找到 navigation，插入到 video 后面（索引1）
+            if (insertIndex == root.getChildCount()) {
+                insertIndex = Math.min(1, root.getChildCount());
+            }
+            root.addView(mBinding.recycler, insertIndex, params);
         }
     }
 
