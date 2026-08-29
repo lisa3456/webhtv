@@ -6196,11 +6196,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (isLock()) return;
         if (!isFullscreen()) {
             enterFullscreen();
-        } else if (player().isPlaying()) {
-            onPaused();
         } else {
-            hideControl();
-            onPlay();
+            finishVideoPlayback();
         }
     }
 
