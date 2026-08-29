@@ -1950,10 +1950,6 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
                     break;
                 }
             }
-            // 如果没找到 navigation，插入到 video 后面（索引1）
-            if (insertIndex == root.getChildCount()) {
-                insertIndex = Math.min(1, root.getChildCount());
-            }
             root.addView(mBinding.recycler, insertIndex, params);
         }
     }
