@@ -1,44 +1,59 @@
 package com.fongmi.android.tv.ui.dialog;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.viewbinding.ViewBinding;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.fongmi.android.tv.R;
 import com.fongmi.android.tv.bean.Episode;
-import com.fongmi.android.tv.databinding.DialogEpisodeGridBinding;
+import com.fongmi.android.tv.bean.Flag;
+import com.fongmi.android.tv.databinding.DialogEpisodeListBinding;
 import com.fongmi.android.tv.setting.PlayerSetting;
 import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
-import com.fongmi.android.tv.ui.fragment.EpisodeFragment;
+import com.fongmi.android.tv.ui.adapter.EpisodeGroupAdapter;
+import com.fongmi.android.tv.ui.adapter.FlagAdapter;
+import com.fongmi.android.tv.ui.base.ViewType;
+import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
+import com.fongmi.android.tv.utils.EpisodeTitleCompact;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeGridDialog extends BaseBottomSheetDialog {
+public class EpisodeGridDialog extends AppCompatDialogFragment implements FlagAdapter.OnClickListener, EpisodeGroupAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
 
-    private final List<String> titles;
-    private DialogEpisodeGridBinding binding;
-    private List<Episode> episodes;
+    private DialogEpisodeListBinding binding;
+    private EpisodeGroupAdapter groupAdapter;
+    private EpisodeAdapter episodeAdapter;
+    private SpaceItemDecoration episodeDecoration;
+    private FlagAdapter flagAdapter;
+    private List<Flag> flags;
+    private int episodeSpanCount = 4;
     private boolean reverse;
-    private int spanCount;
-    private int itemCount;
-
-    public EpisodeGridDialog() {
-        this.titles = new ArrayList<>();
-        this.spanCount = 5;
-    }
 
     public static EpisodeGridDialog create() {
         return new EpisodeGridDialog();
+    }
+
+    public EpisodeGridDialog flags(List<Flag> flags) {
+        this.flags = flags;
+        return this;
     }
 
     public EpisodeGridDialog reverse(boolean reverse) {
@@ -46,95 +61,198 @@ public class EpisodeGridDialog extends BaseBottomSheetDialog {
         return this;
     }
 
-    public EpisodeGridDialog episodes(List<Episode> episodes) {
-        this.episodes = episodes;
-        return this;
-    }
-
     public void show(FragmentActivity activity) {
-        if (activity == null || activity.isFinishing() || activity.isDestroyed() || activity.getSupportFragmentManager().isStateSaved()) return;
-        for (Fragment f : activity.getSupportFragmentManager().getFragments()) if (f instanceof EpisodeGridDialog) return;
+        for (Fragment f : activity.getSupportFragmentManager().getFragments()) {
+            if (f instanceof EpisodeGridDialog) return;
+        }
         show(activity.getSupportFragmentManager(), null);
     }
 
+    @NonNull
     @Override
-    protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        return binding = DialogEpisodeGridBinding.inflate(inflater, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        configureWindow(dialog);
+        return dialog;
     }
 
     @Override
-    protected void initView() {
-        setSpanCount();
-        setTitles();
-        setPager();
+    public void onStart() {
+        super.onStart();
+        configureWindow(getDialog());
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DialogEpisodeListBinding.inflate(inflater, container, false);
+        FrameLayout overlay = new FrameLayout(requireContext());
+        overlay.setBackgroundColor(Color.TRANSPARENT);
+        overlay.setOnClickListener(view -> dismiss());
+        binding.getRoot().setClickable(true);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(getWidth(), ViewGroup.LayoutParams.MATCH_PARENT, Gravity.END);
+        overlay.addView(binding.getRoot(), params);
+        return overlay;
     }
 
     @Override
-    protected void initEvent() {
-        binding.column.setOnClickListener(this::onColumnToggle);
-        getChildFragmentManager().setFragmentResultListener("result", this, (requestKey, bundle) -> {
-            ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(bundle.getParcelable("episode"));
-            dismiss();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
+
+    private int getWidth() {
+        int screen = ResUtil.getScreenWidth(requireContext());
+        return Math.max(ResUtil.dp2px(360), Math.min(ResUtil.dp2px(560), Math.round(screen * 0.44f)));
+    }
+
+    private void configureWindow(Dialog dialog) {
+        if (dialog == null || dialog.getWindow() == null) return;
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        // 不添加全屏标志，避免遮挡系统菜单栏
+        // window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setDimAmount(0f);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        // 让内容避开系统栏
+        WindowCompat.setDecorFitsSystemWindows(window, true);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        // 不隐藏系统UI，保留系统菜单栏
+        // Util.hideSystemUI(window);
+    }
+
+    private void initView() {
+        setRecyclerView();
+        flagAdapter.addAll(flags == null ? new ArrayList<>() : flags);
+        setGroups(getSelectedFlag());
+        binding.flag.scrollToPosition(flagAdapter.getPosition());
+    }
+
+    private void setRecyclerView() {
+        binding.flag.setHasFixedSize(true);
+        binding.flag.setItemAnimator(null);
+        binding.flag.setAdapter(flagAdapter = new FlagAdapter(this));
+        binding.group.setHasFixedSize(true);
+        binding.group.setItemAnimator(null);
+        binding.group.setAdapter(groupAdapter = new EpisodeGroupAdapter(this));
+        binding.episode.setHasFixedSize(true);
+        binding.episode.setItemAnimator(null);
+        binding.episode.setLayoutManager(new GridLayoutManager(requireContext(), episodeSpanCount));
+        binding.episode.addItemDecoration(episodeDecoration = new SpaceItemDecoration(episodeSpanCount, 8));
+        binding.episode.setAdapter(episodeAdapter = new EpisodeAdapter(this, ViewType.GRID));
+        binding.episode.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                syncEpisodeGroupByScroll();
+            }
         });
     }
 
-    private void onColumnToggle(View view) {
-        PlayerSetting.putEpisodeColumn(spanCount == 1 ? 2 : 1);
-        setSpanCount();
-        setTitles();
-        setPager();
+    private Flag getSelectedFlag() {
+        if (flagAdapter.isEmpty()) return null;
+        return flagAdapter.get(flagAdapter.getPosition());
     }
 
-    private void setSpanCount() {
-        int avg = (int) Math.ceil(episodes.stream().mapToInt(e -> e.getName().length()).average().orElse(0));
-        int max = episodes.stream().mapToInt(e -> e.getDesc().concat(e.getName()).length()).max().orElse(0);
-        boolean longTitle = avg >= 8 || max >= 12;
-        if (longTitle) spanCount = PlayerSetting.getEpisodeColumn();
-        else if (avg >= 4) spanCount = 3;
-        else if (avg >= 2) spanCount = 4;
-        else spanCount = 5;
-        itemCount = episodes.size() <= 60 ? 20 : spanCount * (ResUtil.isLand(requireActivity()) ? 5 : 10);
-        binding.column.setVisibility(longTitle ? View.VISIBLE : View.GONE);
-        binding.column.setImageResource(spanCount == 1 ? R.drawable.ic_site_double_column : R.drawable.ic_site_single_column);
+    private void setGroups(Flag flag) {
+        if (flag == null) return;
+        List<Episode> episodes = flag.getEpisodes();
+        groupAdapter.addAll(EpisodeGroupAdapter.build(episodes.size(), getSelectedEpisodePosition(episodes), reverse));
+        setEpisodes(episodes);
+        binding.group.scrollToPosition(groupAdapter.getPosition());
+        binding.episode.scrollToPosition(episodeAdapter.getPosition());
     }
 
-    private void setTitles() {
-        titles.clear();
-        if (reverse) for (int i = episodes.size(); i > 0; i -= itemCount) titles.add(i + " - " + Math.max(i - itemCount + 1, 1));
-        else for (int i = 0; i < episodes.size(); i += itemCount) titles.add((i + 1) + " - " + Math.min(i + itemCount, episodes.size()));
+    private void setEpisodes(List<Episode> episodes) {
+        updateEpisodeSpan(episodes);
+        episodeAdapter.addAll(episodes);
+        selectEpisodeGroupByPosition(episodeAdapter.getPosition());
     }
 
-    private void setPager() {
-        binding.tabs.removeAllTabs();
-        binding.pager.setAdapter(new PageAdapter(this));
-        new TabLayoutMediator(binding.tabs, binding.pager, (tab, position) -> tab.setText(titles.get(position))).attach();
-        setCurrentPage();
+    private void updateEpisodeSpan(List<Episode> episodes) {
+        int span = getEpisodeSpan(episodes);
+        if (span == episodeSpanCount) return;
+        episodeSpanCount = span;
+        binding.episode.setLayoutManager(new GridLayoutManager(requireContext(), episodeSpanCount));
+        if (episodeDecoration != null) binding.episode.removeItemDecoration(episodeDecoration);
+        binding.episode.addItemDecoration(episodeDecoration = new SpaceItemDecoration(episodeSpanCount, 8));
     }
 
-    private void setCurrentPage() {
+    private int getEpisodeSpan(List<Episode> episodes) {
+        EpisodeTitleCompact.apply(episodes);
+        int maxLen = 0;
+        for (Episode item : episodes) maxLen = Math.max(maxLen, item.getDisplayName().length());
+        if (maxLen >= 12) return PlayerSetting.getEpisodeColumn();
+        int ideal = maxLen >= 10 ? 130 : maxLen >= 7 ? 104 : 80;
+        int available = Math.max(ResUtil.dp2px(240), getWidth() - ResUtil.dp2px(28));
+        int span = available / ResUtil.dp2px(ideal);
+        return Math.max(2, Math.min(4, span));
+    }
+
+    private int getSelectedEpisodePosition(List<Episode> episodes) {
         for (int i = 0; i < episodes.size(); i++) {
-            if (episodes.get(i).isSelected()) {
-                binding.pager.setCurrentItem(i / itemCount);
-                break;
+            if (episodes.get(i).isSelected()) return i;
+        }
+        return 0;
+    }
+
+    @Override
+    public void onItemClick(Flag item) {
+        ((FlagAdapter.OnClickListener) requireActivity()).onItemClick(item);
+        flagAdapter.notifyItemRangeChanged(0, flagAdapter.getItemCount());
+        setGroups(item);
+    }
+
+    @Override
+    public void onItemClick(EpisodeGroupAdapter.Group item) {
+        groupAdapter.setSelected(item);
+        scrollEpisodeToPosition(item.start);
+        binding.group.scrollToPosition(groupAdapter.getPosition());
+    }
+
+    private void syncEpisodeGroupByScroll() {
+        RecyclerView.LayoutManager manager = binding.episode.getLayoutManager();
+        if (!(manager instanceof GridLayoutManager)) return;
+        int position = getEpisodeGroupSyncPosition((GridLayoutManager) manager);
+        if (position == RecyclerView.NO_POSITION) return;
+        selectEpisodeGroupByPosition(position);
+    }
+
+    private int getEpisodeGroupSyncPosition(GridLayoutManager manager) {
+        if (!binding.episode.canScrollVertically(1) && binding.episode.canScrollVertically(-1)) {
+            return manager.findLastVisibleItemPosition();
+        }
+        return manager.findFirstVisibleItemPosition();
+    }
+
+    private void selectEpisodeGroupByPosition(int position) {
+        if (groupAdapter == null || groupAdapter.isEmpty()) return;
+        int current = groupAdapter.getPosition();
+        List<EpisodeGroupAdapter.Group> groups = groupAdapter.getItems();
+        for (int i = 0; i < groups.size(); i++) {
+            EpisodeGroupAdapter.Group group = groups.get(i);
+            if (position < group.start || position >= group.end) continue;
+            if (i != current) {
+                groupAdapter.setSelected(group);
+                binding.group.scrollToPosition(i);
             }
+            return;
         }
     }
 
-    class PageAdapter extends FragmentStateAdapter {
-
-        public PageAdapter(@NonNull Fragment fragment) {
-            super(fragment);
+    private void scrollEpisodeToPosition(int position) {
+        RecyclerView.LayoutManager manager = binding.episode.getLayoutManager();
+        if (manager instanceof GridLayoutManager) {
+            ((GridLayoutManager) manager).scrollToPositionWithOffset(position, 0);
+        } else {
+            binding.episode.scrollToPosition(position);
         }
+    }
 
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            return EpisodeFragment.newInstance(spanCount, episodes.subList(position * itemCount, Math.min(position * itemCount + itemCount, episodes.size())));
-        }
-
-        @Override
-        public int getItemCount() {
-            return titles.size();
-        }
+    @Override
+    public void onItemClick(Episode item) {
+        ((EpisodeAdapter.OnClickListener) requireActivity()).onItemClick(item);
+        dismiss();
     }
 }

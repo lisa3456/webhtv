@@ -1,7 +1,12 @@
 package com.fongmi.android.tv.ui.dialog;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewbinding.ViewBinding;
@@ -56,7 +61,25 @@ public class InfoDialog extends BaseAlertDialog {
     @Override
     public void onStart() {
         super.onStart();
-        setWidth(ResUtil.isLand(requireContext()) ? 0.62f : 0.92f);
+        configureWindow();  // ← 添加这行
+    }
+
+    // ========== 新增：配置窗口 ==========
+    private void configureWindow() {
+        if (getDialog() == null || getDialog().getWindow() == null) return;
+        Window window = getDialog().getWindow();
+        WindowManager.LayoutParams params = window.getAttributes();
+        boolean land = ResUtil.isLand(requireContext());
+        float ratio = land ? 0.62f : 0.92f;  // 改这个值控制宽度
+        int width = Math.round(ResUtil.getScreenWidth(requireContext()) * ratio);
+        params.width = width;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.gravity = Gravity.CENTER;
+        // 关键：设置透明背景，让布局背景显示出来
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        window.setAttributes(params);
     }
 
     @Override
