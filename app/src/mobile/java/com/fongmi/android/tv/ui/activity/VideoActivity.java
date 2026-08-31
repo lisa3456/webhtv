@@ -3959,7 +3959,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setRequestedOrientation(PlaybackOrientation.getExitFullscreenOrientation(isPort()));
         mBinding.episodeGroup.postDelayed(() -> mBinding.episodeGroup.scrollToPosition(mEpisodeGroupAdapter.getPosition()), 100);
         mBinding.episode.postDelayed(this::scrollEpisodeToSelected, 100);
-        mBinding.control.title.setVisibility(View.INVISIBLE);
+        mBinding.control.title.setVisibility(View.GONE);
         setSizeText();
         mBinding.video.setLayoutParams(mFrameParams);
         mKeyDown.resetScale();
