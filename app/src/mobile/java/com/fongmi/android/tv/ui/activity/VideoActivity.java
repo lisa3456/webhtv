@@ -6206,14 +6206,29 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         else showControl();
     }
 
+    //改
     @Override
     public void onDoubleTap() {
+    }
+
+    //改
+    @Override
+    public void onDoubleTap(float x, float width) {
         if (isLock()) return;
-        //改
+        
         if (!isFullscreen()) {
             enterFullscreen();
         } else {
-            finishVideoPlayback();
+            boolean isLeft = x < width / 2f;
+            if (isLeft) {
+                finishVideoPlayback();
+            } else {
+                if (player().isPlaying()) {
+                    onPaused();
+                } else {
+                    onPlay();
+                }
+            }
         }
     }
 
