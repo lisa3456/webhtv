@@ -231,6 +231,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private boolean mAudioStageVisible;
     private boolean mAudioLightEffectAnimated;
     private boolean mKaraokeResultShown;
+    //改
+    private boolean isEpisodeExpanded = false;
     private int mKaraokeResultAction;
     private KaraokeResult mPendingKaraokeResult;
     private AlertDialog mKaraokeResultDialog;
@@ -635,7 +637,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         }, 12f);
         setVideoView();
         setViewModel();
-        setShortDisplay();
+        // setShortDisplay();
         if (shouldUseImmersiveAudio()) {
             setAudioStageVisible(true);
             mBinding.progressLayout.showContent();
@@ -748,9 +750,10 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     protected void initEvent() {
         mBinding.name.setOnClickListener(view -> onName());
         mBinding.more.setOnClickListener(view -> onMore());
-        mBinding.shortDisplay.setOnClickListener(view -> onShortDisplay());
-        mBinding.search.setOnClickListener(view -> onSearch());
-        mBinding.castAction.setOnClickListener(view -> onCast());
+        //改
+        mBinding.shortDisplay.setOnClickListener(view -> onRefresh());
+        mBinding.keepAction.setOnClickListener(view -> onKeep());
+        mBinding.infoAction.setOnClickListener(view -> onInfo());
         mBinding.settingAction.setOnClickListener(view -> onSetting());
         mBinding.actor.setOnClickListener(view -> onActor());
         mBinding.content.setOnClickListener(view -> onContent());
@@ -768,6 +771,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.prev.setOnClickListener(view -> checkPrev());
         mBinding.control.setting.setOnClickListener(view -> onSetting());
         mBinding.control.title.setOnLongClickListener(view -> onChange());
+        //改
+        mBinding.control.right.back.setOnClickListener(view -> onBack());
         mBinding.control.right.lock.setOnClickListener(view -> onLock());
         mBinding.control.right.rotate.setOnClickListener(view -> onRotate());
         mBinding.control.fullscreen.setOnClickListener(view -> onFullscreen());
@@ -814,8 +819,26 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
         mBinding.control.action.getRoot().setOnTouchListener(this::onActionTouch);
         mBinding.swipeLayout.setOnRefreshListener(this::onSwipeRefresh);
+        //改
+        mBinding.episodeExpandBtn.setOnClickListener(v -> showEpisodePopup());
     }
 
+    //改
+    private void showEpisodePopup() {
+        Flag flag = getFlag();
+        if (flag == null) {
+            Notify.show("暂无选集");
+            return;
+        }
+        syncSelectedEpisode(flag);
+        List<Flag> flagList = new ArrayList<>();
+        flagList.add(flag);
+        EpisodeGridDialog.create()
+            .reverse(mHistory != null && mHistory.isRevSort())
+            .flags(flagList)
+            .show(this);
+    }
+    
     private WindowInsetsCompat setStatusBar(WindowInsetsCompat insets) {
         int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
         Insets nav = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
@@ -1139,6 +1162,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void setText(Vod item) {
         setText(mBinding.site, R.string.detail_site, getSite().getName());
+        //改
+        mBinding.site.setVisibility(View.GONE);
         setText(mBinding.director, R.string.detail_director, item.getDirector());
         setText(mBinding.actor, R.string.detail_actor, item.getActor());
         setText(mBinding.content, 0, item.getContent());
@@ -1287,7 +1312,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (mFlagAdapter != null) mFlagAdapter.toggle(item);
         if (flag != null) setEpisodeAdapter(flag.getEpisodes());
         applyAudioQueueMetadata(item);
-        if (isFullscreen()) Notify.show(getString(R.string.play_ready, item.getName()));
+        //改
+        // if (isFullscreen()) Notify.show(getString(R.string.play_ready, item.getName()));
         onRefresh();
     }
 
@@ -1331,6 +1357,14 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.next.setVisibility(size < 2 ? View.GONE : View.VISIBLE);
         mBinding.control.prev.setVisibility(size < 2 ? View.GONE : View.VISIBLE);
         mBinding.reverse.setVisibility(size < 2 ? View.GONE : View.VISIBLE);
+        //改
+        if (mBinding.episodeExpandBtn != null) {
+            if (size >= 4) {
+                mBinding.episodeExpandBtn.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.episodeExpandBtn.setVisibility(View.GONE);
+            }
+        }
         mBinding.episode.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.more.setVisibility(View.GONE);
         List<EpisodeGroupAdapter.Group> groups = EpisodeGroupAdapter.build(size, getSelectedEpisodePosition(items), mHistory != null && mHistory.isRevSort());
@@ -1618,7 +1652,13 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         Flag flag = getFlag();
         if (flag == null) return;
         syncSelectedEpisode(flag);
-        EpisodeGridDialog.create().reverse(mHistory.isRevSort()).episodes(flag.getEpisodes()).show(this);
+        //改
+        List<Flag> flagList = new ArrayList<>();
+        flagList.add(flag);
+        EpisodeGridDialog.create()
+            .reverse(mHistory.isRevSort())
+            .flags(flagList)
+            .show(this);
     }
 
     private void onActor() {
@@ -3986,19 +4026,26 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.danmaku.setVisibility(isLock() || !player().haveDanmaku() ? View.GONE : View.VISIBLE);
         mBinding.control.setting.setVisibility(View.GONE);
         mBinding.control.right.rotate.setVisibility(isFullscreen() && !isLock() ? View.VISIBLE : View.GONE);
-        mBinding.control.fullscreen.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.keep.setVisibility(mHistory == null || isFullscreen() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.fullscreen.setVisibility(View.GONE);
+        mBinding.control.keep.setVisibility(View.GONE);
         mBinding.control.osdDiagnostics.setVisibility(PlayerSetting.isOsdDiagnostics() && !player().isEmpty() ? View.VISIBLE : View.GONE);
         mBinding.control.osdDiagnostics.setAlpha(mOsd != null && mOsd.isDiagnosticsVisible() ? 1f : 0.72f);
         mBinding.control.parse.setVisibility(isFullscreen() && isUseParse() ? View.VISIBLE : View.GONE);
         mBinding.control.action.getRoot().setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
-        mBinding.control.right.lock.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
-        mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
-        mBinding.control.cast.setVisibility(View.GONE);
+        //改
+        mBinding.control.right.lock.setVisibility(View.GONE);
+        mBinding.control.right.back.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
+        mBinding.control.info.setVisibility(View.GONE);
+        mBinding.control.cast.setVisibility(isFullscreen() ? View.GONE : View.VISIBLE);
+        mBinding.control.systemTime.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
-        mBinding.control.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.back.setVisibility(View.GONE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.title.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
         checkFullscreenImg();
@@ -4174,7 +4221,14 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void checkFlag(Vod item) {
         boolean empty = item.getFlags().isEmpty();
-        mBinding.flag.setVisibility(empty ? View.GONE : View.VISIBLE);
+        int flagCount = item.getFlags().size();
+        if (flagCount >= 2) {
+            mBinding.flagTitleLayout.setVisibility(View.VISIBLE);
+            mBinding.flag.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.flagTitleLayout.setVisibility(View.GONE);
+            mBinding.flag.setVisibility(View.GONE);
+        }
         boolean preservePlayback = mRestoringConfigurationPlayback && service() != null && !player().isEmpty();
         if (empty) {
             if (!preservePlayback) startFlow();
@@ -4309,6 +4363,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         boolean kept = Keep.find(getHistoryKey()) != null;
         mBinding.control.keep.setImageResource(kept ? R.drawable.ic_control_keep_on : R.drawable.ic_control_keep_off);
         mBinding.audioKeepAction.setSelected(kept);
+        //改
+        mBinding.keepAction.setImageResource(kept ? R.drawable.ic_control_keep_on : R.drawable.ic_control_keep_off);
     }
 
     private void checkLockImg() {
@@ -6152,14 +6208,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void onDoubleTap() {
         if (isLock()) return;
+        //改
         if (!isFullscreen()) {
             enterFullscreen();
-        } else if (player().isPlaying()) {
-            showControl();
-            onPaused();
         } else {
-            hideControl();
-            onPlay();
+            finishVideoPlayback();
         }
     }
 

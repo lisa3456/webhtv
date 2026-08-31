@@ -151,6 +151,10 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private boolean isEmpty() {
         return getIntent().getBooleanExtra("empty", true);
     }
+    //改
+    private boolean isFullscreen() {
+        return !isEmbeddedLiveUi();
+    }
 
     private Group getKeep() {
         return mGroupAdapter.get(0);
@@ -274,6 +278,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.control.back.setOnClickListener(view -> onBack());
         mBinding.control.cast.setOnClickListener(view -> onCast());
         mBinding.control.info.setOnClickListener(view -> onInfo());
+        mBinding.control.lineIndependent.setOnClickListener(v -> onLine());
         mBinding.control.play.setOnClickListener(view -> checkPlay());
         mBinding.control.next.setOnClickListener(view -> nextChannel());
         mBinding.control.prev.setOnClickListener(view -> prevChannel());
@@ -304,9 +309,11 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             mBinding.liveSetting.setOnClickListener(view -> onLiveSetting());
             mBinding.liveSetting.setOnTouchListener(this::onLiveSettingTouch);
         }
-        if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(view -> onLiveProgram());
-        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(view -> onLiveProgram());
-        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(view -> onLiveProgram());
+        //改
+        if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine());
+        if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(v -> onLine());
+        if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(v -> onLine());
+        if (mBinding.liveLineSwitch != null) mBinding.liveLineSwitch.setOnClickListener(v -> onLine());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
     }
 
@@ -344,6 +351,14 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.getRoot(), (view, insets) -> {
             updateLiveListBottomInset(insets);
+            //改
+            // 新增：设置状态栏高度
+            if (mBinding.statusBar != null) {
+                int top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+                ViewGroup.LayoutParams lp = mBinding.statusBar.getLayoutParams();
+                lp.height = top;
+                mBinding.statusBar.setLayoutParams(lp);
+            }
             return insets;
         });
         ViewCompat.requestApplyInsets(mBinding.getRoot());
@@ -870,12 +885,16 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (!embedded && isVisible(mBinding.recycler)) hideUI(false);
         mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
         mBinding.control.cast.setVisibility(View.GONE);
-        mBinding.control.right.rotate.setVisibility(isLock() || isPadLiveFullscreenMode() ? View.GONE : View.VISIBLE);
-        mBinding.control.center.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.right.rotate.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
+        mBinding.control.center.setVisibility(View.GONE);
         mBinding.control.bottom.setVisibility(isLock() ? View.GONE : View.VISIBLE);
         mBinding.control.action.getRoot().setVisibility(embedded ? View.GONE : View.VISIBLE);
-        mBinding.control.back.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.back.setVisibility(View.GONE);
         mBinding.control.top.setVisibility(isLock() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.top.findViewById(R.id.title).setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
         setR1Callback();
@@ -890,11 +909,11 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
     }
 
     private void showInfo() {
-        mBinding.widget.infoPip.setVisibility(isInPictureInPictureMode() ? View.VISIBLE : View.GONE);
-        mBinding.widget.info.setVisibility(isInPictureInPictureMode() ? View.GONE : View.VISIBLE);
-        setR3Callback();
-        hideControl();
+        //改
+        // 更新数据
         setInfo();
+        // 强制隐藏信息栏
+        mBinding.widget.info.setVisibility(View.GONE);
     }
 
     private void hideInfo() {
@@ -1073,11 +1092,20 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         mBinding.widget.namePip.setText(mChannel.getShow());
         mBinding.widget.number.setText(mChannel.getNumber());
         mBinding.widget.numberPip.setText(mChannel.getNumber());
+        //改
+        if (mBinding.control.lineIndependent != null) {
+            mBinding.control.lineIndependent.setText(mChannel.getLine());
+            mBinding.control.lineIndependent.setVisibility(View.GONE);
+        };
+        if (mBinding.liveLineSwitch != null) {
+            mBinding.liveLineSwitch.setText(mChannel.getLine());
+            mBinding.liveLineSwitch.setVisibility(View.VISIBLE);
+        };
         mBinding.widget.line.setVisibility(mChannel.getLineVisible());
-        mBinding.control.action.line.setText(mBinding.widget.line.getText());
         mBinding.control.action.line.setVisibility(mBinding.widget.line.getVisibility());
+        mBinding.control.action.line.setText(mBinding.widget.line.getText());
     }
-
+    
     private void setLiveHeader() {
         if (mBinding.liveTitle == null || mChannel == null) return;
         mBinding.liveTitle.setText(mChannel.getShow());
@@ -1752,9 +1780,8 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
             showControl();
             return;
         }
-        if (isVisible(mBinding.recycler)) hideUI();
-        if (isVisible(mBinding.control.getRoot())) hideControl();
-        else showControl();
+        //改
+        onRotate();
     }
 
     @Override
@@ -1922,9 +1949,17 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mBinding.getRoot() instanceof LinearLayoutCompat root) {
             LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
             params.weight = 14;
-            root.addView(mBinding.recycler, Math.min(1, root.getChildCount()), params);
-        } else if (mBinding.getRoot() instanceof FrameLayout root) {
-            root.addView(mBinding.recycler, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
+            //改
+            // 找到 navigation 的索引，插入到它前面
+            int insertIndex = root.getChildCount();
+            for (int i = 0; i < root.getChildCount(); i++) {
+                View child = root.getChildAt(i);
+                if (child.getId() == R.id.navigation) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+            root.addView(mBinding.recycler, insertIndex, params);
         }
     }
 
