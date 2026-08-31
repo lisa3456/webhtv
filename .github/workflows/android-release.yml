@@ -144,19 +144,20 @@ jobs:
           ALIAS="${RELEASE_KEY_ALIAS:-$KEY_ALIAS}"
           KEY_PASS="${RELEASE_KEY_PASSWORD:-$STORE_PASSWORD}"
           if [ -z "$KS_BASE64" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$ALIAS" ]; then
-            echo "::error title=Release signing not configured::Configure RELEASE_KEYSTORE_BASE64, RELEASE_KEY_ALIAS and RELEASE_STORE_PASSWORD in repository secrets."
-            exit 1
+            echo "⚠️ No signing secrets configured, release package will use debug signing (default)"
+          # 不退出，继续执行
+          else
+              mkdir -p app/signing
+              printf '%s' "$KS_BASE64" | base64 --decode > app/signing/release.jks
+              {
+                echo "storeFile=$GITHUB_WORKSPACE/app/signing/release.jks"
+                echo "keyAlias=$ALIAS"
+                echo "storePassword=$STORE_PASSWORD"
+                echo "keyPassword=$KEY_PASS"
+              } > local.properties
+              echo "Release signing configured"
           fi
-          mkdir -p app/signing
-          printf '%s' "$KS_BASE64" | base64 --decode > app/signing/release.jks
-          {
-            echo "storeFile=$GITHUB_WORKSPACE/app/signing/release.jks"
-            echo "keyAlias=$ALIAS"
-            echo "storePassword=$STORE_PASSWORD"
-            echo "keyPassword=$KEY_PASS"
-          } > local.properties
-          echo "Release signing configured"
-
+          
       - name: Build four release APKs
         env:
           WEBHTV_RELEASE_TAG: ${{ steps.meta.outputs.tag }}
