@@ -53,7 +53,7 @@ public class EpisodeGridHolder extends BaseEpisodeHolder {
     }
 
     private void setMarquee(boolean focused) {
-        binding.text.setEllipsize(focused ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.START);
+        binding.text.setEllipsize(focused ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.END);
         binding.text.setSelected(focused);
     }
 }
