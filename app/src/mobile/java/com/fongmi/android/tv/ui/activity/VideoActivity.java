@@ -5916,8 +5916,9 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void setSizeText() {
         String text = player().getSizeText();
-        boolean hasTitle = !TextUtils.isEmpty(mBinding.control.title.getText());
-        mBinding.control.title.setVisibility(hasTitle ? View.VISIBLE : View.INVISIBLE);
+        //改
+        // boolean hasTitle = !TextUtils.isEmpty(mBinding.control.title.getText());
+        // mBinding.control.title.setVisibility(hasTitle ? View.VISIBLE : View.INVISIBLE);
         mBinding.control.size.setText(text);
         mBinding.control.size.setVisibility(text.isEmpty() ? View.GONE : View.VISIBLE);
     }
