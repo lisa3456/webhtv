@@ -10,6 +10,13 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/keep"
+        android:icon="@drawable/ic_popup_keep"
+        android:title="@string/app_keep"
+        app:iconTint="@color/white"
+        app:showAsAction="always" />
+    
+    <item
         android:id="@+id/history"
         android:icon="@drawable/ic_popup_history"
         android:title="@string/app_history"
@@ -36,11 +43,6 @@
                 android:id="@+id/refresh"
                 android:icon="@drawable/ic_popup_refresh"
                 android:title="@string/live_refresh" />
-
-            <item
-                android:id="@+id/keep"
-                android:icon="@drawable/ic_popup_keep"
-                android:title="@string/app_keep" />
 
             <item
                 android:id="@+id/sync"
