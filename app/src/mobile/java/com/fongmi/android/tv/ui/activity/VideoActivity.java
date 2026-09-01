@@ -1445,17 +1445,11 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (items.size() == 1) return 1;
         int maxLen = 0;
         for (Episode item : items) maxLen = Math.max(maxLen, item.getDisplayName().length());
-        if (maxLen >= 12) return PlayerSetting.getEpisodeColumn();
-        int ideal = maxLen >= 10 ? 130 : maxLen >= 7 ? 104 : 80;
-        int width = EpisodeGridLayoutPolicy.getAvailableWidth(
-                mBinding.episode.getWidth(),
-                ResUtil.getScreenWidth(this),
-                ResUtil.getScreenHeight(this),
-                ResUtil.dp2px(32),
-                isLand(),
-                ResUtil.isLand(this));
-        int span = width / ResUtil.dp2px(ideal);
-        return Math.max(2, Math.min(getEpisodeSpanCount(), span));
+        //改
+        if (maxLen < 3) return 4;
+        if (maxLen < 5) return 3;
+        if (maxLen >= 10) return 1;
+        return 2;
     }
 
     private int getSelectedEpisodePosition(List<Episode> items) {
