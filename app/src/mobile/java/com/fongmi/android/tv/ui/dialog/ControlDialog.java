@@ -160,7 +160,6 @@ public class ControlDialog extends BaseBottomSheetDialog implements ParseAdapter
         for (TextView view : speeds) view.setOnClickListener(this::setSpeedPreset);
         for (TextView view : scales) view.setOnClickListener(this::setScale);
         binding.reset.setOnClickListener(v -> dismiss(parent.control.action.reset));
-        binding.fullscreen.setOnClickListener(v -> dismiss(parent.control.fullscreen));
         binding.cast.setOnClickListener(v -> onCast());
         binding.text.setOnClickListener(v -> onTrack(binding.text));
         binding.audio.setOnClickListener(v -> onTrack(binding.audio));
