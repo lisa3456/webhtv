@@ -6094,6 +6094,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         view.post(() -> view.scrollToPosition(position));
     }
 
+    //改
+    @Override
+    public void onCastPanel() {
+        onCast();
+    }
+    
     @Override
     public void onCasted() {
         clearLyrics();
