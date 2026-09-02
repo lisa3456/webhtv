@@ -313,7 +313,7 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (mBinding.liveCurrent != null) mBinding.liveCurrent.setOnClickListener(v -> onLine());
         if (mBinding.liveProgram != null) mBinding.liveProgram.setOnClickListener(v -> onLine());
         if (mBinding.liveProgramNext != null) mBinding.liveProgramNext.setOnClickListener(v -> onLine());
-        if (mBinding.liveLineSwitch != null) mBinding.liveLineSwitch.setOnClickListener(v -> onLine());
+        if (mBinding.liveLineSwitch != null) mBinding.liveLineSwitch.setOnClickListener(view -> onInfo());
         mBinding.video.setOnTouchListener((view, event) -> mKeyDown.onTouchEvent(event));
     }
 
@@ -883,7 +883,8 @@ public class LiveActivity extends PlaybackActivity implements CustomKeyDown.List
         if (service() == null || isInPictureInPictureMode()) return;
         boolean embedded = isEmbeddedLiveUi();
         if (!embedded && isVisible(mBinding.recycler)) hideUI(false);
-        mBinding.control.info.setVisibility(player().isEmpty() ? View.GONE : View.VISIBLE);
+        //改
+        mBinding.control.info.setVisibility(View.GONE);
         mBinding.control.cast.setVisibility(View.GONE);
         //改
         mBinding.control.right.rotate.setVisibility(isFullscreen() ? View.VISIBLE : View.GONE);
