@@ -15,38 +15,6 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/prev"
-            style="@style/Control"
-            android:text="@string/play_prev" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/next"
-            style="@style/Control"
-            android:text="@string/play_next" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/episodes"
-            style="@style/Control"
-            android:text="@string/detail_episode" />
-        
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/reset"
-            style="@style/Control"
-            android:text="@string/play_reset" />
-        
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/audio"
-            style="@style/Control"
-            android:tag="1"
-            android:text="@string/play_track_audio" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/video"
-            style="@style/Control"
-            android:tag="2"
-            android:text="@string/play_track_video" />
-        
-        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/player"
             style="@style/Control"
             android:text="@string/play_exo" />
@@ -79,6 +47,11 @@
             android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/reset"
+            style="@style/Control"
+            android:text="@string/play_reset" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/repeat"
             style="@style/Control"
             android:text="@string/play_repeat" />
@@ -88,6 +61,18 @@
             style="@style/Control"
             android:tag="3"
             android:text="@string/play_track_text" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/audio"
+            style="@style/Control"
+            android:tag="1"
+            android:text="@string/play_track_audio" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/video"
+            style="@style/Control"
+            android:tag="2"
+            android:text="@string/play_track_video" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/opening"
@@ -112,6 +97,21 @@
             android:text="@string/play_title"
             android:visibility="gone"
             tools:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/prev"
+            style="@style/Control"
+            android:text="@string/play_prev" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/next"
+            style="@style/Control"
+            android:text="@string/play_next" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/episodes"
+            style="@style/Control"
+            android:text="@string/detail_episode" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </HorizontalScrollView>
