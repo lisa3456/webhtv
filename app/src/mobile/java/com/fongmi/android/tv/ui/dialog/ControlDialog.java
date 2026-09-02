@@ -161,6 +161,7 @@ public class ControlDialog extends BaseBottomSheetDialog implements ParseAdapter
         for (TextView view : scales) view.setOnClickListener(this::setScale);
         binding.reset.setOnClickListener(v -> dismiss(parent.control.action.reset));
         binding.fullscreen.setOnClickListener(v -> dismiss(parent.control.fullscreen));
+        binding.cast.setOnClickListener(v -> onCast());
         binding.text.setOnClickListener(v -> onTrack(binding.text));
         binding.audio.setOnClickListener(v -> onTrack(binding.audio));
         binding.video.setOnClickListener(v -> onTrack(binding.video));
@@ -182,6 +183,11 @@ public class ControlDialog extends BaseBottomSheetDialog implements ParseAdapter
         binding.opening.setOnLongClickListener(v -> longClick(binding.opening, parent.control.action.opening));
     }
 
+    private void onCast() {
+        ((Listener) requireActivity()).onCastPanel();
+        dismiss();
+    }
+    
     private void onTimer(View view) {
         TimerDialog.create().show(getActivity());
     }
@@ -447,6 +453,8 @@ public class ControlDialog extends BaseBottomSheetDialog implements ParseAdapter
 
         void onParse(Parse item);
 
+        void onCastPanel();
+        
         void onLutSelected(LutPreset preset);
 
         void onLutImport();
