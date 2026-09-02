@@ -53,9 +53,9 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/fullscreen"
+                    android:id="@+id/cast"
                     style="@style/ControlSheetButton"
-                    android:text="@string/play_fullscreen" />
+                    android:text="@string/play_cast" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/lut"
