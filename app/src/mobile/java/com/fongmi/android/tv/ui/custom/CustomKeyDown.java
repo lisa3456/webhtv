@@ -89,19 +89,18 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
             listener.onSeekEnd(time);
         }
 
-        // 双指手势：缩放 + 拖动
         if (pointerCount == 2) {
-            // 处理缩放
+            // 缩放
             scaleDetector.onTouchEvent(e);
 
-            // 处理双指拖动（缩放后平移查看）
+            // 双指拖动（缩放后平移查看）
             if (action == MotionEvent.ACTION_MOVE && scale > 1.0f) {
                 float currentX = (e.getX(0) + e.getX(1)) / 2;
                 float currentY = (e.getY(0) + e.getY(1)) / 2;
                 float deltaX = currentX - lastPointerX;
                 float deltaY = currentY - lastPointerY;
 
-                if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+                if (Math.abs(deltaX) > 0.5f || Math.abs(deltaY) > 0.5f) {
                     translateX += deltaX;
                     translateY += deltaY;
                     clampTranslation();
@@ -109,6 +108,13 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
                 }
                 lastPointerX = currentX;
                 lastPointerY = currentY;
+            }
+            // 双指抬起时重置参考点
+            if (action == MotionEvent.ACTION_POINTER_UP) {
+                if (e.getPointerCount() >= 2) {
+                    lastPointerX = (e.getX(0) + e.getX(1)) / 2;
+                    lastPointerY = (e.getY(0) + e.getY(1)) / 2;
+                }
             }
             return true;
         }
@@ -290,13 +296,14 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         scale *= detector.getScaleFactor();
         scale = Math.max(1.0f, Math.min(scale, 5.0f));
 
-        // 缩放时调整平移，使中心点保持不变
+        // 缩放时调整平移，使缩放中心点保持不变
         if (oldScale != 1.0f || scale != 1.0f) {
             float scaleChange = scale / oldScale;
             translateX = (translateX - focusX) * scaleChange + focusX;
             translateY = (translateY - focusY) * scaleChange + focusY;
         }
 
+        clampTranslation();
         applyTransform();
         return true;
     }
@@ -311,18 +318,19 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     }
 
     private void clampTranslation() {
+        if (scale <= 1.0f) {
+            translateX = 0;
+            translateY = 0;
+            return;
+        }
+
         float maxX = (videoView.getWidth() * (scale - 1)) / 2f;
         float maxY = (videoView.getHeight() * (scale - 1)) / 2f;
-        if (maxX > 0) {
-            translateX = Math.max(-maxX, Math.min(maxX, translateX));
-        } else {
-            translateX = 0;
-        }
-        if (maxY > 0) {
-            translateY = Math.max(-maxY, Math.min(maxY, translateY));
-        } else {
-            translateY = 0;
-        }
+
+        if (translateX > maxX) translateX = maxX;
+        if (translateX < -maxX) translateX = -maxX;
+        if (translateY > maxY) translateY = maxY;
+        if (translateY < -maxY) translateY = -maxY;
     }
 
     public interface Listener {
