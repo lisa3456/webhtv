@@ -41,6 +41,12 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     private float volume;
     private float scale;
     private long time;
+    // 缩放平移相关
+    private float translateX = 0f;
+    private float translateY = 0f;
+    private float lastFocusX = 0f;
+    private float lastFocusY = 0f;
+    private boolean isScaling = false;
 
     public static CustomKeyDown create(Activity activity, View videoView) {
         return new CustomKeyDown(activity, videoView);
@@ -77,12 +83,20 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     }
 
     public void resetScale() {
-        if (scale == 1.0f) return;
-        videoView.animate().scaleX(1.0f).scaleY(1.0f).translationX(0f).translationY(0f).setDuration(250).withEndAction(() -> {
-            videoView.setPivotY(videoView.getHeight() / 2.0f);
-            videoView.setPivotX(videoView.getWidth() / 2.0f);
-            scale = 1.0f;
-        }).start();
+        if (scale == 1.0f && translateX == 0 && translateY == 0) return;
+        videoView.animate()
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .translationX(0f)
+                .translationY(0f)
+                .setDuration(250)
+                .withEndAction(() -> {
+                    videoView.setPivotY(videoView.getHeight() / 2.0f);
+                    videoView.setPivotX(videoView.getWidth() / 2.0f);
+                    scale = 1.0f;
+                    translateX = 0f;
+                    translateY = 0f;
+                }).start();
     }
 
     public void setLock(boolean lock) {
@@ -135,6 +149,15 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
+        // 双指拖动（缩放后平移查看）
+        if (e1.getPointerCount() == 2 && scale > 1.0f) {
+            translateX -= distanceX;
+            translateY -= distanceY;
+            clampTranslation();
+            applyTransform();
+            return true;
+        }
+
         if (isMultiple(e1) || isEdge(e1) || changeScale || lock || changeSpeed) return true;
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e1.getY() - e2.getY();
@@ -221,18 +244,49 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
+        clampTranslation();
+        isScaling = false;
         App.post(() -> changeScale = false, 500);
     }
 
     @Override
     public boolean onScale(@NonNull ScaleGestureDetector detector) {
+        float focusX = detector.getFocusX();
+        float focusY = detector.getFocusY();
+
+        float oldScale = scale;
         scale *= detector.getScaleFactor();
         scale = Math.max(1.0f, Math.min(scale, 5.0f));
-        videoView.setPivotX(detector.getFocusX());
-        videoView.setPivotY(detector.getFocusY());
+
+        // 缩放时调整平移，使中心点保持不变
+        if (oldScale != 1.0f || scale != 1.0f) {
+            float scaleChange = scale / oldScale;
+            translateX = (translateX - focusX) * scaleChange + focusX;
+            translateY = (translateY - focusY) * scaleChange + focusY;
+        }
+
+        lastFocusX = focusX;
+        lastFocusY = focusY;
+        isScaling = true;
+
+        applyTransform();
+        return true;
+    }
+
+    private void applyTransform() {
+        videoView.setPivotX(0);
+        videoView.setPivotY(0);
         videoView.setScaleX(scale);
         videoView.setScaleY(scale);
-        return true;
+        videoView.setTranslationX(translateX);
+        videoView.setTranslationY(translateY);
+    }
+
+    private void clampTranslation() {
+        float maxX = (videoView.getWidth() * (scale - 1)) / 2f;
+        float maxY = (videoView.getHeight() * (scale - 1)) / 2f;
+        translateX = Math.max(-maxX, Math.min(maxX, translateX));
+        translateY = Math.max(-maxY, Math.min(maxY, translateY));
     }
 
     public interface Listener {
@@ -260,7 +314,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         }
 
         void onDoubleTap();
-        
+
         default void onDoubleTap(float x, float width) {
             onDoubleTap();
         }
