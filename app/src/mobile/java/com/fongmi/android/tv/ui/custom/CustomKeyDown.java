@@ -65,7 +65,6 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     public boolean onTouchEvent(MotionEvent e) {
         int action = e.getActionMasked();
         int pointerCount = e.getPointerCount();
-
         if (action == MotionEvent.ACTION_DOWN) {
             multiTouch = false;
         }
@@ -88,18 +87,15 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         if (changeTime && action == MotionEvent.ACTION_UP) {
             listener.onSeekEnd(time);
         }
-
         if (pointerCount == 2) {
             // 缩放
             scaleDetector.onTouchEvent(e);
-
             // 双指拖动（缩放后平移查看）
             if (action == MotionEvent.ACTION_MOVE && scale > 1.0f) {
                 float currentX = (e.getX(0) + e.getX(1)) / 2;
                 float currentY = (e.getY(0) + e.getY(1)) / 2;
                 float deltaX = currentX - lastPointerX;
                 float deltaY = currentY - lastPointerY;
-
                 if (Math.abs(deltaX) > 0.5f || Math.abs(deltaY) > 0.5f) {
                     translateX += deltaX;
                     translateY += deltaY;
@@ -118,7 +114,6 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
             }
             return true;
         }
-
         return detector.onTouchEvent(e);
     }
 
@@ -235,7 +230,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-        // 已缩放时禁止切换剧集（防止误触）
+        // 已缩放时禁止切换剧集
         if (scale > 1.0f) return true;
         if (isMultiple(e1) || isEdge(e1) || isSide(e1) || changeScale || lock || animating) return true;
         checkFunc(e1, e2);
@@ -305,18 +300,15 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     public boolean onScale(@NonNull ScaleGestureDetector detector) {
         float focusX = detector.getFocusX();
         float focusY = detector.getFocusY();
-
         float oldScale = scale;
         scale *= detector.getScaleFactor();
         scale = Math.max(1.0f, Math.min(scale, 10.0f));
-
         // 缩放时调整平移，使缩放中心点保持不变
         if (oldScale != 1.0f || scale != 1.0f) {
             float scaleChange = scale / oldScale;
             translateX = (translateX - focusX) * scaleChange + focusX;
             translateY = (translateY - focusY) * scaleChange + focusY;
         }
-
         clampTranslation();
         applyTransform();
         return true;
