@@ -41,6 +41,11 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     private float volume;
     private float scale;
     private long time;
+    // 缩放平移相关
+    private float translateX = 0f;
+    private float translateY = 0f;
+    private float lastPointerX = 0f;
+    private float lastPointerY = 0f;
 
     public static CustomKeyDown create(Activity activity, View videoView) {
         return new CustomKeyDown(activity, videoView);
@@ -59,13 +64,62 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     public boolean onTouchEvent(MotionEvent e) {
         int action = e.getActionMasked();
-        if (action == MotionEvent.ACTION_DOWN) multiTouch = false;
-        if (action == MotionEvent.ACTION_POINTER_DOWN) multiTouch = true;
-        if (action == MotionEvent.ACTION_UP) listener.onTouchEnd();
-        if (changeBright && action == MotionEvent.ACTION_UP) PlayerSetting.putBrightness(currentBright);
-        if (changeSpeed && action == MotionEvent.ACTION_UP) listener.onSpeedEnd();
-        if (changeTime && action == MotionEvent.ACTION_UP) listener.onSeekEnd(time);
-        return e.getPointerCount() == 2 ? scaleDetector.onTouchEvent(e) : detector.onTouchEvent(e);
+        int pointerCount = e.getPointerCount();
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            multiTouch = false;
+        }
+        if (action == MotionEvent.ACTION_POINTER_DOWN) {
+            multiTouch = true;
+            if (pointerCount == 2) {
+                lastPointerX = (e.getX(0) + e.getX(1)) / 2;
+                lastPointerY = (e.getY(0) + e.getY(1)) / 2;
+            }
+        }
+        if (action == MotionEvent.ACTION_UP) {
+            listener.onTouchEnd();
+        }
+        if (changeBright && action == MotionEvent.ACTION_UP) {
+            PlayerSetting.putBrightness(currentBright);
+        }
+        if (changeSpeed && action == MotionEvent.ACTION_UP) {
+            listener.onSpeedEnd();
+        }
+        if (changeTime && action == MotionEvent.ACTION_UP) {
+            listener.onSeekEnd(time);
+        }
+
+        if (pointerCount == 2) {
+            // 缩放
+            scaleDetector.onTouchEvent(e);
+
+            // 双指拖动（缩放后平移查看）
+            if (action == MotionEvent.ACTION_MOVE && scale > 1.0f) {
+                float currentX = (e.getX(0) + e.getX(1)) / 2;
+                float currentY = (e.getY(0) + e.getY(1)) / 2;
+                float deltaX = currentX - lastPointerX;
+                float deltaY = currentY - lastPointerY;
+
+                if (Math.abs(deltaX) > 0.5f || Math.abs(deltaY) > 0.5f) {
+                    translateX += deltaX;
+                    translateY += deltaY;
+                    clampTranslation();
+                    applyTransform();
+                }
+                lastPointerX = currentX;
+                lastPointerY = currentY;
+            }
+            // 双指抬起时重置参考点
+            if (action == MotionEvent.ACTION_POINTER_UP) {
+                if (e.getPointerCount() >= 2) {
+                    lastPointerX = (e.getX(0) + e.getX(1)) / 2;
+                    lastPointerY = (e.getY(0) + e.getY(1)) / 2;
+                }
+            }
+            return true;
+        }
+
+        return detector.onTouchEvent(e);
     }
 
     private void applyBrightness() {
@@ -77,12 +131,20 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     }
 
     public void resetScale() {
-        if (scale == 1.0f) return;
-        videoView.animate().scaleX(1.0f).scaleY(1.0f).translationX(0f).translationY(0f).setDuration(250).withEndAction(() -> {
-            videoView.setPivotY(videoView.getHeight() / 2.0f);
-            videoView.setPivotX(videoView.getWidth() / 2.0f);
-            scale = 1.0f;
-        }).start();
+        if (scale == 1.0f && translateX == 0 && translateY == 0) return;
+        videoView.animate()
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .translationX(0f)
+                .translationY(0f)
+                .setDuration(250)
+                .withEndAction(() -> {
+                    videoView.setPivotY(videoView.getHeight() / 2.0f);
+                    videoView.setPivotX(videoView.getWidth() / 2.0f);
+                    scale = 1.0f;
+                    translateX = 0f;
+                    translateY = 0f;
+                }).start();
     }
 
     public void setLock(boolean lock) {
@@ -221,18 +283,45 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
+        clampTranslation();
         App.post(() -> changeScale = false, 500);
     }
 
     @Override
     public boolean onScale(@NonNull ScaleGestureDetector detector) {
+        float focusX = detector.getFocusX();
+        float focusY = detector.getFocusY();
+
+        float oldScale = scale;
         scale *= detector.getScaleFactor();
         scale = Math.max(1.0f, Math.min(scale, 10.0f));
-        videoView.setPivotX(detector.getFocusX());
-        videoView.setPivotY(detector.getFocusY());
+
+        // 缩放时调整平移，使缩放中心点保持不变
+        if (oldScale != 1.0f || scale != 1.0f) {
+            float scaleChange = scale / oldScale;
+            translateX = (translateX - focusX) * scaleChange + focusX;
+            translateY = (translateY - focusY) * scaleChange + focusY;
+        }
+
+        clampTranslation();
+        applyTransform();
+        return true;
+    }
+
+    private void applyTransform() {
+        videoView.setPivotX(0);
+        videoView.setPivotY(0);
         videoView.setScaleX(scale);
         videoView.setScaleY(scale);
-        return true;
+        videoView.setTranslationX(translateX);
+        videoView.setTranslationY(translateY);
+    }
+
+    private void clampTranslation() {
+        if (scale <= 1.0f) {
+            translateX = 0;
+            translateY = 0;
+        }
     }
 
     public interface Listener {
@@ -260,7 +349,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         }
 
         void onDoubleTap();
-        
+
         default void onDoubleTap(float x, float width) {
             onDoubleTap();
         }
