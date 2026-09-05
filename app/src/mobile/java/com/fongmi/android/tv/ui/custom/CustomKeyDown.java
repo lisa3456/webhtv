@@ -235,6 +235,8 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+        // 已缩放时禁止切换剧集（防止误触）
+        if (scale > 1.0f) return true;
         if (isMultiple(e1) || isEdge(e1) || isSide(e1) || changeScale || lock || animating) return true;
         checkFunc(e1, e2);
         return true;
