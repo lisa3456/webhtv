@@ -302,7 +302,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         float focusY = detector.getFocusY();
         float oldScale = scale;
         scale *= detector.getScaleFactor();
-        scale = Math.max(1.0f, Math.min(scale, 10.0f));
+        scale = Math.max(1.0f, Math.min(scale, 20.0f));
         // 缩放时调整平移，使缩放中心点保持不变
         if (oldScale != 1.0f || scale != 1.0f) {
             float scaleChange = scale / oldScale;
