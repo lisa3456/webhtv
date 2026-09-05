@@ -197,6 +197,18 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
 
     @Override
     public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
+        // 单指拖动：已缩放时平移画面
+        if (!isMultiple(e1) && !isEdge(e1) && !changeScale && !lock && !changeSpeed) {
+            if (scale > 1.0f) {
+                if (Math.abs(distanceX) > 3 || Math.abs(distanceY) > 3) {
+                    translateX -= distanceX;
+                    translateY -= distanceY;
+                    applyTransform();
+                }
+                return true;
+            }
+        }
+        // 未缩放时走原来的亮度/音量/快进逻辑
         if (isMultiple(e1) || isEdge(e1) || changeScale || lock || changeSpeed) return true;
         float deltaX = e2.getX() - e1.getX();
         float deltaY = e1.getY() - e2.getY();
