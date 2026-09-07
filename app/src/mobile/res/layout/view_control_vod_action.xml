@@ -25,11 +25,6 @@
             android:text="@string/play_decode" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/playParams"
-            style="@style/Control"
-            android:text="@string/play_params" />
-
-        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/speed"
             style="@style/Control"
             android:fontFeatureSettings="tnum"
@@ -117,6 +112,11 @@
             android:id="@+id/episodes"
             style="@style/Control"
             android:text="@string/detail_episode" />
+        
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playParams"
+            style="@style/Control"
+            android:text="@string/play_params" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </HorizontalScrollView>
