@@ -1,9 +1,8 @@
 package com.fongmi.android.tv.ui.custom;
-import android.graphics.Rect;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,36 +22,5 @@ public class FixedNestedScrollView extends NestedScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        // 不限制滚动距离
-        super.scrollTo(x, y);
-    }
-
-    @Override
-    public void fling(int velocityY) {
-        super.fling(velocityY);
-    }
-
-    // 新增：确保可以滚动到任意位置
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-    }
-
-    // 新增：计算可滚动高度
-    @Override
-    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-        return super.computeScrollDeltaToGetChildRectOnScreen(rect);
-    }
+    // 所有方法直接调用 super，不做任何限制
 }
