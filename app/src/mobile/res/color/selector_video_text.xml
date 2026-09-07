@@ -4,5 +4,5 @@
     <item android:color="@color/yellow_500" android:state_checked="true" />
     <item android:color="@color/yellow_500" android:state_selected="true" />
     <item android:color="@color/white" android:state_focused="true" />
-    <item android:color="@color/white" />
+    <item android:color="@color/white_90" />
 </selector>
