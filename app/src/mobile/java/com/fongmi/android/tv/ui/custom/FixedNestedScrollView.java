@@ -24,20 +24,25 @@ public class FixedNestedScrollView extends NestedScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
+        // 允许拦截触摸事件，支持滚动
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return false;
+        // 处理触摸事件，支持滚动
+        return super.onTouchEvent(ev);
     }
 
     @Override
     public void scrollTo(int x, int y) {
-        super.scrollTo(x, 0);
+        // 允许垂直滚动
+        super.scrollTo(x, y);
     }
 
     @Override
     public void fling(int velocityY) {
+        // 恢复惯性滑动
+        super.fling(velocityY);
     }
 }
