@@ -1,5 +1,5 @@
 package com.fongmi.android.tv.ui.custom;
-
+import android.graphics.Rect;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
