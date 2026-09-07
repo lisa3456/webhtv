@@ -295,11 +295,10 @@ public class PlayerSetting {
     }
 
     public static float getBrightness() {
-        return Math.min(Math.max(Prefers.getFloat("player_brightness", -1), -1), 1);
+        return -1f;
     }
 
     public static void putBrightness(float brightness) {
-        Prefers.put("player_brightness", Math.min(Math.max(brightness, 0), 1));
     }
 
     public static boolean isCaption() {
