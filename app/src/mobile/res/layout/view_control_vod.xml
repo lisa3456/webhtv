@@ -9,7 +9,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="4dp"
@@ -17,17 +18,18 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
-            android:src="@drawable/ic_control_back" />
+            android:src="@drawable/ic_control_back"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="6dp"
             android:layout_marginEnd="4dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
@@ -40,8 +42,8 @@
                 android:ellipsize="marquee"
                 android:singleLine="true"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:visibility="invisible"
+                android:textSize="14sp"
+                android:visibility="gone"
                 tools:text="慶餘年第一季：第一集" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -50,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="@color/white_80"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:visibility="gone"
                 tools:text="1920 x 1080"
                 tools:visibility="visible" />
@@ -62,34 +64,47 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <android.widget.TextClock
+                android:id="@+id/system_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="2dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:format12Hour="HH:mm"
+                android:format24Hour="HH:mm" />
+            
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/cast"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_cast" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/info"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_info" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/keep"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_keep_off" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/osdDiagnostics"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/player_osd"
                 android:scaleType="center"
@@ -99,8 +114,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/setting"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_setting" />
@@ -200,7 +215,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="4dp">
+            android:paddingEnd="16dp">
 
             <com.fongmi.android.tv.ui.custom.CustomSeekView
                 android:id="@+id/seek"
@@ -210,11 +225,14 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/fullscreen"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
-                android:src="@drawable/ic_control_fullscreen" />
+                android:src="@drawable/ic_control_fullscreen"
+                android:visibility="gone" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

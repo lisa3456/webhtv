@@ -8,7 +8,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="4dp"
@@ -16,11 +17,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="center"
-            android:src="@drawable/ic_control_back" />
+            android:src="@drawable/ic_control_back"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
@@ -62,16 +64,16 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/cast"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_cast" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/info"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="center"
                 android:src="@drawable/ic_control_info" />
@@ -85,7 +87,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/prev"
@@ -129,12 +132,39 @@
         android:orientation="vertical"
         android:paddingBottom="8dp">
 
-        <com.fongmi.android.tv.ui.custom.CustomSeekView
-            android:id="@+id/seek"
+        <!-- 进度条行：seek + line -->
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            android:paddingEnd="16dp">
+
+            <com.fongmi.android.tv.ui.custom.CustomSeekView
+                android:id="@+id/seek"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+            
+            <!-- line 按钮 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/line_independent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:text="线路 1" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <include
             android:id="@+id/action"

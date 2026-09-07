@@ -8,6 +8,14 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
+    <!-- 状态栏占位 -->
+    <View
+        android:id="@+id/statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/black" />
+        
+    <!-- 视频播放器 -->
     <FrameLayout
         android:id="@+id/video"
         android:layout_width="match_parent"
@@ -51,6 +59,7 @@
 
     </FrameLayout>
 
+    <!-- 直播列表 -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycler"
         android:layout_width="match_parent"
@@ -60,23 +69,27 @@
         android:orientation="vertical"
         tools:visibility="visible">
 
+        <!-- 当前频道信息 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/liveCurrent"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="64dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/shape_live"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="14dp"
-            android:paddingEnd="10dp">
+            android:paddingEnd="10dp"
+            android:clickable="true"
+            android:focusable="true">
 
+            <!-- 台标 -->
             <FrameLayout
-                android:layout_width="58dp"
-                android:layout_height="58dp"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
                 android:layout_marginEnd="14dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -97,22 +110,46 @@
                     android:textStyle="bold" />
             </FrameLayout>
 
+            <!-- 频道名称 + 线路按钮 -->
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/liveTitle"
+                <!-- 标题行：频道名 + 线路按钮 -->
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    tools:text="CCTV3" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/liveTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        tools:text="CCTV3" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/liveLineSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/white_80"
+                        android:textSize="14sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:visibility="visible"
+                        tools:text="线路 1" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- 节目信息（隐藏） -->
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/liveProgram"
                     android:layout_width="match_parent"
@@ -122,7 +159,8 @@
                     android:maxLines="1"
                     android:text="@string/live_no_epg"
                     android:textColor="@color/white_80"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:visibility="gone" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/liveProgramNext"
@@ -134,8 +172,10 @@
                     android:text="@string/live_no_epg"
                     android:textColor="@color/white_70"
                     android:textSize="13sp" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <!-- 来源按钮 -->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/liveSource"
                 android:layout_width="46dp"
@@ -147,6 +187,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_live_source" />
 
+            <!-- 设置按钮 -->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/liveSetting"
                 android:layout_width="46dp"
@@ -158,7 +199,8 @@
                 android:src="@drawable/ic_control_setting_shadow" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
+        
+        <!-- 频道列表 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -212,6 +254,7 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <!-- 底部导航 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"

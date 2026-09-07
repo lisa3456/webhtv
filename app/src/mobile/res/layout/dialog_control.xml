@@ -53,6 +53,11 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/cast"
+                    style="@style/ControlSheetButton"
+                    android:text="@string/play_cast" />
+                
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/lut"
                     style="@style/ControlSheetButton"
                     android:text="@string/play_lut" />
