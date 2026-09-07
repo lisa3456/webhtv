@@ -19,7 +19,7 @@ import com.fongmi.android.tv.utils.Util;
 
 public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
 
-    private static final int DISTANCE = 100;
+    private static final int DISTANCE = 50;
 
     private final ScaleGestureDetector scaleDetector;
     private final GestureDetector detector;
@@ -238,7 +238,7 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
     }
 
     private void checkFunc(float distanceX, float distanceY, MotionEvent e2) {
-        if ((float) Math.sqrt(distanceX * distanceX + distanceY * distanceY) < ResUtil.dp2px(20)) return;
+        if ((float) Math.sqrt(distanceX * distanceX + distanceY * distanceY) < ResUtil.dp2px(10)) return;
         if (distanceX >= distanceY) changeTime = true;
         else if (isSide(e2)) checkSide(e2);
         touch = false;
@@ -249,9 +249,9 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
         float dy = e2.getY() - e1.getY();
         double angle = Math.toDegrees(Math.atan2(Math.abs(dy), Math.abs(dx)));
         if (angle > 70 && e1.getY() - e2.getY() > DISTANCE) {
-            videoView.animate().translationYBy(ResUtil.dp2px(LiveSetting.isInvert() ? 24 : -24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingUp).withEndAction(() -> animating = false).start()).start();
+            videoView.animate().translationYBy(ResUtil.dp2px(LiveSetting.isInvert() ? 24 : -24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingDown).withEndAction(() -> animating = false).start()).start();
         } else if (angle > 70 && e2.getY() - e1.getY() > DISTANCE) {
-            videoView.animate().translationYBy(ResUtil.dp2px(LiveSetting.isInvert() ? -24 : 24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingDown).withEndAction(() -> animating = false).start()).start();
+            videoView.animate().translationYBy(ResUtil.dp2px(LiveSetting.isInvert() ? -24 : 24)).setDuration(150).withStartAction(() -> animating = true).withEndAction(() -> videoView.animate().translationY(0).setDuration(100).withStartAction(listener::onFlingUp).withEndAction(() -> animating = false).start()).start();
         }
     }
 
