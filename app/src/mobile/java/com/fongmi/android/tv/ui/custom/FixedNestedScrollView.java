@@ -22,5 +22,22 @@ public class FixedNestedScrollView extends NestedScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    // 所有方法直接调用 super，不做任何限制
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, 0);
+    }
+
+    @Override
+    public void fling(int velocityY) {
+    }
 }
