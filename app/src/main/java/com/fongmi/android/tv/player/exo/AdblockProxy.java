@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import fi.iki.elonen.NanoHTTPD;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 public class AdblockProxy extends NanoHTTPD {
 
@@ -64,7 +63,7 @@ public class AdblockProxy extends NanoHTTPD {
                         .matcher(content)
                         .replaceAll("");
             } catch (Exception ignored) {
-                // 跳过非法正则，比如 "16" "17" "18" "19"
+                // 跳过非法正则
             }
         }
 
@@ -73,14 +72,14 @@ public class AdblockProxy extends NanoHTTPD {
 
     private String fetch(String url) throws IOException {
         Request req = new Request.Builder().url(url).build();
-        try (Response resp = client.newCall(req).execute()) {
+        try (okhttp3.Response resp = client.newCall(req).execute()) {
             return resp.body() != null ? resp.body().string() : "";
         }
     }
 
     private Response proxyPass(String url) throws IOException {
         Request req = new Request.Builder().url(url).build();
-        Response resp = client.newCall(req).execute();
+        okhttp3.Response resp = client.newCall(req).execute();
         return newFixedLengthResponse(
                 Response.Status.lookup(resp.code()),
                 resp.header("Content-Type", "application/octet-stream"),
