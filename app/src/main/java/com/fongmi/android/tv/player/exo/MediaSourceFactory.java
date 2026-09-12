@@ -2,7 +2,9 @@ package com.fongmi.android.tv.player.exo;
 
 import static androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS;
 
+import android.net.Uri;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.PriorityTaskManager;
@@ -38,6 +40,7 @@ import com.github.catvod.utils.Path;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MediaSourceFactory implements MediaSource.Factory {
@@ -56,8 +59,15 @@ public class MediaSourceFactory implements MediaSource.Factory {
     private OkHttpDataSource.Factory httpDataSourceFactory;
     private DataSource.Factory dataSourceFactory;
     private ExtractorsFactory extractorsFactory;
+    @Nullable private final ExoDolbyVisionPlaybackState dolbyVisionPlaybackState;
 
     public MediaSourceFactory() {
+        this(null);
+    }
+
+    MediaSourceFactory(
+            @Nullable ExoDolbyVisionPlaybackState dolbyVisionPlaybackState) {
+        this.dolbyVisionPlaybackState = dolbyVisionPlaybackState;
         defaultMediaSourceFactory = new DefaultMediaSourceFactory(getDataSourceFactory(), getExtractorsFactory()).setLoadOnlySelectedTracks(PlaybackPerformanceSetting.isLoadOnlySelectedTracksEnabled());
     }
 
@@ -78,7 +88,7 @@ public class MediaSourceFactory implements MediaSource.Factory {
         cache = created;
         CACHE_CAPACITY_STATE.recordCreated(capacityBytes);
         if (SpiderDebug.isEnabled()) SpiderDebug.log("exo-cache", "created capacityBytes=%d policy=%s existingBytes=%d availableBytes=%d reserveBytes=%d", capacityBytes, decision.state(), decision.existingCacheBytes(), decision.availableStorageBytes(), decision.reserveBytes());
-        return created;
+        return cache;
     }
 
     public static synchronized void acquireCacheSession() {
@@ -190,7 +200,27 @@ public class MediaSourceFactory implements MediaSource.Factory {
         applyHeaders(getHttpDataSourceFactory(), ExoUtil.extractHeaders(mediaItem));
         String url = mediaItem.requestMetadata.mediaUri != null ? mediaItem.requestMetadata.mediaUri.toString() : "";
         if (isConcatenatingUrl(url)) return createConcatenatingMediaSource(mediaItem, url);
-        else return defaultMediaSourceFactory.createMediaSource(mediaItem);
+
+        // ===== 新增：按点播配置 rules 命中 host 时走本地去广告代理 =====
+        MediaItem effectiveItem = mediaItem;
+        if (isHls(url) && !isDrm(mediaItem) && AdRuleMatcher.shouldProxy(url)) {
+            String proxyUrl = AdblockProxyManager.start(url);
+            if (proxyUrl != null) {
+                effectiveItem = mediaItem.buildUpon().setUri(proxyUrl).build();
+            }
+        }
+        // ============================================================
+
+        return defaultMediaSourceFactory.createMediaSource(effectiveItem);
+    }
+
+    private static boolean isHls(String url) {
+        return url != null && url.contains(".m3u8");
+    }
+
+    private static boolean isDrm(@NonNull MediaItem mediaItem) {
+        return mediaItem.localConfiguration != null
+                && mediaItem.localConfiguration.drmConfiguration != null;
     }
 
     private MediaSource createConcatenatingMediaSource(MediaItem mediaItem, String url) {
@@ -203,8 +233,36 @@ public class MediaSourceFactory implements MediaSource.Factory {
     }
 
     private ExtractorsFactory getExtractorsFactory() {
-        if (extractorsFactory == null) extractorsFactory = new DefaultExtractorsFactory().setTsExtractorFlags(FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS).setTsExtractorTimestampSearchBytes(TsExtractor.DEFAULT_TIMESTAMP_SEARCH_BYTES * 10);
+        if (extractorsFactory == null) {
+            ExtractorsFactory defaults = new DefaultExtractorsFactory()
+                    .setTsExtractorFlags(FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
+                    .setTsExtractorTimestampSearchBytes(
+                            TsExtractor.DEFAULT_TIMESTAMP_SEARCH_BYTES * 10);
+            ExtractorsFactory withApe = new ExtractorsFactory() {
+                @Override
+                public androidx.media3.extractor.Extractor[] createExtractors() {
+                    return prependApe(defaults.createExtractors());
+                }
+
+                @Override
+                public androidx.media3.extractor.Extractor[] createExtractors(
+                        Uri uri, Map<String, List<String>> responseHeaders) {
+                    return prependApe(defaults.createExtractors(uri, responseHeaders));
+                }
+            };
+            extractorsFactory = new DolbyVisionP81ExtractorsFactory(
+                    withApe, dolbyVisionPlaybackState);
+        }
         return extractorsFactory;
+    }
+
+    private static androidx.media3.extractor.Extractor[] prependApe(
+            androidx.media3.extractor.Extractor[] defaults) {
+        androidx.media3.extractor.Extractor[] extractors =
+                new androidx.media3.extractor.Extractor[defaults.length + 1];
+        extractors[0] = new ApeExtractor();
+        System.arraycopy(defaults, 0, extractors, 1, defaults.length);
+        return extractors;
     }
 
     private DataSource.Factory getDataSourceFactory() {
