@@ -190,27 +190,7 @@ public class MediaSourceFactory implements MediaSource.Factory {
         applyHeaders(getHttpDataSourceFactory(), ExoUtil.extractHeaders(mediaItem));
         String url = mediaItem.requestMetadata.mediaUri != null ? mediaItem.requestMetadata.mediaUri.toString() : "";
         if (isConcatenatingUrl(url)) return createConcatenatingMediaSource(mediaItem, url);
-
-        // ===== 新增：按点播配置 rules 命中 host 时走本地去广告代理 =====
-        MediaItem effectiveItem = mediaItem;
-        if (isHls(url) && !isDrm(mediaItem) && AdRuleMatcher.shouldProxy(url)) {
-            String proxyUrl = AdblockProxyManager.start(url);
-            if (proxyUrl != null) {
-                effectiveItem = mediaItem.buildUpon().setUri(proxyUrl).build();
-            }
-        }
-        // ============================================================
-
-        return defaultMediaSourceFactory.createMediaSource(effectiveItem);
-    }
-
-    private static boolean isHls(String url) {
-        return url != null && url.contains(".m3u8");
-    }
-
-    private static boolean isDrm(@NonNull MediaItem mediaItem) {
-        return mediaItem.localConfiguration != null
-                && mediaItem.localConfiguration.drmConfiguration != null;
+        else return defaultMediaSourceFactory.createMediaSource(mediaItem);
     }
 
     private MediaSource createConcatenatingMediaSource(MediaItem mediaItem, String url) {
