@@ -182,7 +182,7 @@ public class ExoUtil {
     }
 
     public static MediaItem getMediaItem(PlaySpec spec, int decode) {
-        String url = spec.getUri();
+        String url = String.valueOf(spec.getUri());
         // ===== 新增：命中规则时，把播放地址换成代理地址 =====
         if (isHls(url) && spec.getDrm() == null && AdRuleMatcher.shouldProxy(url)) {
             String proxyUrl = AdblockProxyManager.start(url);
