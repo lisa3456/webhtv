@@ -182,10 +182,18 @@ public class ExoUtil {
     }
 
     public static MediaItem getMediaItem(PlaySpec spec, int decode) {
-        MediaItem.Builder builder = new MediaItem.Builder().setUri(spec.getUri());
+        String url = spec.getUri();
+        // ===== 新增：命中规则时，把播放地址换成代理地址 =====
+        if (isHls(url) && spec.getDrm() == null && AdRuleMatcher.shouldProxy(url)) {
+            String proxyUrl = AdblockProxyManager.start(url);
+            if (proxyUrl != null) {
+                url = proxyUrl;
+            }
+        }
+        MediaItem.Builder builder = new MediaItem.Builder().setUri(url);
         builder.setSubtitleConfigurations(buildSubtitleConfigs(spec.getSubs()));
         builder.setDrmConfiguration(buildDrmConfig(spec.getDrm()));
-        builder.setRequestMetadata(buildRequestMetadata(spec));
+        builder.setRequestMetadata(buildRequestMetadata(spec, url)); // ← 传代理后的 url
         builder.setMediaMetadata(spec.getMetadata());
         builder.setAdblock(Setting.isAdblock());
         builder.setMimeType(spec.getFormat());
@@ -195,6 +203,17 @@ public class ExoUtil {
         return builder.build();
     }
 
+    private static boolean isHls(String url) {
+        return url != null && url.contains(".m3u8");
+    }
+
+    private static MediaItem.RequestMetadata buildRequestMetadata(PlaySpec spec, String url) {
+        return new MediaItem.RequestMetadata.Builder()
+                .setMediaUri(Uri.parse(url))
+                .setExtras(PlayerHelper.toBundle(spec.getHeaders()))
+                .build();
+    }
+    
     public static String getMimeType(int errorCode) {
         if (errorCode == PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED || errorCode == PlaybackException.ERROR_CODE_PARSING_CONTAINER_MALFORMED || errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED) return MimeTypes.APPLICATION_M3U8;
         if (errorCode == PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED || errorCode == PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED) return MimeTypes.APPLICATION_OCTET_STREAM;
