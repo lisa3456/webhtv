@@ -100,73 +100,56 @@ public class AdblockProxy extends NanoHTTPD {
 
     private String filterByDuration(String m3u8, List<Double> targets) {
         String[] lines = m3u8.split("\n", -1);
+
+        // 收集每个段：startLine（含）到 endLine（不含）
+        List<int[]> segments = new ArrayList<>();
+        int lastStart = 0;
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].trim().startsWith("#EXT-X-DISCONTINUITY")) {
+                if (i > lastStart) segments.add(new int[]{lastStart, i});
+                lastStart = i;
+            }
+            if (lines[i].trim().startsWith("#EXT-X-ENDLIST")) {
+                if (i > lastStart) segments.add(new int[]{lastStart, i});
+                lastStart = -1;
+                break;
+            }
+        }
+        if (lastStart >= 0 && lastStart < lines.length) {
+            segments.add(new int[]{lastStart, lines.length});
+        }
+
         StringBuilder out = new StringBuilder();
-        StringBuilder segment = new StringBuilder();
-        double totalSeconds = 0;
-        boolean inSegment = false;
         int segmentIndex = 0;
-
-        for (String line : lines) {
-            String trimmed = line.trim();
-
-            if (trimmed.startsWith("#EXT-X-DISCONTINUITY")) {
-                if (inSegment) {
-                    boolean drop = isAdDuration(totalSeconds, targets);
-                    SpiderDebug.log("adblock",
-                            "segment #%d total=%.6f drop=%s targets=%s",
-                            segmentIndex++, totalSeconds, drop, targets);
-                    if (!drop) out.append(segment);
-                    segment.setLength(0);
-                    totalSeconds = 0;
-                }
-                inSegment = !inSegment;
-                if (inSegment) {
-                    segment.append(line).append('\n');
-                } else {
-                    out.append(line).append('\n');
-                }
-                continue;
-            }
-
-            if (trimmed.startsWith("#EXT-X-ENDLIST")) {
-                if (inSegment) {
-                    boolean drop = isAdDuration(totalSeconds, targets);
-                    SpiderDebug.log("adblock",
-                            "end segment total=%.6f drop=%s",
-                            totalSeconds, drop);
-                    if (!drop) out.append(segment);
-                    segment.setLength(0);
-                    totalSeconds = 0;
-                    inSegment = false;
-                }
-                out.append(line).append('\n');
-                continue;
-            }
-
-            if (inSegment) {
-                segment.append(line).append('\n');
-                if (trimmed.startsWith("#EXTINF:")) {
-                    int comma = trimmed.indexOf(',');
+        for (int[] seg : segments) {
+            double totalSeconds = 0;
+            for (int i = seg[0]; i < seg[1]; i++) {
+                String t = lines[i].trim();
+                if (t.startsWith("#EXTINF:")) {
+                    int comma = t.indexOf(',');
                     String num = comma > 0
-                            ? trimmed.substring(8, comma).trim()
-                            : trimmed.substring(8).trim();
+                            ? t.substring(8, comma).trim()
+                            : t.substring(8).trim();
                     try {
                         totalSeconds += Double.parseDouble(num);
                     } catch (Exception ignored) {
                     }
                 }
-            } else {
-                out.append(line).append('\n');
             }
-        }
-
-        if (inSegment && !isAdDuration(totalSeconds, targets)) {
-            out.append(segment);
+            boolean drop = isAdDuration(totalSeconds, targets);
+            SpiderDebug.log("adblock",
+                    "segment #%d lines=%d~%d total=%.6f drop=%s",
+                    segmentIndex++, seg[0], seg[1], totalSeconds, drop);
+            if (!drop) {
+                for (int i = seg[0]; i < seg[1]; i++) {
+                    out.append(lines[i]).append('\n');
+                }
+            }
         }
 
         return out.toString();
     }
-
+    
     private boolean isAdDuration(double totalSeconds, List<Double> targets) {
         for (double t : targets) {
             if (totalSeconds >= t && totalSeconds < t + 1.0) return true;
