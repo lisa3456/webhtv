@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.fongmi.android.tv.bean.Rule;
-import com.github.catvod.crawler.SpiderDebug;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,14 +53,9 @@ public class AdblockProxy extends NanoHTTPD {
         String content = fetch(url);
         if (TextUtils.isEmpty(content)) return content;
 
-        SpiderDebug.log("adblock", "processM3u8 url=%s len=%d",
-                url, content.length());
-
         content = rewriteRefs(content, url);
 
         Rule rule = AdRuleMatcher.findRule(url);
-        SpiderDebug.log("adblock", "findRule rule=%s",
-                rule == null ? "null" : rule.getName());
         if (rule != null) content = applyRule(content, rule);
 
         return content;
@@ -80,9 +74,6 @@ public class AdblockProxy extends NanoHTTPD {
             }
         }
 
-        SpiderDebug.log("adblock", "applyRule patterns=%s durations=%s",
-                patterns, durationTargets);
-
         for (String p : patterns) {
             try {
                 content = Pattern.compile(p).matcher(content).replaceAll("");
@@ -94,16 +85,15 @@ public class AdblockProxy extends NanoHTTPD {
             content = filterByDuration(content, durationTargets);
         }
 
-        SpiderDebug.log("adblock", "applyRule done len=%d", content.length());
         return content;
     }
 
     private String filterByDuration(String m3u8, List<Double> targets) {
         String[] lines = m3u8.split("\n", -1);
 
-        // 收集每个段：startLine（含）到 endLine（不含）
         List<int[]> segments = new ArrayList<>();
         int lastStart = 0;
+        int endListIndex = -1;
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].trim().startsWith("#EXT-X-DISCONTINUITY")) {
                 if (i > lastStart) segments.add(new int[]{lastStart, i});
@@ -111,6 +101,7 @@ public class AdblockProxy extends NanoHTTPD {
             }
             if (lines[i].trim().startsWith("#EXT-X-ENDLIST")) {
                 if (i > lastStart) segments.add(new int[]{lastStart, i});
+                endListIndex = i;
                 lastStart = -1;
                 break;
             }
@@ -120,7 +111,6 @@ public class AdblockProxy extends NanoHTTPD {
         }
 
         StringBuilder out = new StringBuilder();
-        int segmentIndex = 0;
         for (int[] seg : segments) {
             double totalSeconds = 0;
             for (int i = seg[0]; i < seg[1]; i++) {
@@ -136,23 +126,21 @@ public class AdblockProxy extends NanoHTTPD {
                     }
                 }
             }
-            boolean drop = isAdDuration(totalSeconds, targets);
-            SpiderDebug.log("adblock",
-                    "segment #%d lines=%d~%d total=%.6f drop=%s",
-                    segmentIndex++, seg[0], seg[1], totalSeconds, drop);
-            if (!drop) {
+            if (!isAdDuration(totalSeconds, targets)) {
                 for (int i = seg[0]; i < seg[1]; i++) {
                     out.append(lines[i]).append('\n');
                 }
             }
         }
+
         // 补回 #EXT-X-ENDLIST
         if (endListIndex >= 0) {
             out.append(lines[endListIndex]).append('\n');
         }
+
         return out.toString();
     }
-    
+
     private boolean isAdDuration(double totalSeconds, List<Double> targets) {
         for (double t : targets) {
             if (totalSeconds >= t && totalSeconds < t + 1.0) return true;
