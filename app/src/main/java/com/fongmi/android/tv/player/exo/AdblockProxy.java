@@ -74,11 +74,17 @@ public class AdblockProxy extends NanoHTTPD {
             }
         }
 
+        boolean hadEndList = content.contains("#EXT-X-ENDLIST");
+
         for (String p : patterns) {
             try {
                 content = Pattern.compile(p).matcher(content).replaceAll("");
             } catch (Exception ignored) {
             }
+        }
+
+        if (hadEndList && !content.contains("#EXT-X-ENDLIST")) {
+            content = content.trim() + "\n#EXT-X-ENDLIST\n";
         }
 
         if (!durationTargets.isEmpty()) {
