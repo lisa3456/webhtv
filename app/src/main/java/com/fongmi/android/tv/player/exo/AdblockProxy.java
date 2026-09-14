@@ -146,7 +146,10 @@ public class AdblockProxy extends NanoHTTPD {
                 }
             }
         }
-
+        // 补回 #EXT-X-ENDLIST
+        if (endListIndex >= 0) {
+            out.append(lines[endListIndex]).append('\n');
+        }
         return out.toString();
     }
     
