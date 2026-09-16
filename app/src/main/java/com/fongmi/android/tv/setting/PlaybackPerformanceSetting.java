@@ -744,7 +744,7 @@ public class PlaybackPerformanceSetting {
         int normalized = Math.clamp(level, 1, 10);
         if (kernel == PlayerSetting.EXO) {
             if (profile == PROFILE_AUTO) return "自动 · 网络30～60秒";
-            if (profile == PROFILE_LIGHTWEIGHT || profile == PROFILE_COMPATIBLE) return "15～30秒";
+            if (profile == PROFILE_LIGHTWEIGHT || profile == PROFILE_COMPATIBLE) return "5～10秒";
             if (profile == PROFILE_RECOMMENDED) return "30～60秒";
             int minBufferMs = 15_000 + (normalized - 1) * 15_000 / 9;
             return secondsRangeText(minBufferMs, minBufferMs * 2);
