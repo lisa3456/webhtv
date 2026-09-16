@@ -35,6 +35,7 @@ import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.player.lyrics.DesktopLyricsWindow;
 import com.fongmi.android.tv.player.lyrics.LyricsLine;
 import com.fongmi.android.tv.player.lyrics.LyricsResult;
+import com.fongmi.android.tv.player.exo.MediaSourceFactory;
 import com.fongmi.android.tv.server.Server;
 import com.fongmi.android.tv.utils.Task;
 import com.github.catvod.crawler.SpiderDebug;
@@ -210,6 +211,7 @@ public class PlaybackService extends MediaLibraryService implements MediaLibrary
         releaseSession();
         player.stop();
         player.release();
+        MediaSourceFactory.clearDiskPreloadCache();   // ← 新增
         removeForeground();
         Server.get().setService(null);
         EventBus.getDefault().unregister(this);
