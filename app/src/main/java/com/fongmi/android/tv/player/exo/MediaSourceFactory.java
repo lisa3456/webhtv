@@ -236,6 +236,29 @@ public class MediaSourceFactory implements MediaSource.Factory {
         factory.setUserAgent(userAgent).setDefaultRequestProperties(sanitized);
     }
 
+    public static synchronized void clearDiskPreloadCache() {
+        try {
+            if (cache != null) {
+                cache.release();
+                cache = null;
+            }
+            File dir = Path.exoCache();
+            deleteRecursively(dir);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void deleteRecursively(File file) {
+        if (file == null || !file.exists()) return;
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) deleteRecursively(child);
+            }
+        }
+        file.delete();
+    }
+    
     static Map<String, String> sanitizeHeaders(Map<String, String> headers) {
         Map<String, String> sanitized = new LinkedHashMap<>();
         if (headers == null || headers.isEmpty()) return sanitized;
