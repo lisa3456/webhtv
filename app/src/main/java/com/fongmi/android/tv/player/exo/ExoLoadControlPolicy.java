@@ -19,7 +19,7 @@ final class ExoLoadControlPolicy {
         return switch (profile) {
             case PlaybackPerformanceSetting.PROFILE_RECOMMENDED, PlaybackPerformanceSetting.PROFILE_AUTO -> new BufferDurations(30_000, 60_000);
             case PlaybackPerformanceSetting.PROFILE_COMPATIBLE,
-                 PlaybackPerformanceSetting.PROFILE_LIGHTWEIGHT -> new BufferDurations(15_000, 30_000);
+                 PlaybackPerformanceSetting.PROFILE_LIGHTWEIGHT -> new BufferDurations(5_000, 10_000);
             default -> custom(bufferLevel);
         };
     }
