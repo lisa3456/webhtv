@@ -441,8 +441,7 @@ public class PreCache implements Player.Listener {
                 openDiskCircuit("start-error", e);
                 return false;
             }
-            stopCurrentTask("start-error");
-            return false;
+            throw e;
         }
         clearSeek();
         return true;
