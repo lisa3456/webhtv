@@ -4,8 +4,8 @@ import com.fongmi.android.tv.setting.PlaybackPerformanceSetting;
 
 final class ExoLoadControlPolicy {
 
-    private static final int MIN_BUFFER_MS = 15_000;
-    private static final int MAX_BUFFER_MS = 30_000;
+    private static final int MIN_BUFFER_MS = 5_000;
+    private static final int MAX_BUFFER_MS = 10_000;
     private static final int AUTO_LOCAL_MIN_BUFFER_MS = 1_000;
     private static final int AUTO_LOCAL_MAX_BUFFER_MS = 15_000;
     private static final int AUTO_LOCAL_START_BUFFER_MS = 500;
