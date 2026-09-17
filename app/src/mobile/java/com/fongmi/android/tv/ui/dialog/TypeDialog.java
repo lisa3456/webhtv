@@ -21,6 +21,7 @@ import com.fongmi.android.tv.ui.adapter.TypeDialogAdapter;
 import com.fongmi.android.tv.utils.ResUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
+import com.fongmi.android.tv.ui.custom.SpaceItemDecoration;
 
 import java.util.List;
 
@@ -88,7 +89,9 @@ public class TypeDialog extends BaseBottomSheetDialog implements TypeAdapter.OnC
         binding.recycler.setMaxHeight(ResUtil.getScreenHeight(requireContext()) * ratio / 100);
         binding.recycler.setHasFixedSize(false);
         binding.recycler.setItemAnimator(null);
-        binding.recycler.setLayoutManager(new GridLayoutManager(requireContext(), 4));
+        GridLayoutManager manager = new GridLayoutManager(requireContext(), 4);
+        binding.recycler.setLayoutManager(manager);
+        binding.recycler.addItemDecoration(new SpaceItemDecoration(4, 7));
         binding.recycler.setAdapter(new TypeDialogAdapter(this, items));
     }
 
