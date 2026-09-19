@@ -18,21 +18,6 @@ public class AdblockProxy extends NanoHTTPD {
 
     private static final boolean FORCE_PROXY_SEGMENTS = false;
 
-    // ===== 过滤结果记录 =====
-    public static class FilterResult {
-        public int removedSegments = 0;
-        public double removedSeconds = 0;
-        public String ruleName = "";
-        public boolean applied = false;
-    }
-
-    private static volatile FilterResult lastResult = new FilterResult();
-
-    public static FilterResult getLastResult() {
-        return lastResult;
-    }
-    // ========================
-
     private final OkHttpClient client = new OkHttpClient();
 
     public AdblockProxy(int port) {
@@ -71,20 +56,12 @@ public class AdblockProxy extends NanoHTTPD {
         content = rewriteRefs(content, url);
 
         Rule rule = AdRuleMatcher.findRule(url);
-        if (rule != null) {
-            FilterResult result = new FilterResult();
-            result.ruleName = rule.getName();
-            result.applied = true;
-            content = applyRule(content, rule, result);
-            lastResult = result;
-        } else {
-            lastResult = new FilterResult();
-        }
+        if (rule != null) content = applyRule(content, rule);
 
         return content;
     }
 
-    private String applyRule(String content, Rule rule, FilterResult result) {
+    private String applyRule(String content, Rule rule) {
         List<String> patterns = new ArrayList<>();
         List<Double> durationTargets = new ArrayList<>();
 
@@ -99,12 +76,6 @@ public class AdblockProxy extends NanoHTTPD {
 
         boolean hadEndList = content.contains("#EXT-X-ENDLIST");
 
-        // 先按时长过滤（此时 #EXT-X-DISCONTINUITY 还在）
-        if (!durationTargets.isEmpty()) {
-            content = filterByDuration(content, durationTargets, result);
-        }
-
-        // 再应用完整 regex
         for (String p : patterns) {
             try {
                 content = Pattern.compile(p).matcher(content).replaceAll("");
@@ -112,15 +83,18 @@ public class AdblockProxy extends NanoHTTPD {
             }
         }
 
-        // 补回被 regex 删掉的 #EXT-X-ENDLIST
         if (hadEndList && !content.contains("#EXT-X-ENDLIST")) {
             content = content.trim() + "\n#EXT-X-ENDLIST\n";
+        }
+
+        if (!durationTargets.isEmpty()) {
+            content = filterByDuration(content, durationTargets);
         }
 
         return content;
     }
 
-    private String filterByDuration(String m3u8, List<Double> targets, FilterResult result) {
+    private String filterByDuration(String m3u8, List<Double> targets) {
         String[] lines = m3u8.split("\n", -1);
 
         List<int[]> segments = new ArrayList<>();
@@ -162,9 +136,6 @@ public class AdblockProxy extends NanoHTTPD {
                 for (int i = seg[0]; i < seg[1]; i++) {
                     out.append(lines[i]).append('\n');
                 }
-            } else {
-                result.removedSegments++;
-                result.removedSeconds += totalSeconds;
             }
         }
 
