@@ -64,6 +64,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/adblock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/white_80"
+                android:textSize="13sp"
+                android:visibility="gone"
+                tools:text="去广 34秒"
+                tools:visibility="visible" />
+            
             <android.widget.TextClock
                 android:id="@+id/system_time"
                 android:layout_width="wrap_content"
