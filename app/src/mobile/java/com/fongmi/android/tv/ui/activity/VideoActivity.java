@@ -637,6 +637,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         }, 12f);
         setVideoView();
         setViewModel();
+        //改
         // setShortDisplay();
         if (shouldUseImmersiveAudio()) {
             setAudioStageVisible(true);
@@ -3938,6 +3939,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mKeyDown.resetScale();
         App.post(mR3, 2000);
         hideControl();
+        //改
+        updateAdblockBadge();
         logVideoFrame("enterFullscreen after");
     }
 
@@ -3960,6 +3963,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         App.post(mR3, 2000);
         setRotate(false);
         hideControl();
+        //改
+        updateAdblockBadge();
         logVideoFrame("exitFullscreen after");
     }
 
@@ -4044,6 +4049,8 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mBinding.control.getRoot().setVisibility(View.VISIBLE);
         if (mOsd != null) mOsd.setControlsVisible(true);
         checkFullscreenImg();
+        //改
+        updateAdblockBadge();
         setR1Callback();
         //改
         updateLiveUi();
@@ -4477,6 +4484,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         mClock.setCallback(this);
         //改
         updateLiveUi();
+        updateAdblockBadge();
     }
 
     //改
@@ -4484,6 +4492,22 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (service() == null || player().isEmpty()) return;
         boolean live = player().getPlayer().isCurrentMediaItemLive();
         mBinding.control.seek.setVisibility(live ? View.GONE : View.VISIBLE);
+    }
+    
+    //改
+    private void updateAdblockBadge() {
+        if (mBinding == null || mBinding.control.adblock == null) return;
+        if (isFullscreen()) {
+            mBinding.control.adblock.setVisibility(View.GONE);
+            return;
+        }
+        AdblockProxy.FilterResult result = AdblockProxy.getLastResult();
+        if (result == null || !result.applied || result.removedSeconds <= 0) {
+            mBinding.control.adblock.setVisibility(View.GONE);
+            return;
+        }
+        mBinding.control.adblock.setText("去广" + Math.round(result.removedSeconds) + "秒");
+        mBinding.control.adblock.setVisibility(View.VISIBLE);
     }
     
     private void updateAudioOnlyState() {
@@ -5667,6 +5691,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
                 player().reset();
                 //改
                 updateLiveUi();
+                updateAdblockBadge();
                 break;
             case Player.STATE_ENDED:
                 checkEnded(true);
