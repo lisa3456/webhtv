@@ -95,6 +95,8 @@ import com.fongmi.android.tv.playback.PlaybackEventCollector;
 import com.fongmi.android.tv.playback.PlaybackOrientation;
 import com.fongmi.android.tv.player.PlayerHelper;
 import com.fongmi.android.tv.player.PlayerManager;
+//改
+import com.fongmi.android.tv.player.exo.AdblockProxy;
 import com.fongmi.android.tv.player.engine.PlayerEngine;
 import com.fongmi.android.tv.player.engine.PlaySpec;
 import com.fongmi.android.tv.player.karaoke.KaraokeController;
