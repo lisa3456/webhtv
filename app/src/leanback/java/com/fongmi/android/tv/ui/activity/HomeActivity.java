@@ -424,7 +424,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
             return;
         }
         mTypeAdapter.addAll(result.getTypes());
-        mBinding.typeRecycler.setVisibility(View.VISIBLE);
+        mBinding.typeRecycler.setVisibility(View.GONE);
     }
 
     private void addVideo(Result result) {
@@ -461,8 +461,9 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     private void setFunc() {
         List<Func> items = new ArrayList<>();
-        if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
         items.add(Func.create(R.string.home_search));
+        items.add(Func.create(R.string.home_vod));
+        if (LiveConfig.hasUrl()) items.add(Func.create(R.string.home_live));
         items.add(Func.create(R.string.home_keep));
         items.add(Func.create(R.string.home_push));
         items.add(Func.create(R.string.home_setting));
@@ -585,7 +586,14 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
 
     @Override
     public void onItemClick(Func item) {
-        if (item.getResId() == R.string.home_live) LiveActivity.start(this);
+        if (item.getResId() == R.string.home_vod)         {
+            if (mTypeAdapter == null || mTypeAdapter.getItemCount() == 0) {
+                Notify.show("暂无分类");
+                return;
+            }
+            onItemClick(mTypeAdapter.get(0));
+        }
+        else if (item.getResId() == R.string.home_live) LiveActivity.start(this);
         else if (item.getResId() == R.string.home_keep) KeepActivity.start(this);
         else if (item.getResId() == R.string.home_push) PushActivity.start(this);
         else if (item.getResId() == R.string.home_search) SearchActivity.start(this);
