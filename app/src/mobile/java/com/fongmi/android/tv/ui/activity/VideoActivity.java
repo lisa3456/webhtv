@@ -1423,8 +1423,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         else mBinding.episode.scrollToPosition(position);
     }
 
+    //改
     private void scrollEpisodeToSelected() {
-        mBinding.episode.post(() -> scrollEpisodeToPosition(mEpisodeAdapter.getPosition()));
+        SpiderDebug.log("episode-scroll", "position=%d count=%d",
+                mEpisodeAdapter.getPosition(), mEpisodeAdapter.getItemCount());
+        mBinding.episode.post(() -> mBinding.episode.post(
+                () -> scrollEpisodeToPosition(mEpisodeAdapter.getPosition())));
     }
 
     private int getEpisodeRowStart(GridLayoutManager manager, int position) {
@@ -5668,6 +5672,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
                 player().reset();
                 //改
                 updateLiveUi();
+                mBinding.episode.postDelayed(this::scrollEpisodeToSelected, 300);
                 break;
             case Player.STATE_ENDED:
                 checkEnded(true);
