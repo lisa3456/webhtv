@@ -1256,7 +1256,11 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
                 mBinding.episode.setSelectedPosition(position);
                 mBinding.episode.post(() -> {
                     if (isFinishing() || isDestroyed()) return;
-                    mBinding.episode.setSelectedPosition(position);
+                    int column = Math.max(1, mEpisodeAdapter.getColumn());
+                    int row = position / column;
+                    int rowHeight = ResUtil.dp2px(40) + mBinding.episode.getVerticalSpacing();
+                    int target = mBinding.episode.getTop() + row * rowHeight - ResUtil.dp2px(80);
+                    mBinding.scroll.smoothScrollTo(0, Math.max(0, target));
                     if (requestFocus) mBinding.episode.requestFocus();
                 });
             });
