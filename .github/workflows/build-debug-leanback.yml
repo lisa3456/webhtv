@@ -37,12 +37,12 @@ jobs:
       - name: Build Debug APK
         run: |
           chmod +x ./gradlew
-          ./gradlew :app:assembleLeanbackArm64_v8aDebug --no-daemon
+          ./gradlew :app:assembleLeanbackArmeabi_v7aDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk-leanback-arm64-v8a
-          path: app/build/outputs/apk/leanbackArm64_v8a/debug/*.apk
+          name: debug-apk-leanback-armeabi-v7a
+          path: app/build/outputs/apk/leanbackArmeabi_v7a/debug/*.apk
           if-no-files-found: error
           retention-days: 30
