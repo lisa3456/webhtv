@@ -807,6 +807,15 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.episode.setItemAlignmentOffset(0);
         mBinding.episode.setItemAlignmentOffsetPercent(0);
         mBinding.episode.setAdapter(mEpisodeAdapter = new EpisodeAdapter(this));
+        mBinding.episode.setOnFocusChangeListener((view, hasFocus) -> {
+            if (!hasFocus) return;
+            int position = mEpisodeAdapter.getPosition();
+            if (position < 0 || position >= mEpisodeAdapter.getItemCount()) return;
+            mBinding.episode.post(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                mBinding.episode.setSelectedPosition(position);
+            });
+        });
         mEpisodeAdapter.setColumn(episodeColumn);
         mBinding.quality.setHorizontalSpacing(ResUtil.dp2px(8));
         mBinding.quality.setRowHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -5323,6 +5332,11 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         switch (state) {
             case Player.STATE_BUFFERING:
                 showProgress();
+                mClock.setCallback(null);
+                mBinding.episode.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    mBinding.episode.setSelectedPosition(mEpisodeAdapter.getPosition());
+                });
                 break;
             case Player.STATE_READY:
                 mKaraokeResultShown = false;
