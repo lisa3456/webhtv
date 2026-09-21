@@ -5658,6 +5658,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         switch (state) {
             case Player.STATE_BUFFERING:
                 showProgress();
+                mBinding.episode.post(this::scrollEpisodeToSelected);
                 break;
             case Player.STATE_READY:
                 if (mPendingKaraokeResult == null) mKaraokeResultShown = false;
@@ -5668,8 +5669,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
                 player().reset();
                 //改
                 updateLiveUi();
-                mBinding.episode.post(this::scrollEpisodeToSelected);
-                mBinding.episode.postDelayed(this::scrollEpisodeToSelected, 150);
                 break;
             case Player.STATE_ENDED:
                 checkEnded(true);
