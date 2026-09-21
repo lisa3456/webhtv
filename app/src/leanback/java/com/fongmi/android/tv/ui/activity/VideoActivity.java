@@ -1274,20 +1274,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void updateEpisodeWindowNow() {
-        int height = getEpisodeWindowHeight();
-        if (height <= 0) return;
-        int available = getEpisodeAvailableHeight();
-        if (available > 0) height = Math.max(height, available);
-        ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
-        if (params instanceof LinearLayoutCompat.LayoutParams layoutParams) {
-            if (layoutParams.height == height && layoutParams.weight == 0) return;
-            layoutParams.height = height;
-            layoutParams.weight = 0;
-            mBinding.episode.setLayoutParams(layoutParams);
-        } else if (params.height != height) {
-            params.height = height;
-            mBinding.episode.setLayoutParams(params);
-        }
     }
 
     private int getEpisodeWindowHeight() {
