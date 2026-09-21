@@ -5784,7 +5784,10 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (KeyUtil.isActionUp(event) && KeyUtil.isBackKey(event) && mBinding.lutQuick.hideIfVisible()) return true;
         if (isVisible(mBinding.lutQuick)) return dispatchLutQuickKey(event);
-        if (isFullscreen() && KeyUtil.isMenuKey(event)) onToggle();
+        if (isFullscreen() && KeyUtil.isMenuKey(event)) {
+            if (KeyUtil.isActionUp(event)) onEpisodes();
+            return true;
+        }
         if (isVisible(mBinding.control.getRoot())) setR1Callback();
         if (isVisible(mBinding.control.getRoot())) mFocus2 = getCurrentFocus();
         if (dispatchOpeningEndingAdjust(event)) return true;
