@@ -799,13 +799,13 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.episode.setNumColumns(episodeColumn);
         mBinding.episode.setHorizontalSpacing(ResUtil.dp2px(8));
         mBinding.episode.setVerticalSpacing(ResUtil.dp2px(8));
-        mBinding.episode.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_LOW_EDGE);
+        mBinding.episode.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_HIGH_EDGE);
         mBinding.episode.setWindowAlignmentPreferKeyLineOverLowEdge(false);
         mBinding.episode.setWindowAlignmentPreferKeyLineOverHighEdge(false);
         mBinding.episode.setWindowAlignmentOffset(0);
-        mBinding.episode.setWindowAlignmentOffsetPercent(0);
+        mBinding.episode.setWindowAlignmentOffsetPercent(50);
         mBinding.episode.setItemAlignmentOffset(0);
-        mBinding.episode.setItemAlignmentOffsetPercent(0);
+        mBinding.episode.setItemAlignmentOffsetPercent(50);
         mBinding.episode.setAdapter(mEpisodeAdapter = new EpisodeAdapter(this));
         mBinding.episode.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) return;
