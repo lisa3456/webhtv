@@ -84,8 +84,8 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         panelWidth = getPanelWidth();
         setRecyclerView();
         flagAdapter.addAll(flags == null ? new ArrayList<>() : flags);
-        setEpisodes(getSelectedFlag());
         binding.flag.setSelectedPosition(flagAdapter.getPosition());
+        setEpisodes(getSelectedFlag());
     }
 
     private void setRecyclerView() {
@@ -251,8 +251,13 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         if (position < 0 || position >= episodeAdapter.getItemCount()) return;
         binding.episode.post(() -> {
             if (binding == null) return;
-            binding.episode.setSelectedPosition(position);
-            if (requestFocus) binding.episode.requestFocus();
+            binding.episode.setSelectedPositionSmooth(position);
+            if (!requestFocus) return;
+            binding.episode.postDelayed(() -> {
+                if (binding == null) return;
+                binding.episode.setSelectedPositionSmooth(position);
+                binding.episode.requestFocus();
+            }, 150);
         });
     }
 
