@@ -5782,9 +5782,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (KeyUtil.isActionUp(event) && KeyUtil.isUpKey(event)) {
-            onSpeedEnd();
-        }
         if (KeyUtil.isActionUp(event) && KeyUtil.isBackKey(event) && mBinding.lutQuick.hideIfVisible()) return true;
         if (isVisible(mBinding.lutQuick)) return dispatchLutQuickKey(event);
         if (isFullscreen() && KeyUtil.isMenuKey(event)) {
@@ -6072,13 +6069,10 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.widget.speed.setVisibility(View.VISIBLE);
         mBinding.widget.speed.startAnimation(ResUtil.getAnim(R.anim.forward));
         mBinding.control.action.speed.setText(player().setSpeed(PlayerSetting.getSpeed()));
-        saveDefaultSpeed();
     }
 
     @Override
     public void onSpeedEnd() {
-        SpiderDebug.log("speed-key", "onSpeedEnd speed=%f default=%f",
-                player().getSpeed(), PlayerSetting.getDefaultSpeed());
         mBinding.widget.speed.clearAnimation();
         mBinding.widget.speed.setVisibility(View.GONE);
         player().setSpeed(PlayerSetting.getDefaultSpeed());
