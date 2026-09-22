@@ -827,7 +827,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.part.setRowHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         mBinding.part.setAdapter(mPartAdapter = new PartAdapter(item -> initSearch(item, false)));
         mBinding.quick.setHorizontalSpacing(ResUtil.dp2px(8));
-        mBinding.quick.setRowHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mBinding.quick.setRowHeight(ResUtil.dp2px(30));
         mBinding.quick.setAdapter(mQuickAdapter = new QuickAdapter(this));
         mBinding.control.parse.setHorizontalSpacing(ResUtil.dp2px(8));
         mBinding.control.parse.setRowHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
