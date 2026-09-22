@@ -803,9 +803,9 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.episode.setWindowAlignmentPreferKeyLineOverLowEdge(false);
         mBinding.episode.setWindowAlignmentPreferKeyLineOverHighEdge(false);
         mBinding.episode.setWindowAlignmentOffset(0);
-        mBinding.episode.setWindowAlignmentOffsetPercent(50);
+        mBinding.episode.setWindowAlignmentOffsetPercent(0);
         mBinding.episode.setItemAlignmentOffset(0);
-        mBinding.episode.setItemAlignmentOffsetPercent(50);
+        mBinding.episode.setItemAlignmentOffsetPercent(0);
         mBinding.episode.setAdapter(mEpisodeAdapter = new EpisodeAdapter(this));
         mBinding.episode.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) return;
