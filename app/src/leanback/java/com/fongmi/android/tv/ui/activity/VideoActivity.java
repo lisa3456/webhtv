@@ -6076,6 +6076,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     public void onSpeedEnd() {
         mBinding.widget.speed.clearAnimation();
         mBinding.widget.speed.setVisibility(View.GONE);
+        player().setSpeed(PlayerSetting.getDefaultSpeed());
         mBinding.control.action.speed.setText(player().getSpeedText());
         mHistory.setSpeed(player().getSpeed());
     }
