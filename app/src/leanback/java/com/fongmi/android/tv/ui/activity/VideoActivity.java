@@ -799,7 +799,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.episode.setNumColumns(episodeColumn);
         mBinding.episode.setHorizontalSpacing(ResUtil.dp2px(8));
         mBinding.episode.setVerticalSpacing(ResUtil.dp2px(8));
-        mBinding.episode.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_LOW_EDGE);
+        mBinding.episode.setWindowAlignment(VerticalGridView.WINDOW_ALIGN_BOTH_EDGE);
         mBinding.episode.setWindowAlignmentPreferKeyLineOverLowEdge(false);
         mBinding.episode.setWindowAlignmentPreferKeyLineOverHighEdge(false);
         mBinding.episode.setWindowAlignmentOffset(0);
@@ -1274,17 +1274,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void updateEpisodeWindowNow() {
-        int contentHeight = getEpisodeWindowHeight();
-        if (contentHeight <= 0) return;
-        int available = getEpisodeAvailableHeight();
-        int height = available > 0 ? Math.min(contentHeight, available) : contentHeight;
-        ViewGroup.LayoutParams params = mBinding.episode.getLayoutParams();
-        if (params instanceof LinearLayoutCompat.LayoutParams layoutParams) {
-            if (layoutParams.height == height && layoutParams.weight == 0) return;
-            layoutParams.height = height;
-            layoutParams.weight = 0;
-            mBinding.episode.setLayoutParams(layoutParams);
-        }
     }
 
     private int getEpisodeWindowHeight() {
