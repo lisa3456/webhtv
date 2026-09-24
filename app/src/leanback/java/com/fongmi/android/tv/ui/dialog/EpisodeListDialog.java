@@ -198,9 +198,8 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
     }
 
     private void focusUpperFromEpisode() {
-        if (isVisible(binding.array) && arrayAdapter.getItemCount() > 0) {
-        focusArray();
-    }
+        if (isVisible(binding.array) && arrayAdapter.getItemCount() > 0) focusArray();
+        else focusFlag();
     }
 
     private void focusLowerFromFlag() {
