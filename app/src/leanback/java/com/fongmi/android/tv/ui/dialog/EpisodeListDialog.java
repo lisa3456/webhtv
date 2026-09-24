@@ -72,7 +72,7 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
     @Override
     protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         binding = DialogEpisodeListBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+        return binding;
     }
 
     @Override
