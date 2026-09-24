@@ -92,6 +92,7 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
 
         int halfScreen = ResUtil.getScreenHeight(requireContext()) / 2;
         ViewGroup.LayoutParams params = sheet.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = halfScreen;
         sheet.setLayoutParams(params);
 
@@ -197,8 +198,9 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
     }
 
     private void focusUpperFromEpisode() {
-        if (isVisible(binding.array) && arrayAdapter.getItemCount() > 0) focusArray();
-        else focusFlag();
+        if (isVisible(binding.array) && arrayAdapter.getItemCount() > 0) {
+        focusArray();
+    }
     }
 
     private void focusLowerFromFlag() {
