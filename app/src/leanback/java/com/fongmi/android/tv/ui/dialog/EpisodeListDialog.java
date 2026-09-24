@@ -1,15 +1,12 @@
 package com.fongmi.android.tv.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,12 +26,13 @@ import com.fongmi.android.tv.ui.adapter.EpisodeAdapter;
 import com.fongmi.android.tv.ui.adapter.FlagAdapter;
 import com.fongmi.android.tv.utils.KeyUtil;
 import com.fongmi.android.tv.utils.ResUtil;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.OnClickListener, ArrayAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
+public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdapter.OnClickListener, ArrayAdapter.OnClickListener, EpisodeAdapter.OnClickListener {
 
     private final List<Integer> segmentStarts;
 
@@ -65,18 +63,16 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
     }
 
     public void show(FragmentActivity activity) {
-        for (Fragment fragment : activity.getSupportFragmentManager().getFragments()) if (fragment instanceof EpisodeListDialog) return;
+        for (Fragment fragment : activity.getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof EpisodeListDialog) return;
+        }
         show(activity.getSupportFragmentManager(), null);
     }
 
     @Override
-    protected ViewBinding getBinding() {
-        return binding = DialogEpisodeListBinding.inflate(getLayoutInflater());
-    }
-
-    @Override
-    protected MaterialAlertDialogBuilder getBuilder() {
-        return builder().setView(getBinding().getRoot());
+    protected ViewBinding getBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
+        binding = DialogEpisodeListBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -86,6 +82,23 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         flagAdapter.addAll(flags == null ? new ArrayList<>() : flags);
         binding.flag.setSelectedPosition(flagAdapter.getPosition());
         setEpisodes(getSelectedFlag());
+    }
+
+    @Override
+    protected void setBehavior(BottomSheetDialog dialog) {
+        super.setBehavior(dialog);
+        FrameLayout sheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (sheet == null) return;
+
+        int halfScreen = ResUtil.getScreenHeight(requireContext()) / 2;
+        ViewGroup.LayoutParams params = sheet.getLayoutParams();
+        params.height = halfScreen;
+        sheet.setLayoutParams(params);
+
+        BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(sheet);
+        behavior.setPeekHeight(halfScreen);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        behavior.setSkipCollapsed(true);
     }
 
     private void setRecyclerView() {
@@ -286,61 +299,5 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (dismissListener != null) dismissListener.onDismiss(dialog);
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable android.os.Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setWindowAnimations(0);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            window.setDimAmount(0f);
-        }
-        return dialog;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Window window = getDialog() == null ? null : getDialog().getWindow();
-        if (window == null || binding == null) return;
-        window.getDecorView().setPadding(0, 0, 0, 0);
-        clearParentPaddingAndFillHeight();
-        window.setGravity(Gravity.END | Gravity.BOTTOM);
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.width = panelWidth;
-        params.height = WindowManager.LayoutParams.MATCH_PARENT;
-        params.gravity = Gravity.END | Gravity.BOTTOM;
-        params.x = 0;
-        params.y = 0;
-        window.setAttributes(params);
-        window.setLayout(panelWidth, WindowManager.LayoutParams.MATCH_PARENT);
-        binding.getRoot().post(() -> {
-            clearParentPaddingAndFillHeight();
-            window.setLayout(panelWidth, WindowManager.LayoutParams.MATCH_PARENT);
-        });
-    }
-
-    private void clearParentPaddingAndFillHeight() {
-        View view = binding.getRoot();
-        fillHeight(view);
-        while (view.getParent() instanceof View parent) {
-            if (parent instanceof ViewGroup group) group.setPadding(0, 0, 0, 0);
-            fillHeight(parent);
-            view = parent;
-        }
-    }
-
-    private void fillHeight(View view) {
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (params != null) {
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            view.setLayoutParams(params);
-        }
-        view.setMinimumHeight(ResUtil.getScreenHeight(requireContext()));
     }
 }
