@@ -140,8 +140,10 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
         Window window = dialog.getWindow();
         if (window == null) return;
 
-        int halfScreen = ResUtil.getScreenHeight(requireContext()) / 2;
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, halfScreen);
+        window.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT
+    );
     }
 
     private void setRecyclerView() {
