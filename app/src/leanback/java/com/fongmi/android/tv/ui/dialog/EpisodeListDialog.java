@@ -177,7 +177,7 @@ public class EpisodeListDialog extends BaseBottomSheetDialog implements FlagAdap
     }
 
     private int getEpisodeContentWidth() {
-        return panelWidth - ResUtil.dp2px(40);
+        return ResUtil.getScreenWidth(requireContext()) - ResUtil.dp2px(40);
     }
 
     private Flag getSelectedFlag() {
