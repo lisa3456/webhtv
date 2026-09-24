@@ -27,7 +27,6 @@
         android:layout_height="40dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:visibility="gone"
         tools:itemCount="3"
         tools:listitem="@layout/adapter_flag" />
 
