@@ -113,6 +113,7 @@ public class Flag implements Parcelable, Diffable<Flag> {
             }
         }
         if (start < url.length()) items.add(url.substring(start));
+        if (depth != 0) return url.split("#");
         return items.toArray(new String[0]);
     }
 
