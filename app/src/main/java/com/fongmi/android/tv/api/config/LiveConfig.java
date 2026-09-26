@@ -197,7 +197,20 @@ public class LiveConfig extends BaseConfig {
     private void initLive(Config config, JsonObject object) {
         String spider = Json.safeString(object, "spider");
         BaseLoader.get().parseJar(spider, false);
-        setLives(Json.safeListElement(object, "lives").stream().map(e -> Live.objectFrom(e, spider)).distinct().collect(Collectors.toCollection(ArrayList::new)));
+        List<Live> lives = Json.safeListElement(object, "lives").stream()
+                .map(e -> Live.objectFrom(e, spider))
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+        setLives(lives);
+        for (Live live : lives) {
+            if (!live.getApi().isEmpty()) {
+                try {
+                    live.spider(); 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         finishLive(config, spider);
     }
 
