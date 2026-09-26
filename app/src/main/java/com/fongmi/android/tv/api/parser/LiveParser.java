@@ -53,7 +53,11 @@ public class LiveParser {
 
     private static boolean isPlayableUrl(String url) {
         String text = url == null ? "" : url.trim();
-        return text.contains("://");
+        if (text.contains("://")) return true;
+        if (text.startsWith("./") && text.contains(".py")) return true;
+        if (text.contains(".py&")) return true;
+        if (text.contains(".py?")) return true;
+        return false;
     }
 
     public static void start(Live live) throws Exception {
@@ -68,6 +72,8 @@ public class LiveParser {
         return OkHttp.string(UrlUtil.convert(live.getUrl()), live.getHeaders());
     }
 
+    public static String lastPyPath = "";
+    
     public static void text(Live live, String text) {
         if (!live.getGroups().isEmpty()) return;
         if (M3U.matcher(text).find()) m3u(live, text);
@@ -148,11 +154,19 @@ public class LiveParser {
                 for (String url : split[1].split("#")) {
                     String[] parts = url.split("\\|", 2);
                     if (!isPlayableUrl(parts[0])) continue;
+                    String rawUrl = parts[0];
+                    if ((rawUrl.startsWith("./") || rawUrl.contains(".py")) && rawUrl.contains("&")) {
+                        int amp = rawUrl.indexOf('&');
+                        String pyPath = rawUrl.substring(0, amp);
+                        String query = rawUrl.substring(amp + 1);
+                        lastPyPath = pyPath;
+                        rawUrl = "proxy://do=py&" + query;
+                    }
                     if (live.getGroups().isEmpty()) live.getGroups().add(Group.create());
                     Group group = live.getGroups().get(live.getGroups().size() - 1);
                     Channel channel = group.find(Channel.create(split[0]));
                     if (parts.length > 1) setting.headers(parts[1]);
-                    channel.getUrls().add(parts[0]);
+                    channel.getUrls().add(rawUrl);
                     setting.copy(channel);
                 }
             }
