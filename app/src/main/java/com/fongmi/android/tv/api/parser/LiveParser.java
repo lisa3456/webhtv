@@ -58,13 +58,22 @@ public class LiveParser {
 
     public static void start(Live live) throws Exception {
         if (!live.getGroups().isEmpty()) return;
+        if (!live.getApi().isEmpty()) {
+            try {
+                live.spider();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
         String text = getText(live);
         if (Json.isArray(text)) json(live, text);
         else text(live, text);
     }
 
     private static String getText(Live live) throws Exception {
-        if (!live.getApi().isEmpty()) return live.spider().liveContent(live.getUrl());
+        if (live.getType() == 3 && !live.getApi().isEmpty()) {
+            return live.spider().liveContent(live.getUrl());
+        }
         return OkHttp.string(UrlUtil.convert(live.getUrl()), live.getHeaders());
     }
 
