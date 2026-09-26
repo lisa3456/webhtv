@@ -153,7 +153,16 @@ public class LiveConfig extends BaseConfig {
     private void parseText(Config config, String text) {
         Live live = new Live(UrlUtil.getName(config.getUrl()), config.getUrl()).sync();
         lives = new ArrayList<>(List.of(live));
+        LiveParser.lastPyPath = "";
         LiveParser.text(live, text);
+        if (!TextUtils.isEmpty(LiveParser.lastPyPath)) {
+            String pyPath = LiveParser.lastPyPath;
+            if (pyPath.startsWith("./") || pyPath.startsWith("../")) {
+                pyPath = UrlUtil.resolve(config.getUrl(), pyPath);
+            }
+            BaseLoader.get().parseJar(pyPath, false);
+            live.setApi(pyPath);
+        }
         finishLive(config, "");
     }
 
