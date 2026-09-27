@@ -52,6 +52,10 @@ public class Notify {
         if (resId != 0) show(ResUtil.getString(resId));
     }
 
+    public static void show(String text) {
+        if (!TextUtils.isEmpty(text)) get().makeText(text);
+    }
+    
     public static void show(String text, int duration, int gravity, int yOffset) {
         if (TextUtils.isEmpty(text)) return;
         get().makeText(text, duration, gravity, yOffset);
@@ -83,6 +87,12 @@ public class Notify {
         mDialog.show();
     }
 
+    private void makeText(String text) {
+        if (mToast != null) mToast.cancel();
+        mToast = Toast.makeText(App.get(), text, Toast.LENGTH_LONG);
+        mToast.show();
+    }
+    
     private void makeText(String text, int duration, int gravity, int yOffset) {
         if (mToast != null) mToast.cancel();
         mToast = Toast.makeText(App.get(), text, duration);
