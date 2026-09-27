@@ -783,7 +783,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void exitHome() {
-        ExitConfirmDialog.create(this::confirmExitHome).show(this);
+        confirmExitHome();
     }
 
     private void confirmExitHome() {
