@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.widget.Toast;
+import android.view.Gravity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationChannelCompat;
@@ -51,8 +52,9 @@ public class Notify {
         if (resId != 0) show(ResUtil.getString(resId));
     }
 
-    public static void show(String text) {
-        if (!TextUtils.isEmpty(text)) get().makeText(text);
+    public static void show(String text, int duration, int gravity, int yOffset) {
+        if (TextUtils.isEmpty(text)) return;
+        get().makeText(text, duration, gravity, yOffset);
     }
 
     public static void progress(Context context) {
@@ -81,9 +83,10 @@ public class Notify {
         mDialog.show();
     }
 
-    private void makeText(String text) {
+    private void makeText(String text, int duration, int gravity, int yOffset) {
         if (mToast != null) mToast.cancel();
-        mToast = Toast.makeText(App.get(), text, Toast.LENGTH_LONG);
+        mToast = Toast.makeText(App.get(), text, duration);
+        mToast.setGravity(gravity, 0, yOffset);
         mToast.show();
     }
 }
