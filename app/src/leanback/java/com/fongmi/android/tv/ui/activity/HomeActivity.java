@@ -112,6 +112,8 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     private String webDefaultChromeMode = TV_FULL;
     private boolean webToolbarVisible = true;
     private boolean loadingHomeCategory;
+    private long mExitTime = 0;
+    private static final long EXIT_INTERVAL = 2000;
 
     private Site getHome() {
         return VodConfig.get().getHome();
@@ -783,6 +785,12 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void exitHome() {
+        long now = System.currentTimeMillis();
+        if (now - mExitTime > EXIT_INTERVAL) {
+            mExitTime = now;
+            Notify.show("再按一次退出");
+            return;
+        }
         confirmExitHome();
     }
 
