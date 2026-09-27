@@ -790,7 +790,7 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
         long now = System.currentTimeMillis();
         if (now - mExitTime > EXIT_INTERVAL) {
             mExitTime = now;
-            Notify.show("再按一次退出", Toast.LENGTH_SHORT, Gravity.BOTTOM, 200);
+            Notify.show("再按一次退出", Toast.LENGTH_SHORT, Gravity.BOTTOM, 30);
             return;
         }
         confirmExitHome();
