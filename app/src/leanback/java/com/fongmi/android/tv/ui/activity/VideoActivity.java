@@ -275,6 +275,16 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     private Runnable mAudioRefreshLyricsRunnable;
     private Runnable mApplyAudioBackgroundRunnable;
     private Runnable mHideAudioFocusRunnable;
+    
+    private final android.os.Handler mEndingHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+private final Runnable mEndingChecker = new Runnable() {
+        @Override
+        public void run() {
+            checkEndingByPosition();
+            mEndingHandler.postDelayed(this, 1000);
+        }
+    };
+    
     private Clock mClock;
     private View mFocus1;
     private View mFocus2;
@@ -5381,14 +5391,33 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         duration = mHistory.getDuration();
         PlaybackEventCollector.get().onProgress(mHistory, player());
         if (mHistory.canSave() && mHistory.canSync()) syncHistory();
-        SpiderDebug.log("skip-ending", "pos=%d dur=%d ending=%d trigger=%s",
-            position, duration, mHistory.getEnding(),
-            (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration));
         if (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration) {
             checkEnded(false);
         }
     }
 
+    private void startEndingChecker() {
+        stopEndingChecker();
+        if (mHistory == null || mHistory.getEnding() <= 0) return;
+        mEndingHandler.post(mEndingChecker);
+    }
+
+    private void stopEndingChecker() {
+        mEndingHandler.removeCallbacks(mEndingChecker);
+    }
+
+    private void checkEndingByPosition() {
+        if (mHistory == null || service() == null || player().isEmpty()) return;
+        long ending = mHistory.getEnding();
+        if (ending <= 0) return;
+        long duration = player().getDuration();
+        long position = player().getPosition();
+        if (duration > 0 && position + ending >= duration) {
+            SpiderDebug.log("skip-ending", "handler trigger pos=%d dur=%d ending=%d", position, duration, ending);
+            checkEnded(false);
+        }
+    }
+    
     private void updatePlaybackHistoryPosition() {
         if (mHistory == null) return;
         long position = player().getPosition();
@@ -6146,6 +6175,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
             mOsd.start();
         }
         if (service() != null) refreshLyrics();
+        startEndingChecker();
     }
 
     @Override
@@ -6155,6 +6185,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (mKaraoke != null) mKaraoke.clear();
         stopAudioCoverRotation();
         if (PlayerSetting.isBackgroundOff()) mClock.stop();
+        stopEndingChecker();
     }
 
     @Override
