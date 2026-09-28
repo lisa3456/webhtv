@@ -32,6 +32,12 @@
             android:layout_marginEnd="8dp"
             android:text="@string/play_change" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/reset"
+            style="@style/Control"
+            android:layout_marginEnd="8dp"
+            android:text="@string/play_reset" />
+        
         <com.fongmi.android.tv.ui.custom.CustomUpDownView
             android:id="@+id/opening"
             style="@style/Control"
@@ -64,12 +70,6 @@
             android:tag="2"
             android:text="@string/play_track_video" />
         
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/reset"
-            style="@style/Control"
-            android:layout_marginEnd="8dp"
-            android:text="@string/play_reset" />
-
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/fullscreen"
             style="@style/Control"
