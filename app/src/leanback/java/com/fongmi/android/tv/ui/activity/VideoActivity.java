@@ -3512,6 +3512,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         setArtwork(getInitialArtwork(item));
         setScale(getScale());
         setPartAdapter();
+        startEndingChecker();
     }
 
     private boolean shouldKeepPushArtwork() {
