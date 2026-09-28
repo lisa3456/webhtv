@@ -4602,6 +4602,12 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mHistory.setEnding(ending);
         mBinding.control.action.ending.setText(ending <= 0 ? getString(R.string.play_ed) : Util.timeMs(mHistory.getEnding()));
         syncHistory();
+        if (ending > 0) {
+            startEndingChecker();
+            checkEndingByPosition();
+        } else {
+            stopEndingChecker();
+        }
     }
 
     private String getKaraokeDelayText() {
