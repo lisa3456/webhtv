@@ -56,6 +56,19 @@
             android:layout_marginEnd="8dp"
             android:text="@string/play_episodes" />
         
+        <com.fongmi.android.tv.ui.custom.CustomUpDownView
+            android:id="@+id/speed"
+            style="@style/Control"
+            android:layout_marginEnd="8dp"
+            android:fontFeatureSettings="tnum"
+            android:text="@string/play_speed" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/scale"
+            style="@style/Control"
+            android:layout_marginEnd="8dp"
+            android:text="@string/play_scale" />
+        
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/audio"
             style="@style/Control"
@@ -108,19 +121,6 @@
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:text="@string/codec_capability_short" />
-
-        <com.fongmi.android.tv.ui.custom.CustomUpDownView
-            android:id="@+id/speed"
-            style="@style/Control"
-            android:layout_marginEnd="8dp"
-            android:fontFeatureSettings="tnum"
-            android:text="@string/play_speed" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/scale"
-            style="@style/Control"
-            android:layout_marginEnd="8dp"
-            android:text="@string/play_scale" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/lut"
