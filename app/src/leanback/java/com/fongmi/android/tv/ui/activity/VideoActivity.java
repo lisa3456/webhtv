@@ -277,7 +277,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     private Runnable mHideAudioFocusRunnable;
     
     private final android.os.Handler mEndingHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-private final Runnable mEndingChecker = new Runnable() {
+    private final Runnable mEndingChecker = new Runnable() {
         @Override
         public void run() {
             checkEndingByPosition();
@@ -3512,6 +3512,7 @@ private final Runnable mEndingChecker = new Runnable() {
         setArtwork(getInitialArtwork(item));
         setScale(getScale());
         setPartAdapter();
+        startEndingChecker();
     }
 
     private boolean shouldKeepPushArtwork() {
@@ -5412,6 +5413,7 @@ private final Runnable mEndingChecker = new Runnable() {
         if (ending <= 0) return;
         long duration = player().getDuration();
         long position = player().getPosition();
+        SpiderDebug.log("skip-ending", "handler check pos=%d dur=%d ending=%d", position, duration, ending);
         if (duration > 0 && position + ending >= duration) {
             SpiderDebug.log("skip-ending", "handler trigger pos=%d dur=%d ending=%d", position, duration, ending);
             checkEnded(false);
