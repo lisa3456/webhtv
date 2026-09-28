@@ -5381,6 +5381,9 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         duration = mHistory.getDuration();
         PlaybackEventCollector.get().onProgress(mHistory, player());
         if (mHistory.canSave() && mHistory.canSync()) syncHistory();
+        SpiderDebug.log("skip-ending", "pos=%d dur=%d ending=%d trigger=%s",
+            position, duration, mHistory.getEnding(),
+            (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration));
         if (mHistory.getEnding() > 0 && duration > 0 && mHistory.getEnding() + position >= duration) {
             checkEnded(false);
         }
