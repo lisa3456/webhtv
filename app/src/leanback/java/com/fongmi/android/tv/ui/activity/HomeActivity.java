@@ -198,7 +198,11 @@ public class HomeActivity extends BaseActivity implements CustomTitleView.Listen
     }
 
     private void updateToolbarVisibility(boolean visible) {
-        mBinding.toolbar.setVisibility(visible && webToolbarVisible ? View.VISIBLE : View.GONE);
+        if (mWeb != null && mWeb.isVisible()) {
+            mBinding.toolbar.setVisibility(visible && webToolbarVisible ? View.VISIBLE : View.GONE);
+        } else {
+            mBinding.toolbar.setVisibility(View.VISIBLE);
+        }
         syncNativeContentInset();
         syncWebOverlayLayout();
     }
