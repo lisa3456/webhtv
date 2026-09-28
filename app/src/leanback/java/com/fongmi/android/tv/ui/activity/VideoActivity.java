@@ -3512,7 +3512,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         setArtwork(getInitialArtwork(item));
         setScale(getScale());
         setPartAdapter();
-        startEndingChecker();
     }
 
     private boolean shouldKeepPushArtwork() {
@@ -5413,9 +5412,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (ending <= 0) return;
         long duration = player().getDuration();
         long position = player().getPosition();
-        SpiderDebug.log("skip-ending", "handler check pos=%d dur=%d ending=%d", position, duration, ending);
-        if (duration > 0 && position + ending >= duration) {
-            SpiderDebug.log("skip-ending", "handler trigger pos=%d dur=%d ending=%d", position, duration, ending);
             checkEnded(false);
         }
     }
