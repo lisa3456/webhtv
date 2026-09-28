@@ -5412,8 +5412,6 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (ending <= 0) return;
         long duration = player().getDuration();
         long position = player().getPosition();
-            checkEnded(false);
-        }
     }
     
     private void updatePlaybackHistoryPosition() {
