@@ -42,7 +42,7 @@
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:nextFocusDown">@id/timeBar</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ControlSheetTitle">
