@@ -104,7 +104,8 @@
             android:id="@+id/playParams"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_params" />
+            android:text="@string/play_params"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/panDiagnostic"
@@ -119,13 +120,15 @@
             android:id="@+id/codecCapability"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/codec_capability_short" />
+            android:text="@string/codec_capability_short"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/lut"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_lut" />
+            android:text="@string/play_lut"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/karaoke"
@@ -146,7 +149,8 @@
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:tag="3"
-            android:text="@string/play_track_text" />
+            android:text="@string/play_track_text"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/danmaku"
@@ -168,18 +172,21 @@
             android:id="@+id/cast"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_cast" />
+            android:text="@string/play_cast"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/timer"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_timer" />
+            android:text="@string/play_timer"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/repeat"
             style="@style/Control"
-            android:text="@string/play_repeat" />
+            android:text="@string/play_repeat"
+            android:visibility="gone" />
 
     </LinearLayout>
 </HorizontalScrollView>
