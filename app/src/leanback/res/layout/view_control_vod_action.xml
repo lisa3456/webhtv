@@ -53,14 +53,16 @@
             android:id="@+id/episodes"
             style="@style/Control"
             android:layout_marginEnd="8dp"
-            android:text="@string/play_episodes" />
+            android:text="@string/play_episodes"
+            android:visibility="gone" />
         
         <com.fongmi.android.tv.ui.custom.CustomUpDownView
             android:id="@+id/speed"
             style="@style/Control"
             android:layout_marginEnd="8dp"
             android:fontFeatureSettings="tnum"
-            android:text="@string/play_speed" />
+            android:text="@string/play_speed"
+            android:visibility="gone" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/scale"
