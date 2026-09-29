@@ -904,7 +904,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     private void updatePanDiagnosticAction() {
         if (mBinding == null) return;
-        mBinding.control.action.panDiagnostic.setVisibility(isFullscreen() && canRunPanDiagnostic() ? View.VISIBLE : View.GONE);
+        mBinding.control.action.panDiagnostic.setVisibility(View.GONE);
     }
 
     private boolean canRunPanDiagnostic() {
