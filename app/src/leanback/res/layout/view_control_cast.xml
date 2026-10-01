@@ -9,7 +9,7 @@
     android:paddingStart="24dp"
     android:paddingTop="12dp"
     android:paddingEnd="24dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="12dp">
 
     <include
         android:id="@+id/action"
@@ -21,6 +21,6 @@
         android:id="@+id/seek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="6dp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
