@@ -229,13 +229,20 @@ public class SiteApi {
 
     @NonNull
     public static Result fetchPic(@NonNull Site site, @NonNull Result result) throws Exception {
-        if (site.getType() > 2 || result.getList().isEmpty()) return result;
+        SpiderDebug.log("fetchPic", "called site=%s type=%s listSize=%s",
+                site.getName(), site.getType(), result.getList().size());
+        if (site.getType() > 2 || result.getList().isEmpty()) {
+            SpiderDebug.log("fetchPic", "early return type=%s empty=%s", site.getType(), result.getList().isEmpty());
+            return result;
+        }
 
         // 1. 收集没图的 id
         ArrayList<String> ids = new ArrayList<>();
         for (Vod item : result.getList()) {
+            SpiderDebug.log("fetchPic", "id=%s name=%s pic=[%s]", item.getId(), item.getName(), item.getPic());
             if (TextUtils.isEmpty(item.getPic())) ids.add(item.getId());
         }
+        SpiderDebug.log("fetchPic", "noPicIds=%s", ids);
         if (ids.isEmpty()) return result;
 
         // 2. 批量请求详情
