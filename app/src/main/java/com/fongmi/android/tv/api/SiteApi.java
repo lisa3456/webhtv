@@ -229,18 +229,35 @@ public class SiteApi {
 
     @NonNull
     public static Result fetchPic(@NonNull Site site, @NonNull Result result) throws Exception {
-        if (site.getType() > 2 || result.getList().isEmpty() || !result.getVod().getPic().isEmpty()) return result;
+        if (site.getType() > 2 || result.getList().isEmpty()) return result;
+
+        // 1. 收集没图的 id
         ArrayList<String> ids = new ArrayList<>();
-        boolean empty = site.getCategories().isEmpty();
-        for (Vod item : result.getList()) if (empty || site.getCategories().contains(item.getTypeName())) ids.add(item.getId());
-        if (ids.isEmpty()) return result.clear();
+        for (Vod item : result.getList()) {
+            if (TextUtils.isEmpty(item.getPic())) ids.add(item.getId());
+        }
+        if (ids.isEmpty()) return result;
+
+        // 2. 批量请求详情
         ArrayMap<String, String> params = new ArrayMap<>();
         params.put("ac", ac(site.getType()));
         params.put("ids", TextUtils.join(",", ids));
+
         try (Response response = OkHttp.newCall(site.getApi(), site.getHeader(), params).execute()) {
-            result.setList(Result.fromType(site.getType(), response.body().string()).getList());
-            return result;
+            Result detail = Result.fromType(site.getType(), response.body().string());
+
+            // 3. 合并：只把详情里的 pic 写回原条目
+            Map<String, Vod> detailMap = new HashMap<>();
+            for (Vod v : detail.getList()) detailMap.put(v.getId(), v);
+
+            for (Vod item : result.getList()) {
+                if (TextUtils.isEmpty(item.getPic())) {
+                    Vod d = detailMap.get(item.getId());
+                    if (d != null && !TextUtils.isEmpty(d.getPic())) item.setPic(d.getPic());
+                }
+            }
         }
+        return result;
     }
 
     private static void setTypes(@NonNull Site site, @NonNull Result result) {
