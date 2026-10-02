@@ -1049,17 +1049,8 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         checkKeepImg();
         setText(item);
         updateKeep();
-        mBinding.episode.postDelayed(this::refreshEpisodeSelectedPosition, 150);
     }
 
-    private void refreshEpisodeSelectedPosition() {
-        if (mEpisodeAdapter == null || mEpisodeAdapter.getItemCount() == 0) return;
-        int position = mEpisodeAdapter.getPosition();
-        if (position >= 0 && position < mEpisodeAdapter.getItemCount()) {
-            mBinding.episode.setSelectedPosition(position);
-        }
-    }
-    
     private void setText(Vod item) {
         mBinding.content.setTag(item.getContent());
         setDetailLyrics(item.getContent());
