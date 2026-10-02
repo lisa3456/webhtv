@@ -229,40 +229,45 @@ public class SiteApi {
 
     @NonNull
     public static Result fetchPic(@NonNull Site site, @NonNull Result result) throws Exception {
-        SpiderDebug.log("fetchPic", "called site=%s type=%s listSize=%s",
-                site.getName(), site.getType(), result.getList().size());
-        if (site.getType() > 2 || result.getList().isEmpty()) {
-            SpiderDebug.log("fetchPic", "early return type=%s empty=%s", site.getType(), result.getList().isEmpty());
-            return result;
-        }
+        SpiderDebug.log("fetchPic", "called site=%s type=%s listSize=%s", site.getName(), site.getType(), result.getList().size());
+        if (site.getType() > 2 || result.getList().isEmpty()) return result;
 
-        // 1. 收集没图的 id
         ArrayList<String> ids = new ArrayList<>();
         for (Vod item : result.getList()) {
-            SpiderDebug.log("fetchPic", "id=%s name=%s pic=[%s]", item.getId(), item.getName(), item.getPic());
             if (TextUtils.isEmpty(item.getPic())) ids.add(item.getId());
         }
         SpiderDebug.log("fetchPic", "noPicIds=%s", ids);
         if (ids.isEmpty()) return result;
 
-        // 2. 批量请求详情
         ArrayMap<String, String> params = new ArrayMap<>();
         params.put("ac", ac(site.getType()));
         params.put("ids", TextUtils.join(",", ids));
+        SpiderDebug.log("fetchPic", "request api=%s params=%s", site.getApi(), params);
 
         try (Response response = OkHttp.newCall(site.getApi(), site.getHeader(), params).execute()) {
-            Result detail = Result.fromType(site.getType(), response.body().string());
+            SpiderDebug.log("fetchPic", "resp code=%s", response.code());
+            String body = response.body() == null ? "" : response.body().string();
+            SpiderDebug.log("fetchPic", "resp body len=%s", body.length());
+            Result detail = Result.fromType(site.getType(), body);
+            SpiderDebug.log("fetchPic", "detail listSize=%s", detail.getList().size());
 
-            // 3. 合并：只把详情里的 pic 写回原条目
             Map<String, Vod> detailMap = new HashMap<>();
             for (Vod v : detail.getList()) detailMap.put(v.getId(), v);
+            SpiderDebug.log("fetchPic", "detailMap size=%s", detailMap.size());
 
+            int filled = 0;
             for (Vod item : result.getList()) {
                 if (TextUtils.isEmpty(item.getPic())) {
                     Vod d = detailMap.get(item.getId());
-                    if (d != null && !TextUtils.isEmpty(d.getPic())) item.setPic(d.getPic());
+                    if (d != null && !TextUtils.isEmpty(d.getPic())) {
+                        item.setPic(d.getPic());
+                        filled++;
+                    }
                 }
             }
+            SpiderDebug.log("fetchPic", "filled=%s", filled);
+        } catch (Exception e) {
+            SpiderDebug.log("fetchPic", "request failed: %s", e.getMessage());
         }
         return result;
     }
