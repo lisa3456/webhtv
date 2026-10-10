@@ -45,9 +45,8 @@
     <androidx.leanback.widget.VerticalGridView
         android:id="@+id/episode"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
