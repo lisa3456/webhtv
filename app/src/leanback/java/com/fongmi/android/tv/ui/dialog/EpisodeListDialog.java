@@ -149,6 +149,8 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         arrayAdapter.setSegmentSize(segment);
         arrayAdapter.addAll(items);
         binding.array.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.array.requestLayout();
+        binding.episode.requestLayout();
         flagAdapter.setNextFocusDown(items.isEmpty() ? R.id.episode : R.id.array);
         arrayAdapter.setNextFocus(R.id.flag, R.id.episode);
         episodeAdapter.setNextFocusUp(items.isEmpty() ? R.id.flag : R.id.array);
