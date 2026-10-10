@@ -46,6 +46,7 @@
         android:id="@+id/episode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
