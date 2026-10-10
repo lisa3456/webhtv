@@ -26,13 +26,14 @@
         android:layout_height="40dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:visibility="gone"
         tools:itemCount="3"
         tools:listitem="@layout/adapter_flag" />
 
     <androidx.leanback.widget.HorizontalGridView
         android:id="@+id/array"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -45,7 +46,7 @@
         android:id="@+id/episode"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:layout_weight="1"
         android:clipChildren="false"
         android:clipToPadding="false"
