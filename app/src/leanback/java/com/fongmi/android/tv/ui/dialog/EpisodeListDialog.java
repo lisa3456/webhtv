@@ -326,14 +326,26 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
 
     private void clearParentPaddingAndFillHeight() {
         View view = binding.getRoot();
-        fillHeight(view);
         while (view.getParent() instanceof View parent) {
             if (parent instanceof ViewGroup group) group.setPadding(0, 0, 0, 0);
-            fillHeight(parent);
+            ViewGroup.LayoutParams params = parent.getLayoutParams();
+            if (params != null) {
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                parent.setLayoutParams(params);
+            }
             view = parent;
         }
+        // 只处理 binding.getRoot() 本身
+        ViewGroup.LayoutParams rootParams = binding.getRoot().getLayoutParams();
+        if (rootParams != null) {
+            rootParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            rootParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            binding.getRoot().setLayoutParams(rootParams);
+        }
+        binding.getRoot().setMinimumHeight(ResUtil.getScreenHeight(requireContext()));
     }
-
+    
     private void fillHeight(View view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params != null) {
