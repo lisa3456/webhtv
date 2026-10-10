@@ -191,6 +191,11 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         holder.binding.getRoot().setOnClickListener(v -> mListener.onItemClick(item));
     }
 
+    public interface OnClickListener {
+
+        void onItemClick(Episode item);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final AdapterEpisodeBinding binding;
