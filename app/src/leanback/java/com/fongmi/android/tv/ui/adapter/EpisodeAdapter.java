@@ -160,11 +160,18 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         holder.binding.text.setOnKeyListener((view, keyCode, event) -> {
             if (keyListener != null && keyListener.onKey(view, keyCode, event)) return true;
             if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
-            if (keyCode != KeyEvent.KEYCODE_DPAD_DOWN) return false;
-
+            
             int total = getItemCount();
             if (total <= 0) return false;
-
+            
+            if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                int col = pos % column;
+                if (col == column - 1 || pos + 1 >= total) return true;
+                return false;
+            }
+            
+            if (keyCode != KeyEvent.KEYCODE_DPAD_DOWN) return false;
+            
             int nextPos = pos + column;
             if (nextPos < total) return false;
 
