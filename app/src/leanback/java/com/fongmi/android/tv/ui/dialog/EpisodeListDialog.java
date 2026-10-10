@@ -148,12 +148,9 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         }
         arrayAdapter.setSegmentSize(segment);
         arrayAdapter.addAll(items);
-        binding.array.setVisibility(items.isEmpty() ? View.INVISIBLE : View.VISIBLE);
-        binding.array.requestLayout();
-        binding.episode.requestLayout();
-        flagAdapter.setNextFocusDown(items.isEmpty() ? R.id.episode : R.id.array);
-        arrayAdapter.setNextFocus(R.id.flag, R.id.episode);
-        episodeAdapter.setNextFocusUp(items.isEmpty() ? R.id.flag : R.id.array);
+        binding.array.setVisibility(View.GONE);
+        flagAdapter.setNextFocusDown(R.id.episode);
+        episodeAdapter.setNextFocusUp(R.id.flag);
         episodeAdapter.setNextFocusDown(0);
     }
 
@@ -328,26 +325,14 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
 
     private void clearParentPaddingAndFillHeight() {
         View view = binding.getRoot();
+        fillHeight(view);
         while (view.getParent() instanceof View parent) {
             if (parent instanceof ViewGroup group) group.setPadding(0, 0, 0, 0);
-            ViewGroup.LayoutParams params = parent.getLayoutParams();
-            if (params != null) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                parent.setLayoutParams(params);
-            }
+            fillHeight(parent);
             view = parent;
         }
-        // 只处理 binding.getRoot() 本身
-        ViewGroup.LayoutParams rootParams = binding.getRoot().getLayoutParams();
-        if (rootParams != null) {
-            rootParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            rootParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            binding.getRoot().setLayoutParams(rootParams);
-        }
-        binding.getRoot().setMinimumHeight(ResUtil.getScreenHeight(requireContext()));
     }
-    
+
     private void fillHeight(View view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params != null) {
