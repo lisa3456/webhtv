@@ -104,6 +104,16 @@ public class EpisodeListDialog extends BaseAlertDialog implements FlagAdapter.On
         binding.episode.setAdapter(episodeAdapter = new EpisodeAdapter(this, getEpisodeContentWidth()));
         episodeAdapter.setOnKeyListener((view, keyCode, event) -> onEpisodeKey(event));
         binding.episode.setOnKeyListener((view, keyCode, event) -> onEpisodeKey(event));
+        binding.episode.addItemDecoration(new androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull android.graphics.Rect outRect,
+                                        @NonNull android.view.View view,
+                                        @NonNull androidx.recyclerview.widget.RecyclerView parent,
+                                        @NonNull androidx.recyclerview.widget.RecyclerView.State state) {
+                int pos = parent.getChildAdapterPosition(view);
+                if (pos == 0) outRect.top = ResUtil.dp2px(60);
+            }
+        });
         binding.flag.setOnKeyListener((view, keyCode, event) -> onFlagKey(event));
         binding.array.addOnChildViewHolderSelectedListener(new androidx.leanback.widget.OnChildViewHolderSelectedListener() {
             @Override
