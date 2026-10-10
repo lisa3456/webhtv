@@ -3,6 +3,7 @@ package com.fongmi.android.tv.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -151,17 +152,43 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Episode item = mItems.get(position);
         holder.binding.text.getLayoutParams().width = getWidth();
+
+        final int pos = position;
         holder.binding.text.setNextFocusUpId(position < column && nextFocusUp != 0 ? nextFocusUp : View.NO_ID);
         holder.binding.text.setNextFocusDownId(position >= getItemCount() - column && nextFocusDown != 0 ? nextFocusDown : View.NO_ID);
+
+        holder.binding.text.setOnKeyListener((view, keyCode, event) -> {
+            if (keyListener != null && keyListener.onKey(view, keyCode, event)) return true;
+            if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
+            if (keyCode != KeyEvent.KEYCODE_DPAD_DOWN) return false;
+
+            int total = getItemCount();
+            if (total <= 0) return false;
+
+            int nextPos = pos + column;
+            if (nextPos < total) return false;
+
+            int currentRowStart = (pos / column) * column;
+            int nextRowStart = currentRowStart + column;
+            if (nextRowStart >= total) return false;
+
+            int nextRowEnd = Math.min(nextRowStart + column - 1, total - 1);
+            if (nextRowEnd == pos) return false;
+
+            RecyclerView rv = (RecyclerView) view.getParent();
+            if (rv != null) {
+                rv.scrollToPosition(nextRowEnd);
+                rv.post(() -> {
+                    RecyclerView.ViewHolder h = rv.findViewHolderForAdapterPosition(nextRowEnd);
+                    if (h != null) h.itemView.requestFocus();
+                });
+            }
+            return true;
+        });
+
         holder.binding.text.setSelected(item.isSelected());
         holder.binding.text.setText(item.getDisplayName());
-        holder.binding.text.setOnKeyListener(keyListener);
         holder.binding.getRoot().setOnClickListener(v -> mListener.onItemClick(item));
-    }
-
-    public interface OnClickListener {
-
-        void onItemClick(Episode item);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
