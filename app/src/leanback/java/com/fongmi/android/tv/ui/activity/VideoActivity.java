@@ -1448,9 +1448,21 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     private void onSearch() {
         if (onLyricsSearch()) return;
-        String keyword = mBinding.name.getText().toString();
-        if (TextUtils.isEmpty(keyword)) return;
+        String name = mBinding.name.getText().toString();
+        if (TextUtils.isEmpty(name)) return;
+        String keyword = extractSearchKeyword(name);
+        if (TextUtils.isEmpty(keyword)) keyword = name;
         initSearch(keyword, false);
+    }
+
+    private String extractSearchKeyword(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        s = s.replaceAll("第[0-9一二三四五六七八九十]+[季部集期]", "");
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
     }
 
     private boolean onLyricsSearch() {
@@ -5620,8 +5632,35 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (getId().equals(item.getId())) return true;
         if (mBroken.contains(item.getId())) return true;
         String keyword = Objects.toString(mBinding.part.getTag(), "");
-        if (isAutoMode()) return !item.getName().equals(keyword);
-        else return !item.getName().contains(keyword);
+        if (isAutoMode()) return !nameMatch(item.getName(), keyword);
+        else return !nameContains(item.getName(), keyword);
+    }
+
+    private String normalizeName(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        String[] cn = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+        for (int i = 0; i < cn.length; i++) {
+            s = s.replace("第" + cn[i] + "季", "第" + i + "季");
+        }
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
+    }
+
+    private boolean nameMatch(String a, String b) {
+        String na = normalizeName(a);
+        String nb = normalizeName(b);
+        if (na.isEmpty() || nb.isEmpty()) return false;
+        return na.equals(nb);
+    }
+
+    private boolean nameContains(String a, String b) {
+        String na = normalizeName(a);
+        String nb = normalizeName(b);
+        if (na.isEmpty() || nb.isEmpty()) return false;
+        return na.contains(nb) || nb.contains(na);
     }
 
     private void nextParse(int position) {
