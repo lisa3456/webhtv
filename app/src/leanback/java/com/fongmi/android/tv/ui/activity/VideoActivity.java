@@ -5555,7 +5555,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         setInitAuto(auto);
         revealManualSearch = !auto;
         startSearch(keyword);
-        mBinding.part.setTag(keyword);
+        mBinding.part.setTag(mBinding.name.getText().toString());
     }
 
     private boolean isPass(Site item) {
