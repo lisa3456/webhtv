@@ -5548,7 +5548,10 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
 
     private void checkSearch(boolean force) {
         if (!force && !PlayerSetting.isAutoChange()) return;
-        if (mQuickAdapter.getItemCount() == 0) initSearch(mBinding.name.getText().toString(), true);
+        if (mQuickAdapter.getItemCount() == 0) {
+            manualSearch = false;
+            initSearch(mBinding.name.getText().toString(), true);
+        } 
         else if (isAutoMode() || force) nextSite();
     }
 
