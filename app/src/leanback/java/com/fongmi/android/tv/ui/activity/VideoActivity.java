@@ -298,6 +298,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     private long playerStartTime;
     private long mInitialPlaybackPosition = C.TIME_UNSET;
     private boolean pendingLutImport;
+    private boolean manualSearch = false;
 
     private final ActivityResultLauncher<Intent> mLutDir = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
@@ -1452,6 +1453,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         if (TextUtils.isEmpty(name)) return;
         String keyword = extractSearchKeyword(name);
         if (TextUtils.isEmpty(keyword)) keyword = name;
+        manualSearch = true;
         initSearch(keyword, false);
     }
 
@@ -5568,7 +5570,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mBinding.quick.setVisibility(View.GONE);
         dismissQuickSearchDialog();
         quickSearchDialogClosed = false;
-        if (!isInitAuto()) {
+        if (manualSearch) {      
             revealManualSearch = false;
             showQuickSearchDialog(new ArrayList<>());
         }
@@ -5683,6 +5685,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mQuickAdapter.remove(position);
         mBroken.add(getId());
         setInitAuto(false);
+        manualSearch = false;
         applySearchArtwork(item);
         getDetail(item);
     }
