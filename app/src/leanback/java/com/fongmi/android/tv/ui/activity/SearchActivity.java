@@ -271,9 +271,21 @@ public class SearchActivity extends BaseActivity implements WordAdapter.OnClickL
         String keyword = mBinding.keyword.getText().toString().trim();
         App.post(() -> mRecordAdapter.add(keyword), 250);
         Util.hideKeyboard(mBinding.keyword);
-        CollectActivity.start(this, keyword, getSiteKey(), getPic(), getWallPic());
+        String searchKeyword = extractSearchKeyword(keyword);
+        if (TextUtils.isEmpty(searchKeyword)) searchKeyword = keyword;
+        CollectActivity.start(this, searchKeyword, getSiteKey(), getPic(), getWallPic());
     }
 
+    private String extractSearchKeyword(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        s = s.replaceAll("第[0-9一二三四五六七八九十]+[季部集期]", "");
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
+    }
+    
     @Override
     public void showDialog() {
         SiteDialog.create().search().show(this);
