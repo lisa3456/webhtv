@@ -5590,7 +5590,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         mQuickAdapter.addAll(items);
         mBinding.quick.setVisibility(View.GONE);
         updateFocus();
-        if (!manualSearch() && !items.isEmpty()) {
+        if (manualSearch && !items.isEmpty()) {
             showQuickSearchDialog(items);
         }
         if (isInitAuto() && PlayerSetting.isAutoChange()) nextSite();
@@ -5599,7 +5599,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     }
 
     private void setSearchProgress(SearchProgress progress) {
-        if (progress == null || !manualSearch()) return;
+        if (progress == null || !manualSearch) return;
         showQuickSearchDialog(new ArrayList<>());
         if (mQuickSearchDialog != null) mQuickSearchDialog.setProgress(progress.current(), progress.total(), progress.finished());
     }
