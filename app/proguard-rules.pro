@@ -99,3 +99,28 @@
 
 # Zxing
 -keep class com.google.zxing.** { *; }
+
+# ==================== Chaquopy / Python ====================
+-keep class com.chaquo.python.** { *; }
+-keep class com.chaquo.python.android.** { *; }
+-keep class org.python.** { *; }
+-keep class org.python.core.** { *; }
+-keep class org.python.modules.** { *; }
+-keep class org.python.bouncycastle.** { *; }
+-dontwarn com.chaquo.python.**
+-dontwarn org.python.**
+
+# 保留所有 native 方法名（Chaquopy 的 JNI 靠名字查找）
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# 保留 Python 运行时依赖的反射成员
+-keepclassmembers class * {
+    @com.chaquo.python.PyObject *;
+    @com.chaquo.python.PyObject <fields>;
+}
+
+# chaquo 模块里你自己写的 Python 桥接类
+-keep class com.chaquo.** { *; }
+-keep class chaquo.** { *; }
