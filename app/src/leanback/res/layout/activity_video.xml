@@ -700,7 +700,7 @@
             android:text="@string/play_search"
             android:textColor="@color/white"
             android:textSize="16sp"
-            app:drawableStartCompat="@drawable/ic_action_search" />
+            app:drawableStartCompat="@drawable/ic_detail_search" />
         
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/content"
