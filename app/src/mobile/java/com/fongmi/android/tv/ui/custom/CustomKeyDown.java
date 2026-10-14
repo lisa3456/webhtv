@@ -142,6 +142,10 @@ public class CustomKeyDown extends GestureDetector.SimpleOnGestureListener imple
                 }).start();
     }
 
+    public boolean isZoomed() {
+        return scale > 1.0f || translateX != 0f || translateY != 0f;
+    }
+    
     public void setLock(boolean lock) {
         this.lock = lock;
     }
