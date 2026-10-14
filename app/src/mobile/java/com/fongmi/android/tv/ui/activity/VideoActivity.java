@@ -5658,6 +5658,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         switch (state) {
             case Player.STATE_BUFFERING:
                 showProgress();
+                //改
                 mBinding.episode.post(this::scrollEpisodeToSelected);
                 break;
             case Player.STATE_READY:
@@ -6232,6 +6233,13 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void onDoubleTap(float x, float width) {
         if (isLock()) return;
+        
+        if (mKeyDown != null && mKeyDown.isZoomed()) {
+            if (x >= width / 2f) {
+                mKeyDown.resetScale();
+                return;
+            }
+        }
         
         if (!isFullscreen()) {
             enterFullscreen();
