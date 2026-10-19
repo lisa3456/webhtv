@@ -556,6 +556,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     protected void onServiceConnected() {
         player().setDanmakuController(mBinding.exo.getDanmakuController());
         syncDesktopLyricsAudioContent();
+        int savedDecode = PlayerSetting.getDecode();
+        if (savedDecode == 1 && player().isHardDecode()) {
+            player().toggleDecode();
+        } else if (savedDecode == 0 && !player().isHardDecode()) {
+            player().toggleDecode();
+        }
         setPlayerKernel();
         setDecode();
         setLut();
@@ -3734,6 +3740,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         player().toggleDecode();
         setR1Callback();
         setDecode();
+        PlayerSetting.putDecode(player().isHardDecode() ? 0 : 1);
     }
 
     private boolean refreshAndSwitchDecode() {
@@ -3777,6 +3784,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setR1Callback();
         setDecodeSwitchPending(false);
         setDecode();
+        PlayerSetting.putDecode(player().isHardDecode() ? 0 : 1);
     }
 
     private void onEnding() {
@@ -6233,13 +6241,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     @Override
     public void onDoubleTap(float x, float width) {
         if (isLock()) return;
-        
-        if (mKeyDown != null && mKeyDown.isZoomed()) {
-            if (x >= width / 2f) {
-                mKeyDown.resetScale();
-                return;
-            }
-        }
         
         if (!isFullscreen()) {
             enterFullscreen();
