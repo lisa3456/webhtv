@@ -1201,6 +1201,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
                 FolderActivity.start(getActivity(), getKey(), result);
                 ((TextView) view).setMaxLines(Integer.MAX_VALUE);
                 setRedirect(true);
+                finish();
             }
         };
     }
@@ -6421,11 +6422,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (mKaraoke != null) mKaraoke.clear();
         if (PlayerSetting.isBackgroundOff()) mClock.stop();
         if (!isAudioOnly()) setStop(true);
-        if (!isFinishing() && !isAudioOnly()) {
-            if (player().isPlaying()) {
-                onPaused();
-            }
-        }
     }
 
     @Override
