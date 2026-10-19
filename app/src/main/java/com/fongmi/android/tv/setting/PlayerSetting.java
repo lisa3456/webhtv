@@ -43,6 +43,14 @@ public class PlayerSetting {
         Prefers.put("player", sanitizePlayer(player));
     }
 
+    public static int getDecode() {
+        return Prefers.getInt("decode", 0); 
+    }
+
+    public static void putDecode(int decode) {
+        Prefers.put("decode", decode);
+    }
+    
     public static boolean isImmersiveAudioMode() {
         return Prefers.getBoolean("immersive_audio_mode", false);
     }
