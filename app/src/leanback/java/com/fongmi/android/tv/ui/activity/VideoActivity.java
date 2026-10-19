@@ -6229,7 +6229,17 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
             setPlayParamsState();
             mOsd.start();
         }
-        if (service() != null) refreshLyrics();
+        if (service() != null) {
+            if (isRedirect() && !player().isEmpty() && !TextUtils.equals(player().getKey(), getHistoryKey())) {
+                setRedirect(false);
+                onRefresh();
+            } else if (isRedirect() && isOwner() && !player().isEmpty() && !player().isPlaying() && !isEnded()) {
+                setRedirect(false);
+                onPlay();
+            } else {
+                refreshLyrics();
+            }
+        }
         startEndingChecker();
     }
 
