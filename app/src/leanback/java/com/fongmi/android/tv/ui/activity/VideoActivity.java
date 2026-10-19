@@ -545,6 +545,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
     protected void onServiceConnected() {
         SpiderDebug.log("video-flow", "service ready sinceLaunch=%dms key=%s id=%s", getLaunchCost(System.currentTimeMillis()), getKey(), getId());
         player().setDanmakuController(mBinding.exo.getDanmakuController());
+        player().setDecode(PlayerSetting.getDecode());
         setPlayerKernel();
         setDecode();
         setLut();
@@ -3264,6 +3265,7 @@ public class VideoActivity extends PlaybackActivity implements CustomKeyDownVod.
         clearLyrics();
         player().toggleDecode();
         setDecode();
+        PlayerSetting.putDecode(player().isHardDecode() ? 0 : 1);
     }
 
     private void onTrack(View view) {
