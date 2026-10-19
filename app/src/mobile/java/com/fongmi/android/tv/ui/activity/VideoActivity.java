@@ -6409,7 +6409,14 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (mOsd != null) mOsd.start();
         setAudioOnly(false);
         setStop(false);
-        if (service() != null) refreshLyrics();
+        if (service() != null) {
+            if (isRedirect() && !player().isEmpty() && !TextUtils.equals(player().getKey(), getHistoryKey())) {
+                setRedirect(false);
+                onRefresh();
+            } else {
+                refreshLyrics();
+            }
+        }
         syncLyricsPlaybackState();
         syncKaraokePosition();
     }
