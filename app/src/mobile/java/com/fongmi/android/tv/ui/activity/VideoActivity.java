@@ -6242,6 +6242,13 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     public void onDoubleTap(float x, float width) {
         if (isLock()) return;
         
+        if (mKeyDown != null && mKeyDown.isZoomed()) {
+            if (x >= width / 2f) {
+                mKeyDown.resetScale();
+                return;
+            }
+        }
+        
         if (!isFullscreen()) {
             enterFullscreen();
         } else {
