@@ -1201,7 +1201,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
                 FolderActivity.start(getActivity(), getKey(), result);
                 ((TextView) view).setMaxLines(Integer.MAX_VALUE);
                 setRedirect(true);
-                finish();
             }
         };
     }
