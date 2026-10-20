@@ -380,10 +380,66 @@ public class History implements Diffable<History> {
 
     private static String normalizeVodName(String name) {
         if (TextUtils.isEmpty(name)) return "";
-        String s = name.replaceAll("[（(\\[【][^）)\\]】]*[）)\\]】]", "").trim();
+        String s = name.trim();
+        // 去掉括号内容：(2013)、（2013）、[2013]、【2013】、(HD) 等
+        s = s.replaceAll("[（(\\[【][^）)\\]】]*[）)\\]】]", "").trim();
+        // 去掉尾部纯年份
         s = s.replaceAll("\\s*\\d{4}\\s*$", "").trim();
-        s = s.replaceAll("^[\\s·\\-—_]+|[\\s·\\-—_]+$", "");
-        return TextUtils.isEmpty(s) ? name.trim() : s;
+        // 去掉空白
+        s = s.replaceAll("\\s+", "");
+        // 中文数字转阿拉伯数字（用于“第四季” → “第4季”）
+        s = cnNumberToArabic(s);
+        // 去掉首尾分隔符
+        s = s.replaceAll("^[·\\-—_]+|[·\\-—_]+$", "");
+        return s.isEmpty() ? name.trim() : s;
+    }
+
+    private static String cnNumberToArabic(String s) {
+        if (TextUtils.isEmpty(s)) return s;
+        StringBuilder out = new StringBuilder();
+        int i = 0;
+        while (i < s.length()) {
+            char c = s.charAt(i);
+            if (c >= '一' && c <= '十') {
+                int j = i;
+                while (j < s.length() && s.charAt(j) >= '一' && s.charAt(j) <= '十') j++;
+                String cn = s.substring(i, j);
+                out.append(cnToInt(cn));
+                i = j;
+            } else {
+                out.append(c);
+                i++;
+            }
+        }
+        return out.toString();
+    }
+
+    private static int cnToInt(String cn) {
+        // 支持 一 ~ 九十九
+        if (cn.isEmpty()) return 0;
+        int ten = cn.indexOf('十');
+        if (ten < 0) {
+            return cnCharToInt(cn.charAt(0));
+        }
+        int high = ten == 0 ? 1 : cnCharToInt(cn.charAt(ten - 1));
+        int low = ten == cn.length() - 1 ? 0 : cnCharToInt(cn.charAt(ten + 1));
+        return high * 10 + low;
+    }
+
+    private static int cnCharToInt(char c) {
+        switch (c) {
+            case '一': return 1;
+            case '二': return 2;
+            case '三': return 3;
+            case '四': return 4;
+            case '五': return 5;
+            case '六': return 6;
+            case '七': return 7;
+            case '八': return 8;
+            case '九': return 9;
+            case '十': return 10;
+            default: return 0;
+        }
     }
     
     public static List<History> findByNameNormalized(String name) {
