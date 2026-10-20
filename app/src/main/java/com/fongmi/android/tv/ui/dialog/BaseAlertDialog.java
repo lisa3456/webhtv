@@ -2,7 +2,6 @@ package com.fongmi.android.tv.ui.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -25,12 +24,6 @@ public abstract class BaseAlertDialog extends DialogFragment {
         Dialog dialog = getBuilder().create();
         initView();
         initEvent();
-        // 统一去掉 dim
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            window.setDimAmount(0f);
-        }
         return dialog;
     }
 
