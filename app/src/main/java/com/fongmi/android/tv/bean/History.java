@@ -147,7 +147,7 @@ public class History implements Diffable<History> {
                 target.cid(VodConfig.getCid()).save();
                 return;
             }
-            List<History> items = findByName(target.getVodName());
+            List<History> items = findByNameNormalized(target.getVodName());
             if (items.isEmpty()) target.cid(VodConfig.getCid()).save();
             else {
                 long latestTime = items.stream().mapToLong(History::getCreateTime).max().orElse(0L);
@@ -377,6 +377,29 @@ public class History implements Diffable<History> {
         return System.currentTimeMillis() - getUpdateTime() > 5000;
     }
 
+    private static String normalizeVodName(String name) {
+        if (TextUtils.isEmpty(name)) return "";
+        String s = name.replaceAll("[（(\\[【][^）)\\]】]*[）)\\]】]", "").trim();
+        s = s.replaceAll("\\s*\\d{4}\\s*$", "").trim();
+        s = s.replaceAll("^[\\s·\\-—_]+|[\\s·\\-—_]+$", "");
+        return TextUtils.isEmpty(s) ? name.trim() : s;
+    }
+    
+    public static List<History> findByNameNormalized(String name) {
+        String target = normalizeVodName(name);
+        if (TextUtils.isEmpty(target)) return Collections.emptyList();
+        try {
+            List<History> all = AppDatabase.get().getHistoryDao().findAll(VodConfig.getCid());
+            List<History> result = new ArrayList<>();
+            for (History h : all) {
+                if (TextUtils.equals(normalizeVodName(h.getVodName()), target)) result.add(h);
+            }
+            return result;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+    
     public History merge() {
         merge(false);
         return this;
@@ -384,7 +407,7 @@ public class History implements Diffable<History> {
 
     private History merge(boolean force) {
         if (!canMergeByName()) return this;
-        return merge(findByName(getVodName()), force);
+        return merge(findByNameNormalized(getVodName()), force);
     }
 
     private History merge(List<History> items, boolean force) {
@@ -427,7 +450,7 @@ public class History implements Diffable<History> {
             setEpisodeUrl(episode.getUrl());
         }
         if (!canMergeByName()) return;
-        for (History item : findByName(getVodName())) {
+        for (History item : findByNameNormalized(getVodName())) {
             if (getPosition() > 0) break;
             for (Flag flag : flags) {
                 Episode episode = flag.find(item.getEpisode(), true);
