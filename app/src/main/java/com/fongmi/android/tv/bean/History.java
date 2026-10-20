@@ -396,13 +396,14 @@ public class History implements Diffable<History> {
 
     private static String cnNumberToArabic(String s) {
         if (TextUtils.isEmpty(s)) return s;
+        String digits = "一二三四五六七八九十";
         StringBuilder out = new StringBuilder();
         int i = 0;
         while (i < s.length()) {
             char c = s.charAt(i);
-            if (c >= '一' && c <= '十') {
+            if (digits.indexOf(c) >= 0) {
                 int j = i;
-                while (j < s.length() && s.charAt(j) >= '一' && s.charAt(j) <= '十') j++;
+                while (j < s.length() && digits.indexOf(s.charAt(j)) >= 0) j++;
                 String cn = s.substring(i, j);
                 out.append(cnToInt(cn));
                 i = j;
@@ -413,7 +414,7 @@ public class History implements Diffable<History> {
         }
         return out.toString();
     }
-
+    
     private static int cnToInt(String cn) {
         // 支持 一 ~ 九十九
         if (cn.isEmpty()) return 0;
