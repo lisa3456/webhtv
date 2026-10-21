@@ -1511,7 +1511,6 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         if (TextUtils.isEmpty(name)) return;
         String keyword = extractSearchKeyword(name);
         if (TextUtils.isEmpty(keyword)) keyword = name;
-        manualSearch = true;
         initSearch(keyword, false);
         }
 
