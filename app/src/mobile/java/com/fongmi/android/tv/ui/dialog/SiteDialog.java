@@ -296,6 +296,8 @@ public class SiteDialog extends BaseAlertDialog implements SiteAdapter.OnClickLi
         params.gravity = Gravity.CENTER;
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        params.dimAmount = 0f;
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(params);
         window.setLayout(params.width, WindowManager.LayoutParams.WRAP_CONTENT);
