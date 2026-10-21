@@ -1501,8 +1501,10 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private void onName() {
         String name = mBinding.name.getText().toString();
         Notify.show(getString(R.string.detail_search, name));
-        showQuickSearch(name);
-        initSearch(name, false);
+        String keyword = extractSearchKeyword(name);
+        if (TextUtils.isEmpty(keyword)) keyword = name;
+        showQuickSearch(keyword);
+        initSearch(keyword, false);
     }
 
     private void onSearch() {
@@ -5997,7 +5999,12 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void checkSearch(boolean force) {
         if (!force && !PlayerSetting.isAutoChange()) return;
-        if (mQuickAdapter.isEmpty()) initSearch(mBinding.name.getText().toString(), true);
+        if (mQuickAdapter.isEmpty()) {
+            String name = mBinding.name.getText().toString();
+            String keyword = extractSearchKeyword(name);
+            if (TextUtils.isEmpty(keyword)) keyword = name;
+            initSearch(keyword, true);
+        }
         else if (isAutoMode() || force) nextSite();
     }
 
