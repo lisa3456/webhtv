@@ -183,9 +183,21 @@ public class SearchFragment extends BaseFragment implements MenuProvider, WordAd
         String keyword = mBinding.keyword.getText().toString().trim();
         App.post(() -> mRecordAdapter.add(keyword), 250);
         Util.hideKeyboard(mBinding.keyword);
-        collect(keyword);
+        String searchKeyword = extractSearchKeyword(keyword);
+        if (TextUtils.isEmpty(searchKeyword)) searchKeyword = keyword;
+        collect(searchKeyword);
     }
 
+    private String extractSearchKeyword(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        s = s.replaceAll("第[0-9一二三四五六七八九十]+[季部集期]", "");
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
+    }
+    
     private void collect(String keyword) {
         FragmentManager fm = requireActivity().getSupportFragmentManager();
         String collectTag = CollectFragment.class.getSimpleName();
