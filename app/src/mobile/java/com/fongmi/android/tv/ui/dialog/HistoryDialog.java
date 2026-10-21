@@ -131,8 +131,8 @@ public class HistoryDialog extends BaseAlertDialog implements ConfigAdapter.OnCl
         params.width = Math.max(width, ResUtil.dp2px(320));
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER;
-        params.dimAmount = 0f;
-        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        params.dimAmount = 0.2f; 
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(params);
