@@ -312,6 +312,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private long playerStartTime;
     private boolean pendingLutImport;
     private boolean skipPausePiP;
+    private String mSearchKeyword = "";
 
     private final ActivityResultLauncher<Intent> mLutDir = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) return;
@@ -1506,9 +1507,24 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
 
     private void onSearch() {
         if (onLyricsSearch()) return;
-        onName();
-    }
+        String name = mBinding.name.getText().toString();
+        if (TextUtils.isEmpty(name)) return;
+        String keyword = extractSearchKeyword(name);
+        if (TextUtils.isEmpty(keyword)) keyword = name;
+        manualSearch = true;
+        initSearch(keyword, false);
+        }
 
+    private String extractSearchKeyword(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        s = s.replaceAll("第[0-9一二三四五六七八九十]+[季部集期]", "");
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
+    }
+    
     private boolean onLyricsSearch() {
         if (!isLyricsSearchAvailable()) return false;
         showLyricsSearchSheet(getLyricsSearchKeyword(), getLyricsSearchSuggestions());
@@ -5990,6 +6006,7 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
         setAutoMode(auto);
         setInitAuto(auto);
         revealManualSearch = !auto;
+        mSearchKeyword = mBinding.name.getText().toString();
         startSearch(keyword);
     }
 
@@ -6028,11 +6045,38 @@ public class VideoActivity extends PlaybackActivity implements Clock.Callback, C
     private boolean mismatch(Vod item) {
         if (getId().equals(item.getId())) return true;
         if (mBroken.contains(item.getId())) return true;
-        String keyword = TextUtils.isEmpty(mQuickSearchKeyword) ? mBinding.name.getText().toString() : mQuickSearchKeyword;
-        if (isAutoMode()) return !item.getName().equals(keyword);
-        else return !item.getName().contains(keyword);
+        String keyword = TextUtils.isEmpty(mSearchKeyword) ? mBinding.name.getText().toString() : mSearchKeyword;
+        if (isAutoMode()) return !nameMatch(item.getName(), keyword);
+        else return !nameContains(item.getName(), keyword);
     }
 
+    private String normalizeName(String name) {
+        if (name == null) return "";
+        String s = name;
+        s = s.replaceAll("\\s+", "");
+        String[] cn = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+        for (int i = 0; i < cn.length; i++) {
+            s = s.replace("第" + cn[i] + "季", "第" + i + "季");
+        }
+        s = s.replaceAll("[（(][^）)]*[）)]", "");
+        s = s.replaceAll("[·・\\-—_\\[\\]【】]", "");
+        return s;
+    }
+
+    private boolean nameMatch(String a, String b) {
+        String na = normalizeName(a);
+        String nb = normalizeName(b);
+        if (na.isEmpty() || nb.isEmpty()) return false;
+        return na.equals(nb);
+    }
+
+    private boolean nameContains(String a, String b) {
+        String na = normalizeName(a);
+        String nb = normalizeName(b);
+        if (na.isEmpty() || nb.isEmpty()) return false;
+        return na.contains(nb) || nb.contains(na);
+    }
+    
     private void nextParse(int position) {
         Parse parse = mParseAdapter.get(position + 1);
         Notify.show(getString(R.string.play_switch_parse, parse.getName()));
